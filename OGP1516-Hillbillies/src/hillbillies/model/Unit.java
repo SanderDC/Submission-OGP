@@ -89,9 +89,9 @@ public class Unit {
 	this.setStamina(stamina);
 	this.setHitpoints(hitpoints);
 	
-	this.setWorking(false);
-	this.setResting(false);
-	this.setMoving(false);
+	this.work(false);
+	this.rest(false);
+	this.move(false);
 	this.orientation=(float) ((Math.PI)/2);
 	}
 	
@@ -549,31 +549,31 @@ public class Unit {
 	
 	private float orientation;
 	
-	public boolean getWorking(){
+	public boolean isWorking(){
 		return this.working;
 	}
 	
-	public void setWorking(boolean working){
+	public void work(boolean working){
 		this.working = working;
 	}
 	
 	private boolean working;
 	
-	public boolean getResting(){
+	public boolean isResting(){
 		return this.resting;
 	}
 	
-	public void setResting(boolean resting){
+	public void rest(boolean resting){
 		this.resting = resting;
 	}
 	
 	private boolean resting;
 	
-	public boolean getMoving(){
+	public boolean isMoving(){
 		return this.moving;
 	}
 	
-	public void setMoving(boolean moving){
+	public void move(boolean moving){
 		this.moving = moving;
 	}
 	

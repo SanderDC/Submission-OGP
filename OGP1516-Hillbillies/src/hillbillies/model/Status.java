@@ -4,5 +4,6 @@ public enum Status {
 	WORKING,
 	RESTING,
 	MOVING,
-	IDLE
+	IDLE,
+	ATTACKING
 }

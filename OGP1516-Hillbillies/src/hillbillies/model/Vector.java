@@ -281,5 +281,29 @@ public class Vector {
 			throw new IllegalArgumentException();
 		return new Vector(factor*this.getX(), factor*this.getY(), factor*this.getZ());
 	}
+	
+	/**
+	 * Checks whether this Vector is equal to a given Vector.
+	 * @param other
+	 * 			The Vector to check for equality with this Vector
+	 */
+	public boolean equals(Vector other){
+		return (Util.fuzzyEquals(this.getX(), other.getX()))
+				&& (Util.fuzzyEquals(this.getY(), other.getY()))
+				&& (Util.fuzzyEquals(this.getZ(), other.getZ()));
+	}
+	
+	public boolean liesBetween(Vector one, Vector two){
+		if (! ( ( one.getX() <= this.getX() ) && ( this.getX() <= two.getX() ) ) &&
+				! ( ( one.getX() >= this.getX() ) && ( this.getX() >= two.getX() ) ) )
+			return false;
+		if (! ( ( one.getY() <= this.getY() ) && ( this.getY() <= two.getY() ) ) &&
+				! ( ( one.getY() >= this.getY() ) && ( this.getY() >= two.getY() ) ) )
+			return false;
+		if (! ( ( one.getZ() <= this.getZ() ) && ( this.getZ() <= two.getZ() ) ) &&
+				! ( ( one.getZ() >= this.getZ() ) && ( this.getZ() >= two.getZ() ) ) )
+			return false;
+		return true;
+	}
 
 }

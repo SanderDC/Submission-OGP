@@ -1,31 +1,40 @@
 package hillbillies.model;
 import java.nio.DoubleBuffer;
-//import java.util.Vector;
+import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.*;
 
 /**
  * Documentatie
  * 
- * @invar  The position of each Unit must be a valid position for any
- *         Unit.
- *        | isValidPosition(getPosition())
- * @invar The agility of each Unit must be a valid agility for any Unit. 
- * 		  | isValidAgility(getAgility())
- * @invar The toughness of each Unit must be a valid toughness for any Unit. 
- * 		  | isValidToughness(getToughness())
- * @invar The strength of each Unit must be a valid strength for any Unit.
- * 		  | isValidStrength(getStrength())
- * @invar The weight of each Unit must be a valid weight for any Unit.
- * 		  | isValidWeight(getWeight())
- * @invar The status of each Unit must be a valid status for any Unit.
- * 		  | isValidStatus(getStatus())
- * @invar  The name of each Unit must be a valid name for any
- *         Unit.
- *        | isValidName(getName())
- * @invar  The speed of each Unit must be a valid speed for any
- *         Unit.
- *       | isValidSpeed(getSpeed())
+ * @invar  	The position of each Unit must be a valid position for any
+ *         	Unit.
+ *        	| isValidPosition(getPosition())
+ * @invar 	The agility of each Unit must be a valid agility for any Unit. 
+ * 		  	| isValidAgility(getAgility())
+ * @invar	The toughness of each Unit must be a valid toughness for any Unit. 
+ * 		  	| isValidToughness(getToughness())
+ * @invar 	The strength of each Unit must be a valid strength for any Unit.
+ * 		  	| isValidStrength(getStrength())
+ * @invar 	The weight of each Unit must be a valid weight for any Unit.
+ * 		  	| isValidWeight(getWeight())
+ * @invar 	The status of each Unit must be a valid status for any Unit.
+ * 		  	| isValidStatus(getStatus())
+ * @invar  	The name of each Unit must be a valid name for any
+ *         	Unit.
+ *        	| isValidName(getName())
+ * @invar  	The speed of each Unit must be a valid speed for any
+ *         	Unit.
+ *       	| isValidSpeed(getSpeed())
+ * @invar  	The nearTarget of each Unit must be a valid nearTarget for any
+ *         	Unit.
+ *       	| isValidNearTarget(getNearTarget())
+ * @invar  	The DistantTarget of each Unit must be a valid DistantTarget for any
+ *         	Unit.
+ *       	| isValidDistantTarget(getDistantTarget())
+ * @invar  	The TimeUntilRest of each Unit must be a valid TimeUntilRest for any
+ *         	Unit.
+ *       	| isValidTimeUntilRest(getTimeUntilRest())
  * 
  * @author Sander Declercq
  * @author Bram Belpaire
@@ -59,56 +68,56 @@ public class Unit {
 	 * @param orientation
 	 *            The orientation of the new unit
 	 * 
-	 * @effect The position of this new Unit is set to
-	 *         the given position.
+	 * @effect 	The position of this new Unit is set to
+	 *         	the given position.
 	 *       	| this.setPosition(position)
 	 * @post 	If the given agility lies between the minimum and maximum initial
 	 *       	agility, the agility of this Unit equals the given agility.
-	 *       	| if (agility >= getMinInitialAgility()) && (agility <= getMaxInitialAgility())
+	 *       	| if (agility >= MIN_INITIAL_AGILITY) && (agility <= MAX_INITIAL_AGILITY)
 	 *       	| then new.getAgility() == agility
 	 * @post 	If the given agility is larger than the maximum initial agility,
 	 *       	the agility of this Unit equals the maximum initial agility.
-	 *       	| if (agility > getMaxInitialAgility())
-	 *       	| then new.getAgility() == getMaxInitialAgility()
+	 *       	| if (agility > MAX_INITIAL_AGILITY)
+	 *       	| then new.getAgility() == MAX_INITIAL_AGILITY
 	 * @post 	If the given agility is smaller than the minimum initial agility,
 	 *       	the agility of this Unit equals the minimum initial agility.
-	 *       	| if (agility < getMinInitialAgility())
-	 *       	| then new.getAgility() == getMinInitialAgility()
+	 *       	| if (agility < MIN_INITIAL_AGILITY)
+	 *       	| then new.getAgility() == MIN_INITIAL_AGILITY
 	 *       
 	 * @post 	If the given strength lies between the minimum and maximum initial
 	 *       	strength, the strength of this Unit equals the given strength.
-	 *       	| if (strength >= getMinInitialStrength()) && (strength <= getMaxInitialStrength())
+	 *       	| if (strength >= MIN_INITIAL_STRENGTH) && (strength <= MAX_INITIAL_STRENGTH)
 	 *       	| then new.getStrength() == strength
 	 * @post 	If the given strength is larger than the maximum initial strength,
 	 *       	the strength of this Unit equals the maximum initial strength.
-	 *       	| if (strength > getMaxInitialStrength())
-	 *       	| then new.getStrength() == getMaxInitialStrength()
+	 *       	| if (strength > MAX_INITIAL_STRENGTH)
+	 *       	| then new.getStrength() == MAX_INITIAL_STRENGTH
 	 * @post 	If the given strength is smaller than the minimum initial strength,
 	 *       	the strength of this Unit equals the minimum initial strength. | if
-	 *       	(strength < getMinInitialStrength()) | then new.getStrength() ==
-	 *       	getMinInitialStrength()
+	 *       	(strength < MIN_INITIAL_STRENGTH) | then new.getStrength() ==
+	 *       	MIN_INITIAL_STRENGTH
 	 *       
 	 * @post 	If the given toughness lies between the minimum and maximum initial
 	 *       	toughness, the toughness of this Unit equals the given toughness.
-	 *       	| if (toughness >= getMinInitialToughness()) && (toughness <= getMaxInitialToughness())
+	 *       	| if (toughness >= MIN_INITIAL_TOUGHNESS) && (toughness <= MAX_INITIAL_TOUGHNESS)
 	 *       	| then new.getToughness() == toughness
 	 * @post 	If the given toughness is larger than the maximum initial toughness,
 	 *       	the toughness of this Unit equals the maximum initial toughness.
-	 *       	| if (toughness > getMaxInitialToughness())
-	 *       	| then new.getToughness() == getMaxInitialToughness()
+	 *       	| if (toughness > MAX_INITIAL_TOUGHNESS)
+	 *       	| then new.getToughness() == MAX_INITIAL_TOUGHNESS
 	 * @post 	If the given toughness is smaller than the minimum initial toughness,
 	 *       	the toughness of this Unit equals the minimum initial toughness.
-	 *       	| if (toughness < getMinInitialToughness())
-	 *       	| then new.getToughness() == getMinInitialToughness()
+	 *       	| if (toughness < MIN_INITIAL_TOUGHNESS)
+	 *       	| then new.getToughness() == MIN_INITIAL_TOUGHNESS
 	 *       
 	 * @post 	If the given weight lies between the minimum and maximum initial
 	 *       	weight, the weight of this Unit equals the given weight. 
-	 *       	| if (weight >= new.getMinInitialWeight()) && (weight <= getMaxInitialWeight())
+	 *       	| if (weight >= new.getMinInitialWeight()) && (weight <= MAX_INITIAL_WEIGHT)
 	 *       	| then new.getWeight() == weight
 	 * @post 	If the given weight is larger than the maximum initial weight,
 	 *       	the weight of this Unit equals the maximum initial weight. 
-	 *       	| if (weight > getMaxInitialWeight())
-	 *       	| then new.getWeight() == getMaxInitialWeight()
+	 *       	| if (weight > MAX_INITIAL_WEIGHT)
+	 *       	| then new.getWeight() == MAX_INITIAL_WEIGHT
 	 * @post 	If the given weight is smaller than the minimum initial weight,
 	 *       	the weight of this Unit equals the minimum initial weight. 
 	 *       	| if (weight < new.getMinInitialWeight())
@@ -127,48 +136,88 @@ public class Unit {
 	 *         	stamina 
 	 *         	| this.setStamina(stamina)
 	 * @effect 	The speed of the Unit is set to null
-	 * 			
+	 * 			| this.setSpeed(null)
+	 * @effect 	The nearTarget of this new Unit is set to null
+	 *       	| this.setNearTarget(null)
+	 * @effect 	The DistantTarget of this new Unit is set to
+	 *         	the given DistantTarget.
+	 *       	| this.setDistantTarget(null)
+	 * @effect 	The TimeUntilRest of this new Unit is set to
+	 *         	the standard interval between two rests.
+	 *       	| this.setTimeUntilRest(RESTING_INTERVAL)
 	 * 
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness) throws IllegalArgumentException {
 
 		this.setPosition(position);
 		this.setSpeed(null);
+		this.setNearTarget(null);
+		this.setDistantTarget(null);
 
-		if (agility < getMinInitialAgility())
-			agility = getMinInitialAgility();
-		else if (agility > getMaxInitialAgility())
-			agility = getMaxInitialAgility();
+		if (agility < MIN_INITIAL_AGILITY)
+			agility = MIN_INITIAL_AGILITY;
+		else if (agility > MAX_INITIAL_AGILITY)
+			agility = MAX_INITIAL_AGILITY;
 		this.setAgility(agility);
 
-		if (strength < getMinInitialStrength())
-			strength = getMinInitialStrength();
-		else if (strength > getMaxInitialStrength())
-			strength = getMinInitialStrength();
+		if (strength < MIN_INITIAL_STRENGTH)
+			strength = MIN_INITIAL_STRENGTH;
+		else if (strength > MAX_INITIAL_STRENGTH)
+			strength = MIN_INITIAL_STRENGTH;
 		this.setStrength(strength);
 
-		if (toughness < getMinInitialToughness())
-			toughness = getMinInitialToughness();
-		else if (toughness > getMaxInitialToughness())
-			toughness = getMaxInitialToughness();
+		if (toughness < MIN_INITIAL_TOUGHNESS)
+			toughness = MIN_INITIAL_TOUGHNESS;
+		else if (toughness > MAX_INITIAL_TOUGHNESS)
+			toughness = MAX_INITIAL_TOUGHNESS;
 		this.setToughness(toughness);
 
 		if (weight < this.getMinWeight())
 			weight = this.getMinWeight();
-		if (weight > getMaxInitialWeight())
-			weight = getMaxInitialWeight();
+		if (weight > MAX_INITIAL_WEIGHT)
+			weight = MAX_INITIAL_WEIGHT;
 		this.setWeight(weight);
-
-		// TODO: alternatief wanneer agility/... Niet valid is
 
 		this.setName(name);
 		this.setMaxHitpoints();
 		this.setMaxStamina();
 		this.setStamina(this.getmaxStamina());
 		this.setHitpoints(this.getmaxHitpoints());
-		this.speed= new Vector(0, 0, 0);
 		this.setStatus(Status.IDLE);
+		this.setTimeUntilRest(RESTING_INTERVAL);
 		this.orientation = Math.PI;
+		this.sprinting=false;
+		this.numberSpeed=0;
+		this.defaultBehaviorBoolean=true;
+	}
+
+	private double numberSpeed;
+	private boolean defaultBehaviorBoolean;
+	/**
+	 * Return the defaultbehaviorboolean of this Unit.
+	 */
+	@Basic @Raw
+	public boolean getdefaultbehaviorboolean() {
+		return this.defaultBehaviorBoolean;
+	}
+	public void setDefaultBehaviorBoolean(boolean defaultBehaviorBoolean) {
+		this.defaultBehaviorBoolean = defaultBehaviorBoolean;
+	}
+
+	private boolean sprinting;
+	public boolean getSprinting(){
+		return this.sprinting;
+	}
+
+
+	public void setSprinting(boolean sprinting)throws IllegalStateException {
+		if (this.getStatus()!=Status.MOVING) {
+			throw new IllegalStateException();
+		}
+		else {
+			this.sprinting = sprinting;
+
+		}
 	}
 	/**
 	 * Return the position of this Unit.
@@ -177,7 +226,7 @@ public class Unit {
 	public Vector getPosition() {
 		return this.position;
 	}
-	
+
 	/**
 	 * Return the x-coordinate of the cube currently occupied by the Unit
 	 */
@@ -185,7 +234,7 @@ public class Unit {
 	public double getCubeX(){
 		return Math.floor(this.getPosition().getX());
 	}
-	
+
 	/**
 	 * Return the y-coordinate of the cube currently occupied by the Unit
 	 */
@@ -193,7 +242,7 @@ public class Unit {
 	public double getCubeY(){
 		return Math.floor(this.getPosition().getY());
 	}
-	
+
 	/**
 	 * Return the z-coordinate of the cube currently occupied by the Unit
 	 */
@@ -211,14 +260,14 @@ public class Unit {
 	 * @return 
 	 *       | result == (position != null)
 	 *       |			 for each component in position.toArray():
-	 *       |				(component >= getMinCoordinate()) &&
-	 *       |				(component < getMaxCoordinate())
+	 *       |				(component >= MIN_COORDINATE) &&
+	 *       |				(component < MAX_COORDINATE)
 	 */
 	public static boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
 		for (double component:position.toArray()){
-			if ((component < getMinCoordinate()) || (component >= getMaxCoordinate()))
+			if ((component < MIN_COORDINATE) || (component >= MAX_COORDINATE))
 				return false;
 		}
 		return true;
@@ -244,6 +293,12 @@ public class Unit {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
+
+	public static final int MAX_COORDINATE = 50;
+
+	public static final int MIN_COORDINATE = 0;
+
+	public static final double CUBELENGTH = 1;
 
 	/**
 	 * Variable registering the position of this Unit.
@@ -306,14 +361,6 @@ public class Unit {
 	 */
 	private Vector speed;
 
-	public static int getMaxCoordinate() {
-		return 50;
-	}
-
-	public static int getMinCoordinate() {
-		return 0;
-	}
-
 	/**
 	 * Return the agility of this Unit.
 	 */
@@ -324,15 +371,115 @@ public class Unit {
 	}
 
 	/**
+	 * Return the NearTarget of this Unit.
+	 */
+	@Basic @Raw
+	public Vector getNearTarget() {
+		return this.NearTarget;
+	}
+
+	/**
+	 * Check whether the given NearTarget is a valid NearTarget for
+	 * any Unit.
+	 *  
+	 * @param  NearTarget
+	 *         The NearTarget to check.
+	 * @return 
+	 *       | result == (target == null) ||
+	 *       				(isValidPosition(target))
+	 */
+	public static boolean isValidNearTarget(Vector target) {
+		if (target == null)
+			return true;
+		return isValidPosition(target);
+	}
+
+	/**
+	 * Set the NearTarget of this Unit to the given NearTarget.
+	 * 
+	 * @param  target
+	 *         The new NearTarget for this Unit.
+	 * @post   The NearTarget of this new Unit is equal to
+	 *         the given nearTarget.
+	 *       | new.getNearTarget() == target
+	 * @throws IllegalArgumentException
+	 *         The given NearTarget is not a valid NearTarget for any
+	 *         Unit.
+	 *       | ! isValidNearTarget(getNearTarget())
+	 */
+	@Raw
+	public void setNearTarget(Vector target) 
+			throws IllegalArgumentException {
+		if (! isValidNearTarget(target))
+			throw new IllegalArgumentException();
+		this.NearTarget = target;
+	}
+
+	/**
+	 * Variable registering the nearTarget of this Unit.
+	 */
+	private Vector NearTarget;
+
+	/**
+	 * Return the DistantTarget of this Unit.
+	 */
+	@Basic @Raw
+	public Vector getDistantTarget() {
+		return this.DistantTarget;
+	}
+
+	/**
+	 * Check whether the given DistantTarget is a valid DistantTarget for
+	 * any Unit.
+	 *  
+	 * @param  DistantTarget
+	 *         The DistantTarget to check.
+	 * @return 
+	 *       | result == (target == null) ||
+	 *       |				(isValidPosition(target))
+	 */
+	public static boolean isValidDistantTarget(Vector target) {
+		if (target == null)
+			return true;
+		return isValidPosition(target);
+	}
+
+	/**
+	 * Set the DistantTarget of this Unit to the given DistantTarget.
+	 * 
+	 * @param  target
+	 *         The new DistantTarget for this Unit.
+	 * @post   The DistantTarget of this new Unit is equal to
+	 *         the given DistantTarget.
+	 *       | new.getDistantTarget() == target
+	 * @throws IllegalArgumentException
+	 *         The given DistantTarget is not a valid DistantTarget for any
+	 *         Unit.
+	 *       | ! isValidDistantTarget(getDistantTarget())
+	 */
+	@Raw
+	public void setDistantTarget(Vector target) 
+			throws IllegalArgumentException {
+		if (! isValidDistantTarget(target))
+			throw new IllegalArgumentException();
+		this.DistantTarget = target;
+	}
+
+	/**
+	 * Variable registering the DistantTarget of this Unit.
+	 */
+	private Vector DistantTarget;
+
+	/**
 	 * Check whether the given agility is a valid agility for any Unit.
 	 * 
 	 * @param agility
 	 *            The agility to check.
-	 * @return | result == (agility >= getMinAgility()) && (agility <=
-	 *         getMaxAgility())
+	 * @return | result == (agility >= MIN_AGILITY) && (agility <=
+	 *         MAX_AGILITY)
 	 */
 	public static boolean isValidAgility(int agility) {
-		return (agility >= getMinAgility()) && (agility <= getMaxAgility());
+		return (agility >= MIN_AGILITY) && (agility <= MAX_AGILITY);
 	}
 
 	/**
@@ -340,36 +487,24 @@ public class Unit {
 	 * 
 	 * @return The smallest possible agility for all Units in the class.
 	 */
-	@Basic
-	public static int getMinAgility() {
-		return 1;
-	}
+	public static final int MIN_AGILITY = 1;
 
 	/**
 	 * Returns the largest legal value for a Unit's agility
 	 * 
 	 * @return The largest possible agility for all Units in the class.
 	 */
-	@Basic
-	public static int getMaxAgility() {
-		return 200;
-	}
+	public static int MAX_AGILITY = 200;
 
 	/**
 	 * Return the smallest legal value for a new Unit's agility
 	 */
-	@Basic
-	public static int getMinInitialAgility(){
-		return 25;
-	}
+	public static final int MIN_INITIAL_AGILITY = 25;
 
 	/**
 	 * Return the largest legal value for a new Unit's agility
 	 */
-	@Basic
-	public static int getMaxInitialAgility(){
-		return 100;
-	}
+	public static final int MAX_INITIAL_AGILITY = 100;
 
 	/**
 	 * Set the agility of the Unit to the given agility
@@ -378,20 +513,20 @@ public class Unit {
 	 *            The new agility to be set for this Unit
 	 * @post If the given agility lies between the minimum and maximum legal
 	 *       agility, the Unit's agility equals the given agility | if
-	 *       (newAgility >= getMinAgility()) && (newAgility <= getMaxAgility())
+	 *       (newAgility >= MIN_AGILITY) && (newAgility <= MAX_AGILITY)
 	 *       | then new.getAgility() == newAgility
 	 * @post If the given agility is larger than the maximum legal agility, the
 	 *       Unit's agility equals the maximum legal agility | if (newAgility >
-	 *       getMaxAgility()) | then new.getAgility() == getMaxAgility()
+	 *       MAX_AGILITY) | then new.getAgility() == MAX_AGILITY
 	 * @post If the given agility is smaller than the minimum legal agility, the
 	 *       Unit's agility equals the minimum legal agility | if (newAgility <
-	 *       getMinAgility()) | then new.getAgility() == getMinAgility()
+	 *       MIN_AGILITY) | then new.getAgility() == MIN_AGILITY
 	 */
 	public void setAgility(int newAgility) {
-		if (newAgility < getMinAgility()) {
-			newAgility = getMinAgility();
-		} else if (newAgility > getMaxAgility()) {
-			newAgility = getMaxAgility();
+		if (newAgility < MIN_AGILITY) {
+			newAgility = MIN_AGILITY;
+		} else if (newAgility > MAX_AGILITY) {
+			newAgility = MAX_AGILITY;
 		}
 		this.agility = newAgility;
 	}
@@ -415,11 +550,11 @@ public class Unit {
 	 * 
 	 * @param strength
 	 *            The strength to check.
-	 * @return | result == (strength >= getMinStrength()) && (strength <=
-	 *         getMaxStrength())
+	 * @return | result == (strength >= MIN_STRENGTH) && (strength <=
+	 *         MAX_STRENGTH)
 	 */
 	public static boolean isValidStrength(int strength) {
-		return (strength >= getMinStrength()) && (strength <= getMaxStrength());
+		return (strength >= MIN_STRENGTH) && (strength <= MAX_STRENGTH);
 	}
 
 	/**
@@ -427,36 +562,24 @@ public class Unit {
 	 * 
 	 * @return The smallest possible strength for all Units in the class.
 	 */
-	@Basic
-	public static int getMinStrength() {
-		return 1;
-	}
+	public static final int MIN_STRENGTH = 1;
 
 	/**
 	 * Returns the largest legal value for a Unit's strength
 	 * 
 	 * @return The largest possible strength for all Units in the class.
 	 */
-	@Basic
-	public static int getMaxStrength() {
-		return 200;
-	}
+	public static final int MAX_STRENGTH = 200;
 
 	/**
 	 * Return the smallest legal value for a new Unit's strength
 	 */
-	@Basic
-	public static int getMinInitialStrength(){
-		return 25;
-	}
+	public static final int MIN_INITIAL_STRENGTH = 25;
 
 	/**
 	 * Return the largest legal value for a new Unit's strength
 	 */
-	@Basic
-	public static int getMaxInitialStrength(){
-		return 100;
-	}
+	public static final int MAX_INITIAL_STRENGTH = 100;
 
 	/**
 	 * Set the strength of the Unit to the given strength
@@ -465,22 +588,22 @@ public class Unit {
 	 *            The new strength to be set for this Unit
 	 * @post If the given strength lies between the minimum and maximum legal
 	 *       strength, the Unit's strength equals the given strength | if
-	 *       (newStrength >= getMinStrength()) && (newStrength <=
-	 *       getMaxStrength()) | then new.getStrength() == newStrength
+	 *       (newStrength >= MIN_STRENGTH) && (newStrength <=
+	 *       MAX_STRENGTH) | then new.getStrength() == newStrength
 	 * @post If the given strength is larger than the maximum legal strength,
 	 *       the Unit's strength equals the maximum legal strength | if
-	 *       (newStrength > getMaxStrength()) | then new.getStrength() ==
-	 *       getMaxStrength()
+	 *       (newStrength > MAX_STRENGTH) | then new.getStrength() ==
+	 *       MAX_STRENGTH
 	 * @post If the given strength is smaller than the minimum legal strength,
 	 *       the Unit's strength equals the minimum legal strength | if
-	 *       (newStrength < getMinStrength()) | then new.getStrength() ==
-	 *       getMinStrength()
+	 *       (newStrength < MIN_STRENGTH) | then new.getStrength() ==
+	 *       MIN_STRENGTH
 	 */
 	public void setStrength(int newStrength) {
-		if (newStrength < getMinStrength()) {
-			newStrength = getMinStrength();
-		} else if (newStrength > getMaxStrength()) {
-			newStrength = getMaxStrength();
+		if (newStrength < MIN_STRENGTH) {
+			newStrength = MIN_STRENGTH;
+		} else if (newStrength > MAX_STRENGTH) {
+			newStrength = MAX_STRENGTH;
 		}
 		this.strength = newStrength;
 	}
@@ -505,10 +628,10 @@ public class Unit {
 	 * @param weight
 	 *            The weight to check.
 	 * @return | result == (weight >= this.getMinWeight()) && (weight <=
-	 *         getMaxWeight())
+	 *         MAX_WEIGHT)
 	 */
 	public boolean isValidWeight(int weight) {
-		return (weight >= this.getMinWeight()) && (weight <= getMaxWeight());
+		return (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT);
 	}
 
 	/**
@@ -527,18 +650,12 @@ public class Unit {
 	 * 
 	 * @return The largest possible weight for all Units in the class.
 	 */
-	@Basic
-	public static int getMaxWeight() {
-		return 200;
-	}
+	public static final int MAX_WEIGHT = 200;
 
 	/**
 	 * Return the largest legal value for a new Unit's weight
 	 */
-	@Basic
-	public static int getMaxInitialWeight(){
-		return 100;
-	}
+	public static final int MAX_INITIAL_WEIGHT = 100;
 
 	/**
 	 * Set the weight of the Unit to the given weight
@@ -547,11 +664,11 @@ public class Unit {
 	 *            The new weight to be set for this Unit
 	 * @post If the given weight lies between the minimum and maximum legal
 	 *       weight, the Unit's weight equals the given weight | if (newWeight
-	 *       >= this.getMinWeight()) && (newWeight <= getMaxWeight()) | then
+	 *       >= this.getMinWeight()) && (newWeight <= MAX_WEIGHT) | then
 	 *       new.getWeight() == newWeight
 	 * @post If the given weight is larger than the maximum legal weight, the
 	 *       Unit's weight equals the maximum legal weight | if (newWeight >
-	 *       getMaxWeight()) | then new.getWeight() == getMaxWeight()
+	 *       MAX_WEIGHT) | then new.getWeight() == MAX_WEIGHT
 	 * @post If the given weight is smaller than the minimum legal weight, the
 	 *       Unit's weight equals the minimum legal weight | if (newWeight <
 	 *       this.getMinWeight()) | then new.getWeight() == this.getMinWeight()
@@ -559,8 +676,8 @@ public class Unit {
 	public void setWeight(int newWeight) {
 		if (newWeight < this.getMinWeight()) {
 			newWeight = this.getMinWeight();
-		} else if (newWeight > getMaxWeight()) {
-			newWeight = getMaxWeight();
+		} else if (newWeight > MAX_WEIGHT) {
+			newWeight = MAX_WEIGHT;
 		}
 		this.weight = newWeight;
 	}
@@ -690,11 +807,11 @@ public class Unit {
 	 * 
 	 * @param toughness
 	 *            The toughness to check.
-	 * @return | result == (toughness >= getMinToughness()) && (toughness <=
-	 *         getMaxToughness())
+	 * @return | result == (toughness >= MIN_TOUGHNESS) && (toughness <=
+	 *         MAX_TOUGHNESS)
 	 */
 	public static boolean isValidToughness(int toughness) {
-		return (toughness >= getMinToughness()) && (toughness <= getMaxToughness());
+		return (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS);
 	}
 
 	/**
@@ -702,36 +819,24 @@ public class Unit {
 	 * 
 	 * @return The smallest possible toughness for all Units in the class.
 	 */
-	@Basic
-	public static int getMinToughness() {
-		return 1;
-	}
+	public static final int MIN_TOUGHNESS = 1;
 
 	/**
 	 * Returns the largest legal value for a Unit's toughness
 	 * 
 	 * @return The largest possible toughness for all Units in the class.
 	 */
-	@Basic
-	public static int getMaxToughness() {
-		return 200;
-	}
+	public static final int MAX_TOUGHNESS = 200;
 
 	/**
 	 * Return the smallest legal value for a new Unit's toughness
 	 */
-	@Basic
-	public static int getMinInitialToughness(){
-		return 25;
-	}
+	public static final int MIN_INITIAL_TOUGHNESS = 25;
 
 	/**
 	 * Return the largest legal value for a new Unit's toughness
 	 */
-	@Basic
-	public static int getMaxInitialToughness(){
-		return 100;
-	}
+	public static final int MAX_INITIAL_TOUGHNESS = 100;
 
 	/**
 	 * Set the toughness of the Unit to the given toughness
@@ -740,22 +845,22 @@ public class Unit {
 	 *            The new toughness to be set for this Unit
 	 * @post If the given toughness lies between the minimum and maximum legal
 	 *       toughness, the Unit's toughness equals the given toughness | if
-	 *       (newToughness >= getMinToughness()) && (newToughness <=
-	 *       getMaxToughness()) | then new.getToughness() == newToughness
+	 *       (newToughness >= MIN_TOUGHNESS) && (newToughness <=
+	 *       MAX_TOUGHNESS) | then new.getToughness() == newToughness
 	 * @post If the given toughness is larger than the maximum legal toughness,
 	 *       the Unit's toughness equals the maximum legal toughness | if
-	 *       (newToughness > getMaxToughness()) | then new.getToughness() ==
-	 *       getMaxToughness()
+	 *       (newToughness > MAX_TOUGHNESS) | then new.getToughness() ==
+	 *       MAX_TOUGHNESS
 	 * @post If the given toughness is smaller than the minimum legal toughness,
 	 *       the Unit's toughness equals the minimum legal toughness | if
-	 *       (newToughness < getMinToughness()) | then new.getToughness() ==
-	 *       getMinToughness()
+	 *       (newToughness < MIN_TOUGHNESS) | then new.getToughness() ==
+	 *       MIN_TOUGHNESS
 	 */
 	public void setToughness(int newToughness) {
-		if (newToughness < getMinToughness()) {
-			newToughness = getMinToughness();
-		} else if (newToughness > getMaxToughness()) {
-			newToughness = getMaxToughness();
+		if (newToughness < MIN_TOUGHNESS) {
+			newToughness = MIN_TOUGHNESS;
+		} else if (newToughness > MAX_TOUGHNESS) {
+			newToughness = MAX_TOUGHNESS;
 		}
 		this.toughness = newToughness;
 	}
@@ -852,99 +957,298 @@ public class Unit {
 	 */
 	private Status status;
 
-	public void preparing_attack(double time,Unit other){
-		if (time>=1){
-			attack(other);
-		}
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The TimeUntilRest of each Unit must be a valid TimeUntilRest for any
+	 *         Unit.
+	 *       | isValidTimeUntilRest(getTimeUntilRest())
+	 */
+
+	/**
+	 * Return the TimeUntilRest of this Unit.
+	 */
+	@Basic @Raw
+	public double getTimeUntilRest() {
+		return this.timeUntilRest;
 	}
 
-	public void attack(Unit other) {
-		if (Math.random() <= 0.20 * other.getAgility() / this.getAgility()) {
-			other.dodge();
-		} else if (Math.random() <= 0.25 * (other.getStrength() + other.getAgility())
-				/ (this.getStrength() + this.getAgility())) {
+	/**
+	 * Check whether the given TimeUntilRest is a valid TimeUntilRest for
+	 * any Unit.
+	 *  
+	 * @param  TimeUntilRest
+	 *         The TimeUntilRest to check.
+	 * @return 
+	 *       | result == (time > 0) && (time <= RESTING_INTERVAL)
+	 */
+	public static boolean isValidTimeUntilRest(double time) {
+		return (time > 0) && (time <= RESTING_INTERVAL);
+	}
+
+	/**
+	 * Set the TimeUntilRest of this Unit to the given TimeUntilRest.
+	 * 
+	 * @param  	time
+	 *         	The new TimeUntilRest for this Unit.
+	 * @post   	The TimeUntilRest of this new Unit is equal to
+	 *         	the given TimeUntilRest.
+	 *       	| new.getTimeUntilRest() == time
+	 * @throws 	IllegalArgumentException
+	 *         	The given TimeUntilRest is not a valid TimeUntilRest for any
+	 *         	Unit.
+	 *       	| ! isValidTimeUntilRest(getTimeUntilRest())
+	 */
+	@Raw
+	public void setTimeUntilRest(double time) 
+			throws IllegalArgumentException {
+		if (! isValidTimeUntilRest(time))
+			throw new IllegalArgumentException();
+		this.timeUntilRest = time;
+	}
+
+	/**
+	 * Variable registering the TimeUntilRest of this Unit.
+	 */
+	private double timeUntilRest;
+
+	public static final double RESTING_INTERVAL = 180;
+
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The ActivityTime of each Unit must be a valid ActivityTime for any
+	 *         Unit.
+	 *       | isValidActivityTime(getActivityTime())
+	 */
+
+
+	/**
+	 * Initialize this new Unit with given ActivityTime.
+	 *
+	 * @param  ActivityTime
+	 *         The ActivityTime for this new Unit.
+	 * @effect The ActivityTime of this new Unit is set to
+	 *         the given ActivityTime.
+	 *       | this.setActivityTime(ActivityTime)
+	 */
+	public Unit(double ActivityTime)
+			throws IllegalArgumentException {
+		this.setActivityTime(ActivityTime);
+	}
+
+
+	/**
+	 * Return the ActivityTime of this Unit.
+	 */
+	@Basic @Raw
+	public double getActivityTime() {
+		return this.ActivityTime;
+	}
+
+	/**
+	 * Check whether the given ActivityTime is a valid ActivityTime for
+	 * any Unit.
+	 *  
+	 * @param  ActivityTime
+	 *         The ActivityTime to check.
+	 * @return 
+	 *       | result == (ActivityTime >= 0)
+	 */
+	public static boolean isValidActivityTime(double ActivityTime) {
+		return (ActivityTime >= 0);
+	}
+
+	/**
+	 * Set the ActivityTime of this Unit to the given ActivityTime.
+	 * 
+	 * @param  ActivityTime
+	 *         The new ActivityTime for this Unit.
+	 * @post   The ActivityTime of this new Unit is equal to
+	 *         the given ActivityTime.
+	 *       | new.getActivityTime() == ActivityTime
+	 * @throws IllegalArgumentException
+	 *         The given ActivityTime is not a valid ActivityTime for any
+	 *         Unit.
+	 *       | ! isValidActivityTime(getActivityTime())
+	 */
+	@Raw
+	public void setActivityTime(double ActivityTime) 
+			throws IllegalArgumentException {
+		if (! isValidActivityTime(ActivityTime))
+			throw new IllegalArgumentException();
+		this.ActivityTime = ActivityTime;
+	}
+
+	/**
+	 * Variable registering the ActivityTime of this Unit.
+	 */
+	private double ActivityTime;
+
+	public void preparing_attack(Unit other){
+		this.updatePosition(other);
+		other.updatePosition(this);
+		if (timeUntilRest>=1){
+			other.defend(this);
+		}
+
+	}
+
+
+	public void defend(Unit attacker){
+		if (Math.random() <= 0.20 * this.getAgility() / attacker.getAgility()) {
+			attacker.dodge();
+		} else if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
+				/ (attacker.getStrength() + attacker.getAgility())) {
 			// unit parryt
 		} else {
 			// unit krijgt damage
+			this.hitpoints=this.getHitpoints()-attacker.getStrength()/10;
 		}
 	}
 
 	public void dodge() {
 
+
+
 	}
+
+
+	private void updatePosition(Unit other){
+		this.orientation=Math.atan2(other.getPosition().getY()-this.getPosition().getY(), other.getPosition().getX()-this.getPosition().getX());
+	}
+
 
 	/*
 	 * berekent de snelheid van de unit
 	 * 
 	 */
 	public double calculateBaseSpeed() {
-		double baseSpeed = 1.5 * (strength + agility) / (200 * weight / 100);
+		double baseSpeed = 1.5 * (this.getStrength() + this.getAgility()) / (200 * this.getWeight() / 100);
 		return baseSpeed;
 	}
-	
-	public void moveToAdjacent(double targetx, double targety, double targetz)
-			throws IllegalArgumentException, IllegalStateException{
-		if (! isValidPosition(new Vector(targetx, targety, targetz)))
+
+	/**
+	 * verplaatst de Unit
+	 */
+	public boolean ismoving(){
+		if (this.getStatus()==Status.MOVING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean isresting(){
+		if (this.getStatus()==Status.RESTING){
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+	public boolean isAttacking() {
+		if (this.getStatus()==Status.ATTACKING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean isWorking() {
+		if (this.getStatus()==Status.WORKING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public void setToWork() {
+		this.status=Status.WORKING;
+		this.setActivityTime(calculatingWorkTime());
+	}
+
+
+	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException{
+		Vector target = new Vector(this.getCubeX() + dx + CUBELENGTH/2,
+				this.getCubeY() + dy + CUBELENGTH/2,
+				this.getCubeZ() + dz + CUBELENGTH/2);
+		if (! isValidPosition(target))
 			throw new IllegalArgumentException();
 		if (this.getStatus() == Status.MOVING)
-			throw new IllegalStateException();
+			return;
 		double speed = this.calculateBaseSpeed();
-		if (Util.fuzzyEquals(this.getPosition().getZ() - targetz, -1))
+		if (Util.fuzzyEquals(this.getPosition().getZ() - target.getZ(), -1))
 			speed = 0.5*speed;
-		else if (Util.fuzzyEquals(this.getPosition().getZ() - targetz, 1))
+		else if (Util.fuzzyEquals(this.getPosition().getZ() - target.getZ(), 1))
 			speed = 1.2*speed;
-		double d = Math.sqrt(Math.pow((this.getPosition().getX() - targetx), 2) + Math.pow((this.getPosition().getY() - targety), 2)
-		+ Math.pow((this.getPosition().getZ() - targetz), 2));
-		double speed_x = speed*(targetx - this.getPosition().getX())/d;
-		double speed_y = speed*(targety - this.getPosition().getY())/d;
-		double speed_z = speed*(targetz - this.getPosition().getZ())/d;
+		double d = Math.sqrt(Math.pow((this.getPosition().getX() - target.getX()), 2) 
+				+ Math.pow((this.getPosition().getY() - target.getY()), 2)
+				+ Math.pow((this.getPosition().getZ() - target.getZ()), 2));
+		double speed_x = speed*(target.getX() - this.getPosition().getX())/d;
+		double speed_y = speed*(target.getY() - this.getPosition().getY())/d;
+		double speed_z = speed*(target.getZ() - this.getPosition().getZ())/d;
+		this.setUnitSpeed(speed);
 		this.setStatus(Status.MOVING);
+		this.setNearTarget(target);
 		this.setSpeed(new Vector(speed_x, speed_y, speed_z));
 		this.setOrientation(Math.atan2(speed_y, speed_x));
 	}
 
+	public void moveTo(int cubeX, int cubeY, int cubeZ)
+			throws IllegalArgumentException{
+		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
+		if (! isValidPosition(target))
+			throw new IllegalArgumentException();
+		if (this.getStatus() == Status.MOVING){
+			this.setDistantTarget(target);
+			return;
+		}
+		this.setDistantTarget(target);
+		this.moveToNextCube();
+	}
+
+	private void moveToNextCube(){
+		double cubeX = Math.floor(this.getDistantTarget().getX());
+		double cubeY = Math.floor(this.getDistantTarget().getY());
+		double cubeZ = Math.floor(this.getDistantTarget().getZ());
+		int dx; int dy; int dz;
+		if (this.getCubeX() == cubeX)
+			dx = 0;
+		else if (this.getCubeX() < cubeX)
+			dx = 1;
+		else
+			dx = - 1;
+		if (this.getCubeY() == cubeY)
+			dy = 0;
+		else if (this.getCubeY() < cubeY)
+			dy = 1;
+		else
+			dy = -1;
+		if (this.getCubeZ() == cubeZ)
+			dz = 0;
+		else if (this.getCubeZ() < cubeZ)
+			dz = 1;
+		else
+			dz = -1;
+		this.moveToAdjacent(dx, dy, dz);
+	}
+
+	public double getUnitSpeed() {
+		return this.numberSpeed;
+	}
+	public void setUnitSpeed(double speed){
+		this.numberSpeed=speed;
+	}
 	/*
 	 * berekent de tijd nodig voor een "werkje"
 	 */
 	public double calculatingWorkTime() {
 		return 500 / (double) this.getStrength();
 	}
-	/*
-	 * @ param targetx, targety,targetz
-	 * 			the coordinates of the place you want to go to
-	 * @ post
-	 * 		the position is a valid coordinate position
-	 */
-	private void pathfinding(double targetx,double targety,double targetz){
-		isValidPosition(new Vector(targetx, targety, targetz));
-		if (targetx!=this.getPosition().getX()){
-			if (this.getPosition().getX()<targetx){
-				double intermediatex=(this.getPosition().getX()+1);}
-			else{double intermediatex=(this.getPosition().getX()-1);
 
-			}
-		}
-
-		if (targety!=this.getPosition().getY()){
-			if (this.getPosition().getY()<targety){
-				double intermediatey=(this.getPosition().getY()+1);}
-			else{double intermediatey=(this.getPosition().getY()-1);
-			}
-		}
-
-		if (targetz!=this.getPosition().getZ()){
-			if (this.getPosition().getZ()<targetz){
-				double intermediatez=(this.getPosition().getZ()+1);}
-			else{double intermediatez=(this.getPosition().getZ()-1);
-			}
-		}
-
-	}
 	public double calculateMinRestTime(){
 		return 40/(double)toughness;
 	}
-	public void resting(double time)throws IllegalArgumentException{
-		if (time<calculateMinRestTime()){
+	public void resting()throws IllegalArgumentException{
+		if (timeUntilRest<calculateMinRestTime()){
 			throw new IllegalArgumentException();
 		}
 		if (hitpoints<maxHitpoints){}
@@ -998,16 +1302,79 @@ public class Unit {
 		}
 
 	}
-	
+
 	private void move(double time) {
 		Vector displacement;
-		if (this.isSprinting()){
+		if (this.getSprinting()){
 			displacement = this.getSpeed().scalarMultiply(2*time);
 			this.setStamina(this.getStamina()-(int) (10*time));
+			if (this.getStamina() == 0)
+				this.setSprinting(false);
 		} else 
 			displacement = this.getSpeed().scalarMultiply(time);
-		this.setPosition(this.getPosition().add(displacement));
-		
+		Vector new_pos = this.getPosition().add(displacement);
+		if ((this.getNearTarget().liesBetween(this.getPosition(), new_pos)) ||
+				(this.getNearTarget().equals(new_pos))){
+			this.setPosition(this.getNearTarget());
+			this.setSpeed(null);
+			this.setSprinting(false);
+			this.setStatus(Status.IDLE);
+			if (this.getDistantTarget() != null){
+				if (this.getDistantTarget().equals(this.getNearTarget())){
+					this.setDistantTarget(null);
+					this.setNearTarget(null);
+				}
+				else
+					this.setNearTarget(null);
+					this.moveToNextCube();
+			} else
+				this.setNearTarget(null);
+		} else
+			this.setPosition(new_pos);
+//		if ((this.getDistantTarget() != null) &&(this.getDistantTarget().liesBetween(this.getPosition(), new_pos)) ||
+//				(this.getDistantTarget().equals(new_pos))){
+//			this.setPosition(this.getDistantTarget());
+//			this.setDistantTarget(null);
+//			this.setNearTarget(null);
+//			this.setSpeed(null);
+//			this.setSprinting(false);
+//			this.setStatus(Status.IDLE);
+//		}
+//		else if ((this.getNearTarget().liesBetween(this.getPosition(), new_pos)) ||
+//				(this.getNearTarget().equals(new_pos))){
+//			this.setPosition(this.getNearTarget());
+//			this.setSpeed(null);
+//			this.setNearTarget(null);
+//			this.setSprinting(false);
+//			this.setStatus(Status.IDLE);
+//			if (this.getDistantTarget() != null)
+//				this.moveToNextCube();
+//		} else
+//			this.setPosition(new_pos);
 	}
-	
+
+	private void defaultbehavior(){
+		if(this.getStatus()==Status.IDLE){
+			Random randomgenerator= new Random();
+			int randomnumber=randomgenerator.nextInt(3);
+			if (randomnumber==0){
+				this.moveTo(randomgenerator.nextInt(MAX_COORDINATE),
+						randomgenerator.nextInt(MAX_COORDINATE),
+						randomgenerator.nextInt(MAX_COORDINATE));
+				int randomnumber1=randomgenerator.nextInt(2);
+				if (randomnumber1==1) {
+					setSprinting(true);
+				}
+				else{
+					setSprinting(false);
+
+				}}
+			if (randomnumber==1){
+				this.setToWork();}
+			if (randomnumber==2){
+				this.resting();}
+		}
+	}
+
+
 }

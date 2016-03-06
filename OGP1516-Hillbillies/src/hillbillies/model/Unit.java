@@ -1647,25 +1647,25 @@ public class Unit {
 	 */
 	private Vector selectDodgePosition(int i)throws IllegalArgumentException{
 		if (i==0){
-			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY(), this.getPosition().getZ());
+			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==1){
 			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==2){
-			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY(), this.getPosition().getZ());
+			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==3){
 			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==4){
-			return new Vector(this.getCubeX(), this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==5){
 			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
 		}
 		if (i==6){
-			return new Vector(this.getCubeX(), this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
 		}
 		if (i==7){
 			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());

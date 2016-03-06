@@ -1088,7 +1088,7 @@ public class Unit {
 	 *            The toughness to check.
 	 * @return 	| result == (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS)
 	 */
-	public static boolean isValidToughness(int toughness) {
+	private static boolean isValidToughness(int toughness) {
 		return (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS);
 	}
 

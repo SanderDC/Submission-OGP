@@ -1,46 +1,50 @@
 package hillbillies.part1.facade;
 
-import hillbillies.model.Status;
+
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import ogp.framework.util.ModelException;
 
-public class Facade implements IFacade {
+public class Facade implements IFacade{
 
 	@Override
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
-		return new Unit(new Vector(initialPosition[0] + 0.5,initialPosition[1] + 0.5,initialPosition[2] + 0.5), 
-				agility, strength, weight, name, toughness);
+		try {
+			return new Unit(new Vector(initialPosition[0] + Unit.CUBELENGTH/2,
+					initialPosition[1] + Unit.CUBELENGTH/2,
+					initialPosition[2] + Unit.CUBELENGTH/2), agility,strength,weight,name,toughness, enableDefaultBehavior);
+		} catch (IllegalArgumentException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public double[] getPosition(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return new double[]{unit.getPosition().getX(),unit.getPosition().getY(),unit.getPosition().getZ()};
+		return unit.getPosition().toArray();
 	}
 
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return new int[]{(int) Math.floor(unit.getPosition().getX()), (int) Math.floor(unit.getPosition().getY()), (int) Math.floor(unit.getPosition().getZ())};
+		return new int[]{(int) unit.getCubeX(), (int) unit.getCubeY(), (int) unit.getCubeZ()};
 	}
 
 	@Override
 	public String getName(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
 		return unit.getName();
 	}
 
 	@Override
 	public void setName(Unit unit, String newName) throws ModelException {
-		unit.setName(newName);
+		try {
+			unit.setName(newName);
+		} catch (IllegalArgumentException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public int getWeight(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
 		return unit.getWeight();
 	}
 
@@ -81,57 +85,73 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getMaxHitPoints(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
 		return unit.getmaxHitpoints();
 	}
 
 	@Override
 	public int getCurrentHitPoints(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
 		return unit.getHitpoints();
 	}
 
 	@Override
 	public int getMaxStaminaPoints(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
 		return unit.getmaxStamina();
 	}
 
 	@Override
 	public int getCurrentStaminaPoints(Unit unit) throws ModelException {
+		// TODO Auto-generated method stub
 		return unit.getStamina();
 	}
 
 	@Override
 	public void advanceTime(Unit unit, double dt) throws ModelException {
-		unit.advanceTime(dt);
-	}
-
-	@Override
-	public void moveToAdjacent(Unit unit, int dx, int dy, int dz) throws ModelException {
 		try {
-			unit.moveToAdjacent(dx, dy, dz);
+			unit.advanceTime(dt);
 		} catch (IllegalArgumentException e) {
 			throw new ModelException(e);
 		}
 	}
 
 	@Override
+	public void moveToAdjacent(Unit unit, int dx, int dy, int dz) throws ModelException {
+		try {
+			unit.setDefaultBehaviorBoolean(false);
+			unit.moveToAdjacent(dx, dy, dz);
+		} catch (IllegalArgumentException|IllegalStateException e) {
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
 	public double getCurrentSpeed(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return unit.getUnitSpeed();
+		return unit.getSpeed().norm();
 	}
 
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return unit.getStatus() == Status.MOVING;
+		return unit.ismoving();
 	}
 
 	@Override
 	public void startSprinting(Unit unit) throws ModelException {
-		unit.setSprinting(true);
+		try {
+			unit.setSprinting(true);
+		} catch (IllegalStateException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public void stopSprinting(Unit unit) throws ModelException {
-		unit.setSprinting(false);
+		try {
+			unit.setSprinting(false);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -141,57 +161,78 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getOrientation(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
 		return unit.getOrientation();
 	}
 
 	@Override
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
-		unit.moveTo(cube[0], cube[1], cube[2]);
+		try {
+			unit.setDefaultBehaviorBoolean(false);
+			unit.moveTo(cube[0], cube[1], cube[2]);
+		} catch (IllegalArgumentException|IllegalStateException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.setToWork();
+		try {
+			unit.setDefaultBehaviorBoolean(false);
+			unit.setToWork();
+		} catch (IllegalStateException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public boolean isWorking(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
 		return unit.isWorking();
 	}
 
 	@Override
 	public void fight(Unit attacker, Unit defender) throws ModelException {
-		
+		try {
+			attacker.setDefaultBehaviorBoolean(false);
+			defender.setDefaultBehaviorBoolean(false);
+			attacker.startAttack(defender);
+		} catch (IllegalArgumentException e) {
+			
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public boolean isAttacking(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isAttacking();
 	}
 
 	@Override
 	public void rest(Unit unit) throws ModelException {
-		unit.resting();
+		try {
+			unit.setDefaultBehaviorBoolean(false);
+			unit.resting();
+		} catch (IllegalStateException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public boolean isResting(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return unit.getStatus() == Status.RESTING;
+		return unit.isresting();
 	}
 
 	@Override
 	public void setDefaultBehaviorEnabled(Unit unit, boolean value) throws ModelException {
-		unit.setDefaultBehaviorBoolean(value);
+		try {
+			unit.setDefaultBehaviorBoolean(value);
+		} catch (IllegalStateException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override
 	public boolean isDefaultBehaviorEnabled(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
 		return unit.getdefaultbehaviorboolean();
 	}
-
+	
 }

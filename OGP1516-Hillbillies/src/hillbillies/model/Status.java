@@ -1,9 +1,21 @@
 package hillbillies.model;
+import be.kuleuven.cs.som.annotate.Value;
 
+/**
+ * An enumeration providing different possible statuses to express
+ * what a Unit is doing at a certain moment.
+ * 
+ * @author Sander Declercq
+ * @author Bram Belpaire
+ *
+ */
+@Value
 public enum Status {
 	WORKING,
 	RESTING,
-	MOVING,
+	MOVINGADJACENT,
+	MOVINGDISTANT,
 	IDLE,
-	ATTACKING
+	ATTACKING,
+	DEFENDING
 }

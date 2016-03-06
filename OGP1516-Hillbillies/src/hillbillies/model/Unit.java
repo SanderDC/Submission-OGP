@@ -1088,7 +1088,7 @@ public class Unit {
 	 *            The toughness to check.
 	 * @return 	| result == (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS)
 	 */
-	private static boolean isValidToughness(int toughness) {
+	public static boolean isValidToughness(int toughness) {
 		return (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS);
 	}
 
@@ -1499,6 +1499,9 @@ public class Unit {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
+		if (this.getStatus() == Status.DEFENDING) {
+			throw new IllegalStateException("a defending unit cannot attack");
+		}
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!isValidEnemy(other))
@@ -1520,9 +1523,9 @@ public class Unit {
 			if (other.getSprinting())
 				this.setSprinting(false);
 		}
-		if (!other.isAttacking()){
+		
 		other.setStatus(Status.DEFENDING);
-		}
+		
 		this.updatePosition(other);
 		other.updatePosition(this);
 	}
@@ -1546,16 +1549,10 @@ public class Unit {
 	 *			|this.setEnemy(null)
 	 */
 	private void attack(Unit other, double time){
-		if (!other.isAttacking()) {
-			other.setStatus(Status.DEFENDING);
-		}
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
 			other.defend(this);
 			this.setStatus(Status.IDLE);
-			if (!other.isAttacking()){
-				other.setStatus(Status.IDLE);
-			}
 			if (this.getDistantTarget() != null){
 				Vector target = this.getDistantTarget();
 				this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
@@ -1567,9 +1564,8 @@ public class Unit {
 	/**
 	 * the unit tries to dodge, parry and if that fails, takes damage
 	 * @post
-	 * 		this unit will if it is not attacking itself set its Status to IDLE
-	 * 		| if (this.getStatus() != Status.ATTACKING 
-	 * 		| then new.getStatus() == Status.IDLE
+	 * 		this unit will  set its Status to IDLE 
+	 * 		|  new.getStatus() == Status.IDLE
 	 * @effect
 	 * 		if the unit was moving before it got attacked it will continue moving
 	 * 		|if (this.getDistantTarget() != null)
@@ -1586,9 +1582,7 @@ public class Unit {
 	 * 		|new.gethipoints()==this.getHitpoints()-attacker.getStrength()/10
 	 * 		|if(attacker.getStrength()/10==0)
 	 * 		|then new.gethipoints()==this.getHitpoints()-1
-	 * @post if the unit was not just defending, but also attacking another unit, it will not set its status to IDLE
-	 * 		|if this.Status!=Status.ATTACKING
-	 * 		|then new.getStatus==Status.IDLE
+	
 	 * 		
 	 */
 	private void defend(Unit attacker){
@@ -1604,9 +1598,9 @@ public class Unit {
 			}
 			setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
 		}
-		if (!this.isAttacking()) {
+		
 			this.setStatus(Status.IDLE);
-		}
+		
 		
 		if (this.getDistantTarget() != null){
 			Vector target = this.getDistantTarget();

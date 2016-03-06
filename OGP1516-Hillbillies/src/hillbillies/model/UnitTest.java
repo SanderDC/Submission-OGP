@@ -279,15 +279,6 @@ public class UnitTest {
 		assertTrue(adjacentUnit.isdefending());
 	}
 	
-	@Test
-	public void startAttackboth_legalCase(){
-		idleUnit.startAttack(adjacentUnit);
-		adjacentUnit.startAttack(idleUnit);
-		assertTrue(idleUnit.getEnemy() == adjacentUnit);
-		assertTrue(adjacentUnit.getEnemy() == idleUnit);
-		assertTrue(idleUnit.isAttacking());
-		assertTrue(adjacentUnit.isAttacking());
-	}
 	
 	
 	@Test
@@ -312,7 +303,7 @@ public class UnitTest {
 	}
 	@Test(expected = IllegalStateException.class)
 	public void movingAdjacent_whilenotrestingenough(){
-		idleUnit.resting();;
+		idleUnit.resting();
 		idleUnit.moveToAdjacent(0, 0, 1);
 	}
 	@Test(expected = IllegalArgumentException.class)

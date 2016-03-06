@@ -95,6 +95,8 @@ public class Unit {
 	 *            The maximum amount of stamina of the new unit
 	 * @param orientation
 	 *            The orientation of the new unit
+	 * @param defaultbehavior
+	 * 			  Boolean reflecting whether the Unit's default behavior should be enabled
 	 * 
 	 * @post 	If the given agility lies between the minimum and maximum initial
 	 *       	agility, the agility of this Unit equals the given agility.
@@ -171,6 +173,8 @@ public class Unit {
 	 * 			| new.getProgresstamina() == 0
 	 * @post	The new Unit's current enemy equals null
 	 * 			| new.getEnemy() == null
+	 * @post	The new Unit's defaultbehaviorboolean equals the given defaultbehavior
+	 * 			| new.getdefaultbehaviorboolean() == defaultbehavior
 	 *    
 	 * @effect 	The position of this new Unit is set to
 	 *         	the given position.
@@ -187,7 +191,7 @@ public class Unit {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-
+		
 		this.setPosition(position);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);

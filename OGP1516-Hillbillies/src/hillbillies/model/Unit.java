@@ -345,7 +345,7 @@ public class Unit {
 	 *       	| ! isValidEnemy(getEnemy())
 	 */
 	private void setEnemy(Unit enemy)throws IllegalArgumentException{
-		if (isValidEnemy(enemy)){
+		if (canHaveAsEnemy(enemy)){
 			this.enemy=enemy;
 		}
 		else {
@@ -363,7 +363,7 @@ public class Unit {
 	 * 			returns true if the enemy is either null or next to the unit, and returns false if the unit refers to himself
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
-	private boolean isValidEnemy(Unit enemy) {
+	private boolean canHaveAsEnemy(Unit enemy) {
 		if (enemy==this) {
 			return false;
 		}
@@ -683,7 +683,7 @@ public class Unit {
 	 *       	|				((isValidPosition(target)) &&
 	 *       	|				(!this.getPosition().equals(target)))
 	 */
-	private boolean isValidDistantTarget(Vector target) {
+	private boolean canHaveAsDistantTarget(Vector target) {
 		if (target == null)
 			return true;
 		return (isValidPosition(target) && !this.getPosition().equals(target));
@@ -705,7 +705,7 @@ public class Unit {
 	@Raw
 	private void setDistantTarget(Vector target) 
 			throws IllegalArgumentException {
-		if (! isValidDistantTarget(target))
+		if (! canHaveAsDistantTarget(target))
 			throw new IllegalArgumentException("The Unit cannot move to this position");
 		this.distantTarget = target;
 	}
@@ -793,6 +793,97 @@ public class Unit {
 	 * Variable registering the agility of this Unit.
 	 */
 	private int agility;
+
+	/**
+	 * Return the toughness of this Unit.
+	 */
+	@Basic
+	@Raw
+	public int getToughness() {
+		return this.toughness;
+	}
+
+	/**
+	 * Check whether the given toughness is a valid toughness for any Unit.
+	 * 
+	 * @param 	toughness
+	 *            The toughness to check.
+	 * @return 	| result == (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS)
+	 */
+	public static boolean isValidToughness(int toughness) {
+		return (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS);
+	}
+
+	/**
+	 * Variable registering the smallest legal value for a Unit's toughness
+	 */
+	public static final int MIN_TOUGHNESS = 1;
+
+	/**
+	 * Variable registering the largest legal value for a Unit's toughness
+	 */
+	public static final int MAX_TOUGHNESS = 200;
+
+	/**
+	 * Variable registering the smallest legal value for a new Unit's toughness
+	 */
+	public static final int MIN_INITIAL_TOUGHNESS = 25;
+
+	/**
+	 * Variable registering the largest legal value for a new Unit's toughness
+	 */
+	public static final int MAX_INITIAL_TOUGHNESS = 100;
+
+	/**
+	 * Set the toughness of the Unit to the given toughness and
+	 * update the Unit's maximum hitpoints and stamina
+	 * 
+	 * @param 	newToughness
+	 *            The new toughness to be set for this Unit
+	 * @post 	If the given toughness lies between the minimum and maximum legal
+	 *       	toughness, the Unit's toughness equals the given toughness
+	 *       	| if (newToughness >= MIN_TOUGHNESS) && (newToughness <= MAX_TOUGHNESS)
+	 *       	| then new.getToughness() == newToughness
+	 * @post 	If the given toughness is larger than the maximum legal toughness,
+	 *       	the Unit's toughness equals the maximum legal toughness
+	 *       	| if (newToughness > MAX_TOUGHNESS)
+	 *       	| then new.getToughness() == MAX_TOUGHNESS
+	 * @post 	If the given toughness is smaller than the minimum legal toughness,
+	 *       	the Unit's toughness equals the minimum legal toughness
+	 *       	| if (newToughness < MIN_TOUGHNESS)
+	 *       	| then new.getToughness() == MIN_TOUGHNESS
+	 * @effect	The Unit's maximum hitpoints are updated according to its new toughness
+	 * 			| this.setMaxHitpoints()
+	 * @post	If the Unit's old hitpoints exceed its new maximum amount of hitpoints,
+	 * 			its amount of hitpoints equals its maximum amount of hitpoints
+	 * 			| if (this.getHitpoints() > new.getmaxHitpoints())
+	 * 			| then new.getHitpoints() == new.getmaxHitpoints()
+	 * @effect	The Unit's maximum stamina is updated according to its new toughness
+	 * 			| this.setMaxStamina()
+	 * @post	If the Unit's old stamina exceeds its new maximum amount of stamina,
+	 * 			its amount of stamina equals its maximum amount of stamina
+	 * 			| if (this.getStamina() > new.getmaxStamina())
+	 * 			| then new.getStamina() == new.getmaxStamina()
+	 */
+	public void setToughness(int newToughness) {
+		if (newToughness < MIN_TOUGHNESS) {
+			newToughness = MIN_TOUGHNESS;
+		} else if (newToughness > MAX_TOUGHNESS) {
+			newToughness = MAX_TOUGHNESS;
+		}
+		this.toughness = newToughness;
+		this.setMaxHitpoints();
+		this.setMaxStamina();
+		if (this.getHitpoints() > this.getmaxHitpoints())
+			this.setHitpoints(this.getmaxHitpoints());
+		if  (this.getStamina() > this.getmaxStamina())
+			this.setStamina(this.getmaxStamina());
+	}
+
+	/**
+	 * Variable registering the toughness of this Unit.
+	 */
+	private int toughness;
 
 	/**
 	 * Return the strength of this Unit.
@@ -890,7 +981,7 @@ public class Unit {
 	 * 			the maximum weight for any Unit.
 	 * 			| result == (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT)
 	 */
-	private boolean isValidWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		return (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT);
 	}
 
@@ -1034,30 +1125,6 @@ public class Unit {
 	 * Return the maximum amount of stamina points for this Unit.
 	 */
 	@Basic @Raw
-	public int getmaxStamina() {
-		return this.maxStamina;
-	}
-
-	/**
-	 * Set the maximum amount of stamina points for this Unit
-	 * @post	The maximum amount of stamina has been set according to the Unit's stats.
-	 * 			| new.getmaxStamina() == Math.ceil(this.getToughness()*this.getWeight()/50.0)
-	 */
-	@Raw
-	private void setMaxStamina() {
-		double temp = (double) this.getToughness() * (double) this.getWeight() / 50.0;
-		this.maxStamina = (int) Math.ceil(temp);
-	}
-
-	/**
-	 * Variable registering the maximum amount of stamina points for this Unit.
-	 */
-	private int maxStamina;
-
-	/**
-	 * Return the maximum amount of stamina points for this Unit.
-	 */
-	@Basic @Raw
 	public int getmaxHitpoints() {
 		return this.maxHitpoints;
 	}
@@ -1077,97 +1144,6 @@ public class Unit {
 	 * Variable registering the maximum amount of hitpoints for this Unit.
 	 */
 	private int maxHitpoints;
-
-	/**
-	 * Return the toughness of this Unit.
-	 */
-	@Basic
-	@Raw
-	public int getToughness() {
-		return this.toughness;
-	}
-
-	/**
-	 * Check whether the given toughness is a valid toughness for any Unit.
-	 * 
-	 * @param 	toughness
-	 *            The toughness to check.
-	 * @return 	| result == (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS)
-	 */
-	public static boolean isValidToughness(int toughness) {
-		return (toughness >= MIN_TOUGHNESS) && (toughness <= MAX_TOUGHNESS);
-	}
-
-	/**
-	 * Variable registering the smallest legal value for a Unit's toughness
-	 */
-	public static final int MIN_TOUGHNESS = 1;
-
-	/**
-	 * Variable registering the largest legal value for a Unit's toughness
-	 */
-	public static final int MAX_TOUGHNESS = 200;
-
-	/**
-	 * Variable registering the smallest legal value for a new Unit's toughness
-	 */
-	public static final int MIN_INITIAL_TOUGHNESS = 25;
-
-	/**
-	 * Variable registering the largest legal value for a new Unit's toughness
-	 */
-	public static final int MAX_INITIAL_TOUGHNESS = 100;
-
-	/**
-	 * Set the toughness of the Unit to the given toughness and
-	 * update the Unit's maximum hitpoints and stamina
-	 * 
-	 * @param 	newToughness
-	 *            The new toughness to be set for this Unit
-	 * @post 	If the given toughness lies between the minimum and maximum legal
-	 *       	toughness, the Unit's toughness equals the given toughness
-	 *       	| if (newToughness >= MIN_TOUGHNESS) && (newToughness <= MAX_TOUGHNESS)
-	 *       	| then new.getToughness() == newToughness
-	 * @post 	If the given toughness is larger than the maximum legal toughness,
-	 *       	the Unit's toughness equals the maximum legal toughness
-	 *       	| if (newToughness > MAX_TOUGHNESS)
-	 *       	| then new.getToughness() == MAX_TOUGHNESS
-	 * @post 	If the given toughness is smaller than the minimum legal toughness,
-	 *       	the Unit's toughness equals the minimum legal toughness
-	 *       	| if (newToughness < MIN_TOUGHNESS)
-	 *       	| then new.getToughness() == MIN_TOUGHNESS
-	 * @effect	The Unit's maximum hitpoints are updated according to its new toughness
-	 * 			| this.setMaxHitpoints()
-	 * @post	If the Unit's old hitpoints exceed its new maximum amount of hitpoints,
-	 * 			its amount of hitpoints equals its maximum amount of hitpoints
-	 * 			| if (this.getHitpoints() > new.getmaxHitpoints())
-	 * 			| then new.getHitpoints() == new.getmaxHitpoints()
-	 * @effect	The Unit's maximum stamina is updated according to its new toughness
-	 * 			| this.setMaxStamina()
-	 * @post	If the Unit's old stamina exceeds its new maximum amount of stamina,
-	 * 			its amount of stamina equals its maximum amount of stamina
-	 * 			| if (this.getStamina() > new.getmaxStamina())
-	 * 			| then new.getStamina() == new.getmaxStamina()
-	 */
-	public void setToughness(int newToughness) {
-		if (newToughness < MIN_TOUGHNESS) {
-			newToughness = MIN_TOUGHNESS;
-		} else if (newToughness > MAX_TOUGHNESS) {
-			newToughness = MAX_TOUGHNESS;
-		}
-		this.toughness = newToughness;
-		this.setMaxHitpoints();
-		this.setMaxStamina();
-		if (this.getHitpoints() > this.getmaxHitpoints())
-			this.setHitpoints(this.getmaxHitpoints());
-		if  (this.getStamina() > this.getmaxStamina())
-			this.setStamina(this.getmaxStamina());
-	}
-
-	/**
-	 * Variable registering the toughness of this Unit.
-	 */
-	private int toughness;
 
 	/**
 	 * Return the hitpoints of this Unit.
@@ -1213,6 +1189,30 @@ public class Unit {
 	 * Variable registering the hitpoints of this Unit.
 	 */
 	private int hitpoints;
+
+	/**
+	 * Return the maximum amount of stamina points for this Unit.
+	 */
+	@Basic @Raw
+	public int getmaxStamina() {
+		return this.maxStamina;
+	}
+
+	/**
+	 * Set the maximum amount of stamina points for this Unit
+	 * @post	The maximum amount of stamina has been set according to the Unit's stats.
+	 * 			| new.getmaxStamina() == Math.ceil(this.getToughness()*this.getWeight()/50.0)
+	 */
+	@Raw
+	private void setMaxStamina() {
+		double temp = (double) this.getToughness() * (double) this.getWeight() / 50.0;
+		this.maxStamina = (int) Math.ceil(temp);
+	}
+
+	/**
+	 * Variable registering the maximum amount of stamina points for this Unit.
+	 */
+	private int maxStamina;
 
 	/**
 	 * Return the stamina of this Unit.
@@ -1510,7 +1510,7 @@ public class Unit {
 		}
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
-		if (!isValidEnemy(other))
+		if (!canHaveAsEnemy(other))
 			throw new IllegalArgumentException("This Unit is not a valid target");
 		if (this.getStatus() == Status.MOVINGADJACENT)
 			throw new IllegalStateException("Movement to a neighbouring cube cannot be interrupted");

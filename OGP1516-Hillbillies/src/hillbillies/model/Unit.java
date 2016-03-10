@@ -442,7 +442,9 @@ public class Unit {
 	public double getCubeX(){
 		return Math.floor(this.getPosition().getX());
 	}
-
+	
+	//TODO: Feedback stelde voor om dit naar Vector te verplaatsen
+	
 	/**
 	 * Return the y-coordinate of the cube currently occupied by the Unit
 	 */

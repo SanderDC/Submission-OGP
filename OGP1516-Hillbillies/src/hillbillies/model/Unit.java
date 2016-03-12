@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.experimental.theories.Theories;
+
 import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.Util;
 
@@ -481,7 +483,12 @@ public class Unit {
 	 *       |				(component >= MIN_COORDINATE) &&
 	 *       |				(component < MAX_COORDINATE)
 	 */
-	private static boolean isValidPosition(Vector position) {
+	private static  boolean isValidPosition(Vector position) {
+		// if (getCubeType ((int)this.getCubeX(),(int)this.getCubeY(),(int)this.getCubeZ())==1||World.getCubeType ((int)this.getCubeX(),(int)this.getCubeY(),(int)this.getCubeZ())==2) {
+			
+		//}
+			
+		
 		if (position == null)
 			return false;
 		for (double component:position.toArray()){
@@ -490,7 +497,6 @@ public class Unit {
 		}
 		return true;
 	}
-
 	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.

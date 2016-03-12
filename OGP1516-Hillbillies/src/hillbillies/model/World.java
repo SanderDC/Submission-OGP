@@ -3,6 +3,7 @@ package hillbillies.model;
 public class World {
 	public World(int[][][] Coordinates){
 		this.Coordinates=Coordinates;
+		
 	}
 	private int [][][] Coordinates;
 	
@@ -24,11 +25,12 @@ public class World {
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
 	}
-	public void getCubeType(int [][][] coordinates) {
+	public  int getCubeType(int x,int y, int z) {
+		return getCoordinates()[x][y][z];
 		
 	}
-	public void setCubeType(int [][][] coordinates) {
-		
+	public void setCubeType(int x,int y, int z, int value) {
+		this.getCoordinates()[x][y][z]=value;
 	}
 	
 }

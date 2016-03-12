@@ -7,6 +7,8 @@ public class Boulder {
 	public Boulder(Vector position){
 		Random random= new Random();
 		this.weight= random.nextInt(41)+10;
+		this.position= position;
+
 	}
 	private Vector position;
 	private final int weight;

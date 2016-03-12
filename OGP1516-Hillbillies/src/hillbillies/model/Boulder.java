@@ -2,7 +2,6 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import org.junit.experimental.theories.Theories;
 
 public class Boulder {
 	public Boulder(Vector position){

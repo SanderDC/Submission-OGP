@@ -1611,10 +1611,21 @@ public class Unit {
 		} else {
 			// unit krijgt damage
 			if (attacker.getStrength()/10==0) {
-				setHitpoints(this.getHitpoints()-1);
+				if (this.getHitpoints()-1==0) {
+					UnitDies();
+				}
+				else {
+					setHitpoints(this.getHitpoints()-1);
+					}
+				
 				
 			}
-			setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
+			if (this.getHitpoints()-attacker.getStrength()/10>0) {
+				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
+			}
+			else {
+				UnitDies();
+			}
 			enemy.setExp(enemy.getExp()+20);
 		}
 		
@@ -2458,7 +2469,7 @@ public class Unit {
 			this.setFallPosition(0);
 			}
 			else{
-				//Unit sterft
+				UnitDies();
 			}
 		}
 		
@@ -2508,5 +2519,8 @@ public class Unit {
 			this.setExp(this.getExp()-10);
 		}
 	}
-	
+	private boolean isDead=false;
+	private void UnitDies(){
+		this.isDead=true;
+	}
 }

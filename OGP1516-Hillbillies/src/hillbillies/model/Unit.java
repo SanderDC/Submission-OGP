@@ -236,6 +236,7 @@ public class Unit {
 		this.progressstamina=0;
 		this.setActivityTime(0);
 		this.setFallPosition(0);
+		this.setExp(0);
 	}
 
 	/**
@@ -1603,15 +1604,18 @@ public class Unit {
 	private void defend(Unit attacker){
 		if (Math.random() <= 0.20 * this.getAgility() / attacker.getAgility()) {
 			this.dodge();
+			this.setExp(this.getExp()+20);
 		} else if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
-			// unit parryt
+			this.setExp(this.getExp()+20);
 		} else {
 			// unit krijgt damage
 			if (attacker.getStrength()/10==0) {
 				setHitpoints(this.getHitpoints()-1);
+				
 			}
 			setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
+			enemy.setExp(enemy.getExp()+20);
 		}
 		
 			this.setStatus(Status.IDLE);
@@ -2393,11 +2397,11 @@ public class Unit {
 		for(int x=1;x>=-1;x--) {
 			for(int y=1;y>=-1;y--){
 				for(int z=1;z>=-1;z--){
-					if (x==0&y==0&&z==0) {
+					if ((x==0)&&(y==0)&&(z==0)) {
 						
 					}
 					
-				else if (isSolidGround(new Vector(this.getCubeX()+x,this.getCubeY()+y,this.getCubeZ()+z)));
+				else if (isSolidGround(new Vector(this.getCubeX()+x,this.getCubeY()+y,this.getCubeZ()+z)))
 						return true;
 					}
 				
@@ -2462,6 +2466,46 @@ public class Unit {
 			}
 		
 	}
-	
+	/**
+	 * @return the exp
+	 */
+	public int getExp() {
+		return this.exp;
+	}
+
+	/**
+	 * @param exp the exp to set
+	 */
+	public void setExp(int exp) {
+		if (isValidExp(exp)) {
+			this.exp = exp;
+		}
+		else {
+			this.exp=this.getExp();
+		}
+	}
+	private boolean isValidExp(int exp) {
+		if (exp<0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	private int exp;
+	public void levelUp() {
+		while (this.getExp()>=10) {
+			Random random= new Random();
+			int randomnumber=random.nextInt(3);
+			if (randomnumber==0)
+				this.setAgility(this.getAgility()+1);
+			if (randomnumber==1)
+				this.setStrength(this.getStrength()+1);
+			if (randomnumber==2)
+				this.setToughness(this.getToughness()+1);
+			this.setExp(this.getExp()-10);
+		}
+	}
 	
 }

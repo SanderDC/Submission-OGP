@@ -235,6 +235,7 @@ public class Unit {
 		this.progress=0;
 		this.progressstamina=0;
 		this.setActivityTime(0);
+		this.setFallPosition(0);
 	}
 
 	/**
@@ -364,6 +365,10 @@ public class Unit {
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
 	private boolean canHaveAsEnemy(Unit enemy) {
+		if (enemy.isFalling()) {
+			return false;
+		}
+		
 		if (enemy==this) {
 			return false;
 		}
@@ -373,6 +378,7 @@ public class Unit {
 		else if (this.isAdjacentPosition(enemy.getPosition())) {
 			return true;
 		} 
+		//if enemy.faction!=this.faction
 		else {
 			return false;
 		}
@@ -1554,7 +1560,10 @@ public class Unit {
 	 *			|this.setStatus(Status.IDLE)
 	 *			|this.setEnemy(null)
 	 */
-	private void attack(Unit other, double time){
+	private void attack(Unit other, double time) throws IllegalStateException{
+		if (this.isFalling()) {
+			throw new IllegalStateException();
+		}
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
 			other.defend(this);
@@ -1793,6 +1802,9 @@ public class Unit {
 		if (isFighting()) {
 			throw new IllegalStateException("Unit is fighting");
 		}
+		if (isFalling()) {
+			throw new IllegalStateException("Unit is falling");
+		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
 		if (this.hasRestedEnough()){
@@ -1857,7 +1869,7 @@ public class Unit {
 	 * 			| (this.isresting() && !this.hasRestedEnough())
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException, IllegalStateException{
-		if (!this.isWorking() && !this.isresting() && this.getStatus() != Status.IDLE)
+		if (!this.isWorking() && !this.isresting() && !isidle()&&!isFalling())
 			throw new IllegalStateException("The Unit cannot execute a movement at this time");
 		else if (this.isresting()){
 			if (!this.hasRestedEnough())
@@ -1974,6 +1986,8 @@ public class Unit {
 			throws IllegalArgumentException,IllegalStateException{
 		if (this.isFighting())
 			throw new IllegalStateException("The Unit cannot execute a movement while fighting");
+		if (this.isFalling())
+			throw new IllegalStateException("The Unit cannot execute a movement while falling");
 		else if (this.isresting()){
 			if (!this.hasRestedEnough())
 				throw new IllegalStateException("The Unit needs to rest more before moving");
@@ -2143,6 +2157,9 @@ public class Unit {
 		if (isFighting()) {
 			throw new IllegalStateException("unit is fighting");
 		}
+		if (isFalling()) {
+			throw new IllegalStateException("unit is falling");
+		}
 		if (this.getStatus() == Status.MOVINGADJACENT)
 			throw new IllegalStateException("Movement to a neighbouring cube cannot be interrupted");
 		if (this.getStatus() == Status.MOVINGDISTANT){
@@ -2290,7 +2307,7 @@ public class Unit {
 	 * 		|then this.resting()
 	 */
 	private void hasToRest(){
-		if ((this.getTimeUntilRest()<=0)&&(!isFighting())&&(!isresting())&&(!ismoving())){
+		if ((this.getTimeUntilRest()<=0)&&(!isFighting())&&(!isresting())&&(!ismoving())&&(!isFalling())){
 			this.resting();
 		}
 	}
@@ -2393,10 +2410,56 @@ public class Unit {
 	public boolean isSolidGround(Vector coordinate) {
 		return false;
 		}
+	public double  getFallPosition() {
+		return this.fallPosition;
+	}
+
+	public void setFallPosition(double fallPosition)throws IllegalArgumentException {
+		if (this.fallPosition<0) {
+			throw new IllegalArgumentException();
+		}
+		
+		this.fallPosition = fallPosition;
+	}
+
+	private double fallPosition;
+	private boolean isFalling(){
+		if (this.getStatus()==Status.FALLING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
 	
 	public void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
+		this.setPosition(new Vector(this.getCubeX()+CUBELENGTH/2,this.getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
+		this.setFallPosition(this.getCubeZ());
+		
+	}
+	public void falling(double time) {
+		Vector displacement = this.getSpeed().scalarMultiply(time);
+		Vector new_pos = this.getPosition().add(displacement);
+		if (isSolidGround( new Vector(this.getCubeX(), this.getCubeY(), this.getCubeZ()-1))|| (this.getCubeZ()==0)){
+			
+			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getCubeZ())>0){
+			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getCubeZ()));
+			this.setPosition(new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()+CUBELENGTH/2, this.getCubeZ()+CUBELENGTH/2));
+			this.setStatus(Status.IDLE);
+			this.setFallPosition(0);
+			}
+			else{
+				//Unit sterft
+			}
+		}
+		
+		else{
+			this.setPosition(new_pos);
+			}
 		
 	}
 	

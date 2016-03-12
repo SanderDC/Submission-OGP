@@ -1832,6 +1832,7 @@ public class Unit {
 		if (this.getActivityTime() - time <= 0){
 			this.setActivityTime(0);
 			this.setStatus(Status.IDLE);
+			this.setExp(this.getExp()+10);
 		} else
 			this.setActivityTime(this.getActivityTime()-time);
 	}

@@ -2367,4 +2367,38 @@ public class Unit {
 	 * Variable registering whether the Unit's default behavior is currently enabled
 	 */
 	private boolean defaultBehaviorBoolean;
+	
+	
+	
+	
+	public boolean Fallcheck() {
+		
+		for(int x=1;x>=-1;x--) {
+			for(int y=1;y>=-1;y--){
+				for(int z=1;z>=-1;z--){
+					if (x==0&y==0&&z==0) {
+						
+					}
+					
+				else if (isSolidGround(new Vector(this.getCubeX()+x,this.getCubeY()+y,this.getCubeZ()+z)));
+						return true;
+					}
+				
+			}
+			
+		}
+		
+		return false;
+	}
+	public boolean isSolidGround(Vector coordinate) {
+		return false;
+		}
+	
+	public void UnitFalls() {
+		this.setStatus(Status.FALLING);
+		this.setSpeed(new Vector(0, 0, -3));
+		
+	}
+	
+	
 }

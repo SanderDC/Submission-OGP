@@ -312,5 +312,8 @@ public class Vector {
 			return new Vector(0,0,0);
 		return new Vector(this.getX()/this.norm(), this.getY()/this.norm(), this.getZ()/this.norm());
 	}
+	
+	
+	
 
 }

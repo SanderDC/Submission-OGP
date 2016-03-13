@@ -24,6 +24,7 @@ public class Faction {
 	 */
 	@Raw
 	public Faction() {
+		this.terminated = false;
 	}
 
 	/**
@@ -147,5 +148,18 @@ public class Faction {
 	 *       |     (! Unit.isTerminated()) )
 	 */
 	private final Set<Unit> Units = new HashSet<Unit>();
+	
+	/**
+	 * Return a boolean reflecting whether the faction has been terminated.
+	 */
+	@Basic
+	public boolean isTerminated(){
+		return this.terminated;
+	}
+	
+	/**
+	 * Variable registering whether this faction has been terminated.
+	 */
+	private boolean terminated;
 
 }

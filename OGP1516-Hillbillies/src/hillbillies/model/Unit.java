@@ -64,6 +64,8 @@ import ogp.framework.util.Util;
  *         	| isValidProgress(getProgress())
  * @invar	A Unit can only be sprinting when it is moving
  * 			| if (getSprinting()) then (ismoving())
+ * @invar	The Unit's faction must be a valid faction
+ * 			| isValidFaction(this.getFaction())
  * @author Sander Declercq
  * @author Bram Belpaire
  *
@@ -2382,7 +2384,7 @@ public class Unit {
 	 * @return	true if the faction is not the null reference
 	 */
 	public boolean isValidFaction(Faction faction) {
-		return (faction != null);
+		return (faction != null) && (!faction.isTerminated());
 	}
 	
 	/**

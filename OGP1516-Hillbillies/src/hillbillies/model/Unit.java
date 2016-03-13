@@ -2574,7 +2574,7 @@ public class Unit {
 	 * 			| else result == (faction == null)
 	 * 
 	 */
-	public boolean isValidFaction(Faction faction) {
+	public boolean canHaveAsFaction(Faction faction) {
 		if (this.isTerminated())
 			return (faction == null);
 		else
@@ -2593,7 +2593,7 @@ public class Unit {
 	 * 			| ! isValidFaction(faction)
 	 */
 	private void addToFaction(Faction faction) throws IllegalArgumentException{
-		if (! isValidFaction(faction))
+		if (! canHaveAsFaction(faction))
 			throw new IllegalArgumentException("This is an invalid faction");
 		this.faction = faction;
 		faction.addUnit(this);
@@ -2618,4 +2618,33 @@ public class Unit {
 	 * Variable registering the Faction this Unit belongs to.
 	 */
 	private Faction faction;
+	
+	/**
+	 * Return the World this Unit lives in
+	 */
+	public World getWorld() {
+		return this.world;
+	}
+	
+	/**
+	 * Return a boolean reflecting whether the given World is a valid World for this Unit
+	 * @param world
+	 * 			The World to be checked
+	 * @return	If this Unit has been terminated, true if the given World is the null reference.
+	 * 			Else, true if the World is not the null reference.
+	 * 			| if (this.isTerminated())
+	 * 			| then result == (world == null)
+	 * 			
+	 */
+	public boolean canHaveAsWorld(World world) {
+		if (this.isTerminated())
+			return (world == null);
+		else
+			return (world != null);
+	}
+	
+	/**
+	 * Variable registering the World this Unit lives in
+	 */
+	private World world;
 }

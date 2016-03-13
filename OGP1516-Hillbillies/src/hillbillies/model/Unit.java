@@ -2529,4 +2529,44 @@ public class Unit {
 	private void UnitDies(){
 		this.isDead=true;
 	}
+	
+	/**
+	 * Return the faction this Unit belongs to.
+	 */
+	public Faction getFaction() {
+		return this.faction;
+	}
+	
+	/**
+	 * Check whether the given faction is a valid faction for this Unit
+	 * @param faction
+	 * 			The faction to check
+	 * @return	true if the faction is not the null reference
+	 */
+	public boolean isValidFaction(Faction faction) {
+		return (faction != null) && (!faction.isTerminated());
+	}
+	
+	/**
+	 * Add this Unit to the given faction
+	 * @param faction
+	 * 			The faction to add this Unit to
+	 * @post	This Unit has been added to the given faction
+	 * 			| (new this).getFaction() == faction
+	 * 			| (new faction).hasAsUnit(this)
+	 * @throws IllegalArgumentException
+	 * 			The given faction is not a valid faction
+	 * 			| ! isValidFaction(faction)
+	 */
+	private void addToFaction(Faction faction) throws IllegalArgumentException{
+		if (! isValidFaction(faction))
+			throw new IllegalArgumentException("This is an invalid faction");
+		this.faction = faction;
+		faction.addUnit(this);
+	}
+	
+	/**
+	 * Variable registering the Faction this Unit belongs to.
+	 */
+	private Faction faction;
 }

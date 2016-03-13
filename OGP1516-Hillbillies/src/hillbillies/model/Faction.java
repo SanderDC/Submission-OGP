@@ -54,7 +54,7 @@ public class Faction {
 	 */
 	@Raw
 	public boolean canHaveAsUnit(Unit Unit) {
-		return (Unit != null) && (Unit.isValidFaction(this));
+		return (Unit != null) && (!Unit.isTerminated()) && (Unit.isValidFaction(this));
 	}
 
 	/**

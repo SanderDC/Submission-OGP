@@ -1618,7 +1618,7 @@ public class Unit {
 			// unit krijgt damage
 			if (attacker.getStrength()/10==0) {
 				if (this.getHitpoints()-1==0) {
-					UnitDies();
+					terminate();
 				}
 				else {
 					setHitpoints(this.getHitpoints()-1);
@@ -1630,7 +1630,7 @@ public class Unit {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
 			}
 			else {
-				UnitDies();
+				terminate();
 			}
 			enemy.setExp(enemy.getExp()+20);
 		}
@@ -2475,7 +2475,7 @@ public class Unit {
 			this.setFallPosition(0);
 			}
 			else{
-				UnitDies();
+				terminate();
 			}
 		}
 		
@@ -2525,10 +2525,35 @@ public class Unit {
 			this.setExp(this.getExp()-10);
 		}
 	}
-	private boolean isDead=false;
-	private void UnitDies(){
-		this.isDead=true;
+	
+	/**
+	 * Return a boolean reflecting whether the Unit has been terminated
+	 */
+	public boolean isTerminated(){
+		return this.isTerminated;
 	}
+	
+	/**
+	 * Terminate this Unit
+	 * TODO: documentatie uitbreiden
+	 * @pre		This Unit's hitpoints have reached zero
+	 * 			| (this.getHitpoints() == 0)
+	 * @post	This Unit has been terminated
+	 * 			| new.isTerminated() == true
+	 * @post	This Unit has been removed from its faction
+	 * 			| (new this).getFaction() == null
+	 * 			| (new this.getFaction()).hasAsUnit(this) == false
+	 */
+	private void terminate(){
+		assert (this.getHitpoints() == 0);
+		this.isTerminated=true;
+		this.removeFromFaction();
+	}
+	
+	/**
+	 * Variable registering whether the Unit has died
+	 */
+	private boolean isTerminated=false;
 	
 	/**
 	 * Return the faction this Unit belongs to.
@@ -2541,10 +2566,19 @@ public class Unit {
 	 * Check whether the given faction is a valid faction for this Unit
 	 * @param faction
 	 * 			The faction to check
-	 * @return	true if the faction is not the null reference
+	 * @return	If this Unit is not terminated, true if the given faction is not the null reference
+	 * 			and is not terminated
+	 * 			Else, true if the given faction is the null reference
+	 * 			| if (!this.isTerminated())
+	 * 			| then result == (faction != null) && (!faction.isTerminated())
+	 * 			| else result == (faction == null)
+	 * 
 	 */
 	public boolean isValidFaction(Faction faction) {
-		return (faction != null) && (!faction.isTerminated());
+		if (this.isTerminated())
+			return (faction == null);
+		else
+			return (faction != null) && (!faction.isTerminated());
 	}
 	
 	/**
@@ -2563,6 +2597,21 @@ public class Unit {
 			throw new IllegalArgumentException("This is an invalid faction");
 		this.faction = faction;
 		faction.addUnit(this);
+	}
+	
+	/**
+	 * Remove this Unit from its current faction
+	 * @pre		This Unit has died and must be terminated
+	 * 			| (this.isTerminated() == 0)
+	 * @post	This Unit has been removed from its faction
+	 * 			| (new this).getFaction() == null
+	 * 			| !(new faction).hasAsUnit(this)
+	 */
+	private void removeFromFaction(){
+		assert (this.isTerminated());
+		Faction oldFaction = this.getFaction();
+		this.faction = null;
+		oldFaction.removeUnit(this);
 	}
 	
 	/**

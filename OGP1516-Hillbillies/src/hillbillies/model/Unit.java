@@ -445,32 +445,6 @@ public class Unit {
 	}
 
 	/**
-	 * Return the x-coordinate of the cube currently occupied by the Unit
-	 */
-	@Basic @Raw
-	public double getCubeX(){
-		return Math.floor(this.getPosition().getX());
-	}
-	
-	//TODO: Feedback stelde voor om dit naar Vector te verplaatsen
-	
-	/**
-	 * Return the y-coordinate of the cube currently occupied by the Unit
-	 */
-	@Basic @Raw
-	public double getCubeY(){
-		return Math.floor(this.getPosition().getY());
-	}
-
-	/**
-	 * Return the z-coordinate of the cube currently occupied by the Unit
-	 */
-	@Basic @Raw
-	public double getCubeZ(){
-		return Math.floor(this.getPosition().getZ());
-	}
-
-	/**
 	 * Check whether the given position is a valid position for
 	 * any Unit.
 	 *  
@@ -484,7 +458,7 @@ public class Unit {
 	 *       |				(component < MAX_COORDINATE)
 	 */
 	private static  boolean isValidPosition(Vector position) {
-		// if (getCubeType ((int)this.getCubeX(),(int)this.getCubeY(),(int)this.getCubeZ())==1||World.getCubeType ((int)this.getCubeX(),(int)this.getCubeY(),(int)this.getCubeZ())==2) {
+		// if (getCubeType ((int)this.getPosition().getCubeX(),(int)this.getPosition().getCubeY(),(int)this.getPosition().getCubeZ())==1||World.getCubeType ((int)this.getPosition().getCubeX(),(int)this.getPosition().getCubeY(),(int)this.getPosition().getCubeZ())==2) {
 			
 		//}
 			
@@ -505,18 +479,18 @@ public class Unit {
 	 * @return	true if the given position is not null and
 	 * 			the difference between the respective floored coordinates does not exceed 1.
 	 * 			| if (position != null)
-	 * 			| then result == (Math.abs(this.getCubeX() - Math.floor(position.getX())) <= 1) &&
-	 * 			|					(Math.abs(this.getCubeY() - Math.floor(position.getY())) <= 1) &&
-	 * 			|					(Math.abs(this.getCubeZ() - Math.floor(position.getZ())) <= 1)
+	 * 			| then result == (Math.abs(this.getPosition().getCubeX() - Math.floor(position.getX())) <= 1) &&
+	 * 			|					(Math.abs(this.getPosition().getCubeY() - Math.floor(position.getY())) <= 1) &&
+	 * 			|					(Math.abs(this.getPosition().getCubeZ() - Math.floor(position.getZ())) <= 1)
 	 */
 	private boolean isAdjacentPosition(Vector position){
 		if (position == null)
 			return false;
-		if (Math.abs(this.getCubeX() - Math.floor(position.getX())) > 1)
+		if (Math.abs(this.getPosition().getCubeX() - Math.floor(position.getX())) > 1)
 			return false;
-		if (Math.abs(this.getCubeY() - Math.floor(position.getY())) > 1)
+		if (Math.abs(this.getPosition().getCubeY() - Math.floor(position.getY())) > 1)
 			return false;
-		if (Math.abs(this.getCubeZ() - Math.floor(position.getZ())) > 1)
+		if (Math.abs(this.getPosition().getCubeZ() - Math.floor(position.getZ())) > 1)
 			return false;
 		return true;
 	}
@@ -1683,28 +1657,28 @@ public class Unit {
 	 */
 	private Vector selectDodgePosition(int i)throws IllegalArgumentException{
 		if (i==0){
-			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==1){
-			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==2){
-			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==3){
-			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==4){
-			return new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
 		}
 		if (i==5){
-			return new Vector(this.getCubeX()+1.5*CUBELENGTH, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
 		}
 		if (i==6){
-			return new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
 		}
 		if (i==7){
-			return new Vector(this.getCubeX()-CUBELENGTH/2, this.getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
 		}
 		else {
 			throw new IllegalArgumentException("input is not valid");
@@ -1865,9 +1839,9 @@ public class Unit {
 	 * @post	If the Unit is not yet moving, 
 	 * 			The Unit's nearTarget is set to the given target
 	 * 			| if (this.getStatus() != Status.MOVINGDISTANT && this.getStatus() != Status.MOVINGADJACENT)
-	 * 			| then new.getNearTarget() == new Vector(this.getCubeX() + dx + CUBELENGTH/2,
-	 *			|							this.getCubeY() + dy + CUBELENGTH/2,
-	 *			|							this.getCubeZ() + dz + CUBELENGTH/2)
+	 * 			| then new.getNearTarget() == new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
+	 *			|							this.getPosition().getCubeY() + dy + CUBELENGTH/2,
+	 *			|							this.getPosition().getCubeZ() + dz + CUBELENGTH/2)
 	 * @post	If the Unit is not yet moving, the Unit's status
 	 * 			is set to Status.MOVINGADJACENT
 	 * 			| if (this.getStatus() != Status.MOVINGDISTANT && this.getStatus() != Status.MOVINGADJACENT)
@@ -1882,9 +1856,9 @@ public class Unit {
 	 * 			| then this.settingInitialResttimeOk()
 	 * @throws IllegalArgumentException
 	 * 			The target position is not a valid nearTarget
-	 * 			| (!this.isValidNearTarget(new Vector(this.getCubeX() + dx + CUBELENGTH/2,
-	 *			| this.getCubeY() + dy + CUBELENGTH/2,
-	 *			| this.getCubeZ() + dz + CUBELENGTH/2)))
+	 * 			| (!this.isValidNearTarget(new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
+	 *			| this.getPosition().getCubeY() + dy + CUBELENGTH/2,
+	 *			| this.getPosition().getCubeZ() + dz + CUBELENGTH/2)))
 	 * @throws IllegalStateException
 	 * 			The Unit is currently conducting an activity that cannot be interrupted by movement
 	 * 			| (!this.isWorking() && !this.isresting() && this.getStatus() != Status.IDLE) ||
@@ -1899,9 +1873,9 @@ public class Unit {
 			else
 				this.settingInitialResttimeOk();
 		}			
-		Vector target = new Vector(this.getCubeX() + dx + CUBELENGTH/2,
-				this.getCubeY() + dy + CUBELENGTH/2,
-				this.getCubeZ() + dz + CUBELENGTH/2);
+		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
+				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
+				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
 		if ( ! this.isValidNearTarget(target))
 			throw new IllegalArgumentException("The Unit cannot move to this position");
 		if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
@@ -2033,20 +2007,20 @@ public class Unit {
 	/**
 	 * Make the Unit move to the next cube on its path to its distantTarget
 	 * @effect	Movement to the adjacent cube nearest to the distantTarget is initiated
-	 * 			| this.moveToAdjacent((int) Math.signum(cubeX - this.getCubeX()), (int) Math.signum(cubeY - this.getCubeY()),
-	 * 			|	(int) Math.signum(cubeZ - this.getCubeZ()))
+	 * 			| this.moveToAdjacent((int) Math.signum(cubeX - this.getPosition().getCubeX()), (int) Math.signum(cubeY - this.getPosition().getCubeY()),
+	 * 			|	(int) Math.signum(cubeZ - this.getPosition().getCubeZ()))
 	 */
 	private void moveToNextCube(){
 		double cubeX = Math.floor(this.getDistantTarget().getX());
 		double cubeY = Math.floor(this.getDistantTarget().getY());
 		double cubeZ = Math.floor(this.getDistantTarget().getZ());
 		int dx; int dy; int dz;
-		dx = (int) Math.signum(cubeX - this.getCubeX());
-		dy = (int) Math.signum(cubeY - this.getCubeY());
-		dz = (int) Math.signum(cubeZ - this.getCubeZ());
-		Vector target = new Vector(this.getCubeX() + dx + CUBELENGTH/2,
-				this.getCubeY() + dy + CUBELENGTH/2,
-				this.getCubeZ() + dz + CUBELENGTH/2);
+		dx = (int) Math.signum(cubeX - this.getPosition().getCubeX());
+		dy = (int) Math.signum(cubeY - this.getPosition().getCubeY());
+		dz = (int) Math.signum(cubeZ - this.getPosition().getCubeZ());
+		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
+				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
+				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
 		this.setNearTarget(target);
 		this.setupSpeed();
 	}
@@ -2419,7 +2393,7 @@ public class Unit {
 						
 					}
 					
-				else if (isSolidGround(new Vector(this.getCubeX()+x,this.getCubeY()+y,this.getCubeZ()+z)))
+				else if (isSolidGround(new Vector(this.getPosition().getCubeX()+x,this.getPosition().getCubeY()+y,this.getPosition().getCubeZ()+z)))
 						return true;
 					}
 				
@@ -2459,18 +2433,18 @@ public class Unit {
 	public void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
-		this.setPosition(new Vector(this.getCubeX()+CUBELENGTH/2,this.getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
-		this.setFallPosition(this.getCubeZ());
+		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
+		this.setFallPosition(this.getPosition().getCubeZ());
 		
 	}
 	public void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
-		if (isSolidGround( new Vector(this.getCubeX(), this.getCubeY(), this.getCubeZ()-1))|| (this.getCubeZ()==0)){
+		if (isSolidGround( new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1))|| (this.getPosition().getCubeZ()==0)){
 			
-			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getCubeZ())>0){
-			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getCubeZ()));
-			this.setPosition(new Vector(this.getCubeX()+CUBELENGTH/2, this.getCubeY()+CUBELENGTH/2, this.getCubeZ()+CUBELENGTH/2));
+			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
+			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
+			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
 			this.setStatus(Status.IDLE);
 			this.setFallPosition(0);
 			}

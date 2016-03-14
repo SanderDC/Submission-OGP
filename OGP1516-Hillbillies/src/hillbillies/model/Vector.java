@@ -75,6 +75,14 @@ public class Vector {
 	public double getX() {
 		return this.x;
 	}
+	
+	/**
+	 * Return the x-coordinate of the cube this Vector lies in.
+	 */
+	@Basic @Raw
+	public int getCubeX(){
+		return (int) Math.floor(this.getX());
+	}
 
 	/**
 	 * Check whether the given x-coordinate is a valid x-coordinate for
@@ -101,6 +109,14 @@ public class Vector {
 	public double getY() {
 		return this.y;
 	}
+	
+	/**
+	 * Return the y-coordinate of the cube this Vector lies in.
+	 */
+	@Basic @Raw
+	public int getCubeY(){
+		return (int) Math.floor(this.getY());
+	}
 
 	/**
 	 * Check whether the given y-coordinate is a valid y-coordinate for
@@ -126,6 +142,14 @@ public class Vector {
 	@Basic @Raw
 	public double getZ() {
 		return this.z;
+	}
+
+	/**
+	 * Return the z-coordinate of the cube this Vector lies in.
+	 */
+	@Basic @Raw
+	public int getCubeZ(){
+		return (int) Math.floor(this.getZ());
 	}
 
 	/**

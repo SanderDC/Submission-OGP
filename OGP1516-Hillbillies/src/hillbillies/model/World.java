@@ -243,6 +243,18 @@ public class World {
 	public int getNbFactions() {
 		return Factions.size();
 	}
+	
+	/**
+	 * Return a Set containing all currently active Factions in this game world.
+	 */
+	public Set<Faction> getActiveFactions(){
+		Set<Faction> result = new HashSet<>();
+		for (Faction faction:this.Factions){
+			if (faction.isActive())
+				result.add(faction);
+		}
+		return result;
+	}
 
 	/**
 	 * Add the given Faction to the set of Factions of this World.

@@ -161,5 +161,50 @@ public class Faction {
 	 * Variable registering whether this faction has been terminated.
 	 */
 	private boolean terminated;
+	
+	/**
+	 * Check whether the given World is a valid game World for this Faction
+	 * @param world
+	 * 			The World to check
+	 * @return	If this Faction has not been terminated, true if the given World
+	 * 			is not the null reference
+	 * 			If this Faction has been terminated, true if the given World
+	 * 			is the null reference
+	 */
+	@Raw
+	public boolean canHaveAsWorld(World world) {
+		if (this.isTerminated())
+			return (world == null);
+		else
+			return (world != null);
+	}
+	
+	/**
+	 * Return this Faction's current game World.
+	 */
+	@Basic @Raw
+	public World getWorld() {
+		return this.world;
+	}
+	
+	/**
+	 * Add this Faction to the given World
+	 * @param world
+	 * 			The World this Faction will exist in
+	 * @post	This Faction has been added to the given World
+	 * @throws	IllegalArgumentException
+	 * 			The given game World is not a valid game World for this Faction
+	 */
+	public void addToWorld(World world) throws IllegalArgumentException{
+		if (! this.canHaveAsWorld(world))
+			throw new IllegalArgumentException("This is not a valid gameworld!");
+		this.world = world;
+		world.addFaction(this);
+	}
+	
+	/**
+	 * Variable registering the current game World for this Faction.
+	 */
+	private World world;
 
 }

@@ -1,18 +1,15 @@
 package hillbillies.model;
 
-import java.util.Random;
-
-
-public class Boulder {
+public class Boulder extends GameObject {
+	
+	/**
+	 * Initialize a new Boulder with a given position and random weight
+	 * @param 	position
+	 * 			The position for this new Boulder
+	 * @post	The Boulder's position equals the given position.
+	 * @post	The Boulder's weight is a random value between 10 and 50, inclusive.
+	 */
 	public Boulder(Vector position){
-		Random random= new Random();
-		this.weight= random.nextInt(41)+10;
-		this.position= position;
-
-	}
-	private Vector position;
-	private final int weight;
-	public int getWeight() {
-		return this.weight;
+		super(position);
 	}
 }

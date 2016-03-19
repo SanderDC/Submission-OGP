@@ -1,31 +1,16 @@
 package hillbillies.model;
 
-import java.util.Random;
-
-import org.omg.CORBA.PRIVATE_MEMBER;
-
-public class Log {
+public class Log extends GameObject {
+	
+	/**
+	 * Initialize a new Log with given position and random weight.
+	 * @param 	position
+	 * 			The position for this new Log.
+	 * @post	The Log's position equals the given position
+	 * @post	The Log's weight is a random value between 10 and 50, inclusive.
+	 */
 	public Log(Vector position){
-		Random random= new Random();
-		this.weight= random.nextInt(41)+10;
-		this.position= position;
+		super(position);
 	}
-	private Vector position;
-	private final int weight;
-	public int getWeight() {
-		return this.weight;
-	}
-	private static boolean isValidWeight(int weight) {
-		if (weight>=10||weight<=50)
-			return true;
-		else {
-			return false;
-		}
-
-	}
-	public Vector getPosition() {
-		return this.position;
-	}
-	 
-
+	
 }

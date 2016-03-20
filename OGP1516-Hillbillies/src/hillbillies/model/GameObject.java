@@ -86,5 +86,77 @@ public abstract class GameObject {
 	 * Variable registering this GameObject's weight
 	 */
 	private final int weight;
-
+	
+	/**
+	 * Check whether the given World is a valid World for this GameObject
+	 * @param world
+	 * 			The World to be checked.
+	 * @return	If this GameObject has been terminated or a Unit is carrying this GameObject,
+	 * 			true if the given World is the null reference.
+	 * 			If this GameObject has not been terminated and no Unit is carrying it,
+	 * 			true if the given World is not the null reference.
+	 */
+	boolean canHaveAsWorld(World world) {
+		if (this.isTerminated())
+			return (world == null);
+		else
+			return (world != null);
+	}
+	
+	/**
+	 * Return the World this GameObject currently exists in.
+	 */
+	World getWorld(){
+		return this.world;
+	}
+	
+	/**
+	 * Add this GameObject to the given World.
+	 * @param 	world
+	 * 			The World to add this GameObject to.
+	 * @pre		The given World is a valid World for this GameObject.
+	 * @post	This GameObject's world is the given world
+	 * @post	This GameObject has been added to the given World's GameObjects
+	 */
+	void addToWorld(World world){
+		assert (this.canHaveAsWorld(world));
+		this.setWorld(world);
+		world.addGameObject(this);
+	}
+	
+	/**
+	 * Set this GameObject's World to the given World
+	 * @param 	world
+	 * 			The new World for this GameObject
+	 * @pre		The given World is a valid World for this GameObject.
+	 * @post	This GameObject's World is the given World.
+	 */
+	private void setWorld(World world){
+		assert (this.canHaveAsWorld(world));
+		this.world = world;
+	}
+	
+	/**
+	 * Variable registering the World this GameObject exists in.
+	 */
+	private World world;
+	
+	/**
+	 * Return a boolean reflecting whether this GameObject has been terminated.
+	 */
+	boolean isTerminated(){
+		return this.isTerminated;
+	}
+	
+	/**
+	 * Terminate this GameObject.
+	 */
+	void terminate(){
+		//TODO: terminate schrijven.
+	}
+	
+	/**
+	 * Variable registering whether this GameObject has been terminated.
+	 */
+	private boolean isTerminated;
 }

@@ -10,16 +10,21 @@ import be.kuleuven.cs.som.annotate.*;
  * @author Bram Belpaire
  * @invar   Each World must have proper Units.
  *        | hasProperUnits()
+ * @invar   Each World must have proper Factions.
+ *        | hasProperFactions()
+ * @invar   Each World must have proper GameObjects.
+ *        | hasProperGameObjects()
  *
  */
 public class World {
 
 	/**
-	 * Initialize a new World with given coordinates and without any Units or Factions
+	 * Initialize a new World with given coordinates and without any Units, Factions or GameObjects.
 	 * @param Coordinates
 	 * 			The given coordinates for this new World
 	 * @post   This new World has no Units yet.
 	 * @post   This new World has no Factions yet.
+	 * @post   This new World has no GameObjects yet.
 	 */
 	public World(int[][][] Coordinates){
 		this.Coordinates=Coordinates;
@@ -165,22 +170,6 @@ public class World {
 	 */
 	private final Set<Unit> Units = new HashSet<Unit>();
 
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each World must have proper Factions.
-	 *        | hasProperFactions()
-	 */
-
-	/**
-	 * Initialize this new World as a non-terminated World with 
-	 * no Factions yet.
-	 * 
-	 * @post   This new World has no Factions yet.
-	 *       | new.getNbFactions() == 0
-	 */
-	@Raw
-	public World() {
-	}
-
 	/**
 	 * Check whether this World has the given Faction as one of its
 	 * Factions.
@@ -243,7 +232,7 @@ public class World {
 	public int getNbFactions() {
 		return Factions.size();
 	}
-	
+
 	/**
 	 * Return a Set containing all currently active Factions in this game world.
 	 */
@@ -305,5 +294,118 @@ public class World {
 	 *       |     (! Faction.isTerminated()) )
 	 */
 	private final Set<Faction> Factions = new HashSet<Faction>();
+
+	/**
+	 * Check whether this World has the given GameObject as one of its
+	 * GameObjects.
+	 * 
+	 * @param  gameObject
+	 *         The GameObject to check.
+	 */
+	@Basic
+	@Raw
+	public boolean hasAsGameObject(@Raw GameObject gameObject) {
+		return gameObjects.contains(gameObject);
+	}
+
+	/**
+	 * Check whether this World can have the given GameObject
+	 * as one of its GameObjects.
+	 * 
+	 * @param  gameObject
+	 *         The GameObject to check.
+	 * @return True if and only if the given GameObject is effective
+	 *         and that GameObject is a valid GameObject for a World.
+	 *       | result ==
+	 *       |   (gameObject != null) &&
+	 *       |   GameObject.isValidWorld(this)
+	 */
+	@Raw
+	public boolean canHaveAsGameObject(GameObject gameObject) {
+		return (gameObject != null) && (gameObject.canHaveAsWorld(this));
+	}
+
+	/**
+	 * Check whether this World has proper GameObjects attached to it.
+	 * 
+	 * @return True if and only if this World can have each of the
+	 *         GameObjects attached to it as one of its GameObjects,
+	 *         and if each of these GameObjects references this World as
+	 *         the World to which they are attached.
+	 *       | for each gameObject in GameObject:
+	 *       |   if (hasAsGameObject(gameObject))
+	 *       |     then canHaveAsGameObject(gameObject) &&
+	 *       |          (gameObject.getWorld() == this)
+	 */
+	public boolean hasProperGameObjects() {
+		for (GameObject gameObject : gameObjects) {
+			if (!canHaveAsGameObject(gameObject))
+				return false;
+			if (gameObject.getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Return the number of GameObjects associated with this World.
+	 *
+	 * @return  The total number of GameObjects collected in this World.
+	 *        | result ==
+	 *        |   card({gameObject:GameObject | hasAsGameObject({gameObject)})
+	 */
+	public int getNbGameObjects() {
+		return gameObjects.size();
+	}
+
+	/**
+	 * Add the given GameObject to the set of GameObjects of this World.
+	 * 
+	 * @param  gameObject
+	 *         The GameObject to be added.
+	 * @pre    The given GameObject is effective and already references
+	 *         this World.
+	 *       | (gameObject != null) && (gameObject.getWorld() == this)
+	 * @post   This World has the given GameObject as one of its GameObjects.
+	 *       | new.hasAsGameObject(gameObject)
+	 */
+	public void addGameObject(@Raw GameObject gameObject) {
+		assert (gameObject != null) && (gameObject.getWorld() == this);
+		gameObjects.add(gameObject);
+	}
+
+	/**
+	 * Remove the given GameObject from the set of GameObjects of this World.
+	 * 
+	 * @param  gameObject
+	 *         The GameObject to be removed.
+	 * @pre    This World has the given GameObject as one of
+	 *         its GameObjects, and the given GameObject does not
+	 *         reference any World.
+	 *       | this.hasAsGameObject(gameObject) &&
+	 *       | (gameObject.getWorld() == null)
+	 * @post   This World no longer has the given GameObject as
+	 *         one of its GameObjects.
+	 *       | ! new.hasAsGameObject(gameObject)
+	 */
+	@Raw
+	public void removeGameObject(GameObject gameObject) {
+		assert this.hasAsGameObject(gameObject) && (gameObject.getWorld() == null);
+		gameObjects.remove(gameObject);
+	}
+
+	/**
+	 * Variable referencing a set collecting all the GameObjects
+	 * of this World.
+	 * 
+	 * @invar  The referenced set is effective.
+	 *       | gameObjects != null
+	 * @invar  Each GameObject registered in the referenced list is
+	 *         effective and not yet terminated.
+	 *       | for each gameObject in gameObjects:
+	 *       |   ( (gameObject != null) &&
+	 *       |     (! gameObject.isTerminated()) )
+	 */
+	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
 
 }

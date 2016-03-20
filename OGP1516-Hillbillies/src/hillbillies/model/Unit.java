@@ -2621,4 +2621,9 @@ public class Unit {
 	 * Variable registering the World this Unit lives in
 	 */
 	private World world;
+	
+	/**
+	 * Variable registering the gameObject this Unit is currently carrying.
+	 */
+	private GameObject gameObject;
 }

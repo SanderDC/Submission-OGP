@@ -188,6 +188,7 @@ public class VectorTest {
 		Vector firstquadrantpositive1clone = new Vector(firstquadrantpositive1.getX(), firstquadrantpositive1.getY(), 
 														firstquadrantpositive1.getZ());
 		assertTrue(firstquadrantpositive1clone.equals(firstquadrantpositive1));
+		assertTrue(firstquadrantpositive1clone.hashCode() == firstquadrantpositive1.hashCode());
 		Vector nullvectorclone = new Vector(0,0,0);
 		assertTrue(nullvectorclone.equals(nullvector));
 	}

@@ -270,19 +270,45 @@ public class Vector {
 	}
 	
 	/**
-	 * Checks whether this Vector is equal to a given Vector.
+	 * Checks whether this Vector is equal to a given object.
 	 * @param other
-	 * 			The Vector to check for equality with this Vector
-	 * @return	true if and only if all components of this Vector equal
-	 * 			the respective components of the given Vector
-	 * 			| result == (Util.fuzzyEquals(this.getX(), other.getX())) &&
-				|			(Util.fuzzyEquals(this.getY(), other.getY())) &&
-				|			(Util.fuzzyEquals(this.getZ(), other.getZ()))
+	 * 			The object to check for equality with this Vector
+	 * @return	false if the given object is the null reference or is not a Vector,
+	 * 			else true if and only if all components of this Vector equal
+	 * 			the respective components of the given Vector object.
+	 * 			| if (other == null || !Vector.class.isInstance(other)
+	 * 			| then result == false
+	 * 			| else result == (Util.fuzzyEquals(this.getX(), other.getX())) &&
+	 *			|				(Util.fuzzyEquals(this.getY(), other.getY())) &&
+	 *			|				(Util.fuzzyEquals(this.getZ(), other.getZ()))
 	 */
-	public boolean equals(Vector other){
-		return (Util.fuzzyEquals(this.getX(), other.getX()))
-				&& (Util.fuzzyEquals(this.getY(), other.getY()))
-				&& (Util.fuzzyEquals(this.getZ(), other.getZ()));
+	@Override
+	public boolean equals(Object other){
+		if (other == null)
+			return false;
+		if (!Vector.class.isInstance(other))
+			return false;
+		return (Util.fuzzyEquals(this.getX(),((Vector) other).getX()))
+				&& (Util.fuzzyEquals(this.getY(), ((Vector) other).getY()))
+				&& (Util.fuzzyEquals(this.getZ(), ((Vector) other).getZ()));
+	}
+	
+	/**
+	 * Return a textual representation of this Vector.
+	 */
+	@Override
+	public String toString(){
+		return "A Vector with x-component " + this.getX() + ", y-component " + this.getY()
+				+ " and z-component " + this.getZ();
+	}
+	
+	/**
+	 * Return a hashcode equalling the closest integer to the sum of the components of this Vector
+	 * that is smaller than this sum.
+	 */
+	@Override
+	public int hashCode(){
+		return (int) Math.floor(getX() + getY() + getZ());
 	}
 	
 	/**

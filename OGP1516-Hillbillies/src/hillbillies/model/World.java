@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.*;
 
+import org.hamcrest.core.Is;
+
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -27,7 +29,16 @@ public class World {
 	 * @post   This new World has no GameObjects yet.
 	 */
 	public World(int[][][] Coordinates){
+		
+		
 		this.Coordinates=Coordinates;
+		for (int x=0;x<maxCoordinateX();x++){
+			 for (int y=0;y<maxCoordinateY();y++){
+				 for (int z=0;z<maxCoordinateZ();z++){
+					 if(!IsValidmaterial(Coordinates[x][y][z])){
+						 Coordinates[x][y][z]=0;
+					 }
+				 }}}
 	}
 	private int [][][] Coordinates;
 
@@ -42,7 +53,7 @@ public class World {
 
 	}
 	public int maxCoordinateZ() {
-		return getCoordinates()[0][1].length;
+		return getCoordinates()[0][0].length;
 
 	}
 	public void advanceTime(double time)throws IllegalArgumentException {
@@ -55,6 +66,17 @@ public class World {
 	}
 	public void setCubeType(int x,int y, int z, int value) {
 		this.getCoordinates()[x][y][z]=value;
+	}
+	public boolean IsValidmaterial(int i) {
+			
+		
+		if (i>=0&&i<=3) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 
 	/**
@@ -407,5 +429,14 @@ public class World {
 	 *       |     (! gameObject.isTerminated()) )
 	 */
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
-
+	public boolean IsSolidMaterial(int i){
+		if(i==1||i==2)
+			return true;
+		else {
+			return false;
+		}
+	}
+	public boolean isSolidGround(int x, int y, int z) {
+		return IsSolidMaterial(getCubeType(x,y,z));
+		}
 }

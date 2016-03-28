@@ -1492,6 +1492,7 @@ public class Unit {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
+		// TODO : defending als status verwijderen en gewoon checken ofdat enemy in range blijft, meteen afbreken indien niet
 		if (this.getStatus() == Status.DEFENDING) {
 			throw new IllegalStateException("a defending unit cannot attack");
 		}
@@ -2393,7 +2394,7 @@ public class Unit {
 						
 					}
 					
-				else if (isSolidGround(new Vector(this.getPosition().getCubeX()+x,this.getPosition().getCubeY()+y,this.getPosition().getCubeZ()+z)))
+				else if (isSolidGround(new Vector(x, y, z)))
 						return true;
 					}
 				
@@ -2403,8 +2404,8 @@ public class Unit {
 		
 		return false;
 	}
-	public boolean isSolidGround(Vector coordinate) {
-		return false;
+	public boolean isSolidGround(Vector position) {
+		return world.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 		}
 	public double  getFallPosition() {
 		return this.fallPosition;

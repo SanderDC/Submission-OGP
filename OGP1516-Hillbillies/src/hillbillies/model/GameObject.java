@@ -25,8 +25,29 @@ public abstract class GameObject {
 		this.setPosition(position);
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;
+		this.status=Status.IDLE;
 	}
 
+	private Status status;
+	
+	public Status getStatus() {
+		return this.status;
+	}
+	public void setStatus(Status status) {
+		if (isValidStatus()) {
+			this.status = status;
+		}
+		
+	}
+	private boolean isValidStatus () {
+		if (status==Status.FALLING||status==Status.IDLE) {
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	
 	/**
 	 * Return the position of this GameObject.
 	 */
@@ -44,8 +65,21 @@ public abstract class GameObject {
 	 * @return 
 	 *       | result == 
 	 */
-	public static boolean isValidPosition(Vector position) {
+	public  boolean isValidPosition(Vector position) {
 		//TODO: isValidPosition uitwerken
+		if (position==null){
+			return true;
+		}
+		//TODO: updaten van maxcoordinates
+		double[] arrayposition=  position.toArray();
+		for(int i=0;i<3;i++){
+			if (arrayposition[i]>world.maxCoordinates()[i]) {
+				return false;
+			}
+		}
+		if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
+			return false;
+		}
 		return true;
 	}
 
@@ -154,9 +188,37 @@ public abstract class GameObject {
 	void terminate(){
 		//TODO: terminate schrijven.
 	}
+	private final Vector fallspeed=new Vector(0, 0, -3);
 	
 	/**
 	 * Variable registering whether this GameObject has been terminated.
 	 */
 	private boolean isTerminated;
+	public void advanceTime(double time){
+		//TODO: constantes in aparte file?
+		
+		if (!world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1)&&this.getPosition().getCubeZ()-1!=0) {
+			setStatus(Status.FALLING);
+			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
+
+		}
+	if (status==Status.FALLING) {
+		fall(time);
+	}
+	}
+	private void fall(double time){
+		Vector displacement = fallspeed.scalarMultiply(time);
+		Vector new_pos = this.getPosition().add(displacement);
+		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
+			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+			this.setStatus(Status.IDLE);
+			
+			
+		}
+		
+		else{
+			this.setPosition(new_pos);
+			}
+		
+	}
 }

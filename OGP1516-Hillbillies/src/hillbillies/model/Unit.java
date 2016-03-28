@@ -368,6 +368,8 @@ public class Unit {
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
 	private boolean canHaveAsEnemy(Unit enemy) {
+		if( enemy.faction==this.faction)
+			return false;
 		if (enemy.isFalling()) {
 			return false;
 		}
@@ -381,7 +383,8 @@ public class Unit {
 		else if (this.isAdjacentPosition(enemy.getPosition())) {
 			return true;
 		} 
-		//if enemy.faction!=this.faction
+		
+		
 		else {
 			return false;
 		}
@@ -457,17 +460,18 @@ public class Unit {
 	 *       |				(component >= MIN_COORDINATE) &&
 	 *       |				(component < MAX_COORDINATE)
 	 */
-	private static  boolean isValidPosition(Vector position) {
-		// if (getCubeType ((int)this.getPosition().getCubeX(),(int)this.getPosition().getCubeY(),(int)this.getPosition().getCubeZ())==1||World.getCubeType ((int)this.getPosition().getCubeX(),(int)this.getPosition().getCubeY(),(int)this.getPosition().getCubeZ())==2) {
-			
-		//}
-			
-		
+	private   boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
-		for (double component:position.toArray()){
-			if ((component < MIN_COORDINATE) || (component >= MAX_COORDINATE))
+		//TODO: updaten van maxcoordinates
+		double[] arrayposition=  position.toArray();
+		for(int i=0;i<3;i++){
+			if (arrayposition[i]>world.maxCoordinates()[i]) {
 				return false;
+			}
+		}
+		if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
+			return false;
 		}
 		return true;
 	}
@@ -1331,7 +1335,7 @@ public class Unit {
 	 */
 	private static boolean isValidStatus(Status status) {
 		return (status == Status.WORKING) || (status == Status.RESTING) || (status == Status.MOVINGADJACENT)
-				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING)||(status==Status.DEFENDING);
+				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING);
 	}
 
 	/**
@@ -1492,10 +1496,7 @@ public class Unit {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
-		// TODO : defending als status verwijderen en gewoon checken ofdat enemy in range blijft, meteen afbreken indien niet
-		if (this.getStatus() == Status.DEFENDING) {
-			throw new IllegalStateException("a defending unit cannot attack");
-		}
+		
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!canHaveAsEnemy(other))
@@ -1512,16 +1513,11 @@ public class Unit {
 		}
 		this.setStatus(Status.ATTACKING);
 		this.setEnemy(other);
-		if (other.ismoving()){
-			other.setSpeed(new Vector(0,0,0));
-			if (other.getSprinting())
-				this.setSprinting(false);
-		}
 		
-		other.setStatus(Status.DEFENDING);
 		
-		this.updatePosition(other);
-		other.updatePosition(this);
+		
+		
+		
 	}
 	
 	/**
@@ -1546,8 +1542,16 @@ public class Unit {
 		if (this.isFalling()) {
 			throw new IllegalStateException();
 		}
+		if (!isAdjacentPosition(this.enemy.getPosition())) {
+			setActivityTime(0);
+			setEnemy(null);
+			setStatus(Status.IDLE);
+		}
+		this.updatePosition(other);
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
+			
+			other.updatePosition(this);
 			other.defend(this);
 			this.setStatus(Status.IDLE);
 			if (this.getDistantTarget() != null){
@@ -1771,19 +1775,7 @@ public class Unit {
 			return false;
 		}
 	}
-	/**
-	 * checks whether the unit is defending or not
-	 * @return
-	 * 			|result==(this.getStatus()==Status.DEFENDING)
-	 */
-	public boolean isdefending(){
-		if (this.getStatus()==Status.DEFENDING){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+	
 	/**
 	 * tells the unit to start working
 	 * @effect 
@@ -1791,11 +1783,11 @@ public class Unit {
 	 * 		|this.setStatus(Status.WORKING)
 	 * 		|this.setActivityTime(calculatingWorkTime())
 	 * @throw IllegalStateException
-	 * 		| (isFighting()) || (ismoving())||(!this.hasRestedEnough())
+	 * 		| (isAttacking()) || (ismoving())||(!this.hasRestedEnough())
 	 * 
 	 */
 	public void setToWork()throws IllegalStateException {
-		if (isFighting()) {
+		if (isAttacking()) {
 			throw new IllegalStateException("Unit is fighting");
 		}
 		if (isFalling()) {
@@ -1976,12 +1968,12 @@ public class Unit {
 	 * 			| (!isValidPosition(new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2)))
 	 * @throws	IllegalStateException
 	 * 			The Unit is conducting an activity that cannot be interrupted by movement
-	 * 			| (this.isFighting()) ||
+	 * 			| (this.isAttacking()) ||
 	 * 			| (this.isresting() && !this.hasRestedEnough())
 	 */
 	public void moveTo(int cubeX, int cubeY, int cubeZ)
 			throws IllegalArgumentException,IllegalStateException{
-		if (this.isFighting())
+		if (this.isAttacking())
 			throw new IllegalStateException("The Unit cannot execute a movement while fighting");
 		if (this.isFalling())
 			throw new IllegalStateException("The Unit cannot execute a movement while falling");
@@ -2148,10 +2140,10 @@ public class Unit {
 	 * 			| then new.getProgress=0, new.getActivityTime=0
 	 * @throws 	IllegalStateException
 	 * 			The Unit is currently conducting an activity that cannot be interrupted by resting
-	 * 			| (isFighting) || (this.getStatus() == Status.MOVINGADJACENT)
+	 * 			| (isAttacking) || (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void resting()throws IllegalStateException{
-		if (isFighting()) {
+		if (isAttacking()) {
 			throw new IllegalStateException("unit is fighting");
 		}
 		if (isFalling()) {
@@ -2251,20 +2243,6 @@ public class Unit {
 	}
 	
 	/**
-	 * returns whether or not this unit is fighting
-	 * @return
-	 * 		|result==(this.getStatus()==Status.ATTACKING)||(this.getStatus()==Status.DEFENDING)
-	 */
-	private boolean isFighting() {
-		if ((this.getStatus()==Status.ATTACKING)||(this.getStatus()==Status.DEFENDING)){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	/**
 	 * returns a boolean to make sure its minRestTime has already passed if the Unit is resting
 	 * 	 @return
 	 * 			|result==(isresting())&&(this.getactivityTime<this.calculateMinRestTime)
@@ -2300,11 +2278,11 @@ public class Unit {
 	/**
 	 * @effect
 	 * 		set the unit to rest if it is not fighting
-	 * 		|if (this.getTimeUntilRest()<=0)&&(!isFighting)&&(!isresting)&&(!ismoving)
+	 * 		|if (this.getTimeUntilRest()<=0)&&(!isAttacking)&&(!isresting)&&(!ismoving)
 	 * 		|then this.resting()
 	 */
 	private void hasToRest(){
-		if ((this.getTimeUntilRest()<=0)&&(!isFighting())&&(!isresting())&&(!ismoving())&&(!isFalling())){
+		if ((this.getTimeUntilRest()<=0)&&(!isAttacking())&&(!isresting())&&(!ismoving())&&(!isFalling())){
 			this.resting();
 		}
 	}
@@ -2394,7 +2372,7 @@ public class Unit {
 						
 					}
 					
-				else if (isSolidGround(new Vector(x, y, z)))
+				else if (world.isSolidGround(x, y, z))
 						return true;
 					}
 				
@@ -2404,9 +2382,7 @@ public class Unit {
 		
 		return false;
 	}
-	public boolean isSolidGround(Vector position) {
-		return world.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-		}
+	
 	public double  getFallPosition() {
 		return this.fallPosition;
 	}
@@ -2441,7 +2417,7 @@ public class Unit {
 	public void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
-		if (isSolidGround( new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1))|| (this.getPosition().getCubeZ()==0)){
+		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
 			
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
 			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
@@ -2475,9 +2451,10 @@ public class Unit {
 		}
 		else {
 			this.exp=this.getExp();
+			this.levelUp();
 		}
 	}
-	private boolean isValidExp(int exp) {
+	private static boolean isValidExp(int exp) {
 		if (exp<0) {
 			return false;
 		}
@@ -2523,6 +2500,8 @@ public class Unit {
 		assert (this.getHitpoints() == 0);
 		this.isTerminated=true;
 		this.removeFromFaction();
+		this.removeFromWorld();
+		
 	}
 	
 	/**
@@ -2616,6 +2595,24 @@ public class Unit {
 			return (world == null);
 		else
 			return (world != null);
+	}
+	
+	
+	
+	
+	/**
+	 * Remove this Unit from its current World
+	 * @pre		This Unit has died and must be terminated
+	 * 			| (this.isTerminated() == 0)
+	 * @post	This Unit has been removed from its faction
+	 * 			| (new this).getWorld() == null
+	 * 			| !(new faction).hasAsUnit(this)
+	 */
+	private void removeFromWorld(){
+		assert (this.isTerminated());
+		World oldWorld = this.getWorld();
+		this.world = null;
+		oldWorld.removeUnit(this);
 	}
 	
 	/**

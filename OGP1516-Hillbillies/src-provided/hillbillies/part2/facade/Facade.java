@@ -247,17 +247,17 @@ public class Facade implements IFacade{
 
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
-		return world.maxCoordinateX();
+		return world.nbCoordinateX();
 	}
 
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		return world.maxCoordinateY();
+		return world.nbCoordinateY();
 	}
 
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		return world.maxCoordinateZ();
+		return world.nbCoordinateZ();
 	}
 
 	@Override

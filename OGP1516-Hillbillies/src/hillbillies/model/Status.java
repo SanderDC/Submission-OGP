@@ -17,6 +17,5 @@ public enum Status {
 	MOVINGDISTANT,
 	IDLE,
 	ATTACKING,
-	DEFENDING,
 	FALLING
 }

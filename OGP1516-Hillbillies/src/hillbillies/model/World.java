@@ -32,9 +32,9 @@ public class World {
 		
 		
 		this.Coordinates=Coordinates;
-		for (int x=0;x<maxCoordinateX();x++){
-			 for (int y=0;y<maxCoordinateY();y++){
-				 for (int z=0;z<maxCoordinateZ();z++){
+		for (int x=0;x<nbCoordinateX();x++){
+			 for (int y=0;y<nbCoordinateY();y++){
+				 for (int z=0;z<nbCoordinateZ();z++){
 					 if(!IsValidmaterial(Coordinates[x][y][z])){
 						 Coordinates[x][y][z]=0;
 					 }
@@ -45,16 +45,23 @@ public class World {
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
-	public int maxCoordinateX() {
+	public int nbCoordinateX() {
 		return getCoordinates().length;
 	}
-	public int maxCoordinateY(){
+	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
 
 	}
-	public int maxCoordinateZ() {
+	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
 
+	}
+	public int [] maxCoordinates(){
+		int [] maxcoordinates= new int [3];
+		maxcoordinates[0]=nbCoordinateX()-1;
+		maxcoordinates[1]=nbCoordinateY()-1;
+		maxcoordinates[2]=nbCoordinateZ()-1;
+		return maxcoordinates;
 	}
 	public void advanceTime(double time)throws IllegalArgumentException {
 		if (time<0||time>0.2)
@@ -439,4 +446,7 @@ public class World {
 	public boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
 		}
+	
+	
+	
 }

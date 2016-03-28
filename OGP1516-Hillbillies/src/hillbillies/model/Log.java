@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 public class Log extends GameObject {
 	
 	/**

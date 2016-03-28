@@ -73,7 +73,7 @@ public abstract class GameObject {
 		//TODO: updaten van maxcoordinates
 		double[] arrayposition=  position.toArray();
 		for(int i=0;i<3;i++){
-			if (arrayposition[i]>world.maxCoordinates()[i]) {
+			if (arrayposition[i]>world.maxCoordinates()[i]+1) {
 				return false;
 			}
 		}

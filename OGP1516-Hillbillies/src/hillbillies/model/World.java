@@ -35,27 +35,28 @@ public class World {
 		for (int x=0;x<nbCoordinateX();x++){
 			 for (int y=0;y<nbCoordinateY();y++){
 				 for (int z=0;z<nbCoordinateZ();z++){
-					 if(!IsValidmaterial(Coordinates[x][y][z])){
+					 if(!isValidMaterial(Coordinates[x][y][z])){
 						 Coordinates[x][y][z]=0;
 					 }
 				 }}}
 	}
-	private int [][][] Coordinates;
 
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
+	
 	public int nbCoordinateX() {
 		return getCoordinates().length;
 	}
+	
 	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
-
 	}
+	
 	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
-
 	}
+	
 	public int [] maxCoordinates(){
 		int [] maxcoordinates= new int [3];
 		maxcoordinates[0]=nbCoordinateX()-1;
@@ -63,10 +64,30 @@ public class World {
 		maxcoordinates[2]=nbCoordinateZ()-1;
 		return maxcoordinates;
 	}
+	
+	/**
+	 * Check whether a given position is inside this gameworld.
+	 * @param position
+	 * 			The position to be checked.
+	 * @return true if all coordinates of the given Vector lie between
+	 * 			this gameworld's minimum and maximum coordinate in that direction.
+	 */
+	boolean isInsideWorld(Vector position){
+		double[] positionArray = position.toArray();
+		for (int i = 0; i < positionArray.length; i++){
+			if ((positionArray[i] < this.maxCoordinates()[i]) || (positionArray[i] >= this.maxCoordinates()[i]))
+				return false;
+		}
+		return true;
+	}
+	
+	private int [][][] Coordinates;
+	
 	public void advanceTime(double time)throws IllegalArgumentException {
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
 	}
+	
 	public  int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
 
@@ -74,7 +95,8 @@ public class World {
 	public void setCubeType(int x,int y, int z, int value) {
 		this.getCoordinates()[x][y][z]=value;
 	}
-	public boolean IsValidmaterial(int i) {
+	
+	public boolean isValidMaterial(int i) {
 			
 		
 		if (i>=0&&i<=3) {
@@ -436,6 +458,7 @@ public class World {
 	 *       |     (! gameObject.isTerminated()) )
 	 */
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
+	
 	public boolean IsSolidMaterial(int i){
 		if(i==1||i==2)
 			return true;
@@ -445,8 +468,22 @@ public class World {
 	}
 	public boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
-		}
+	}
 	
+	/**
+	 * Return a boolean reflecting whether the cube at the given coordinates is passable.
+	 * @param x
+	 * 			The x-coordinate of the cube to be checked
+	 * @param y
+	 * 			The y-coordinate of the cube to be checked
+	 * @param z
+	 * 			The z-coordinate of the cube to be checked
+	 * @return true if the terrain type at the given position is air or workshop.
+	 * 			| result == (this.getCubeType(x, y, z) == 0) || (this.getCubeType(x, y, z) == 3)
+	 */
+	boolean isPassable(int x, int y, int z){
+		return ((this.getCubeType(x, y, z) == 0) || (this.getCubeType(x, y, z) == 3));
+	}
 	
 	public void caveIn(int x, int y, int z, int value) {
 		setCubeType(x, y, z, 0);

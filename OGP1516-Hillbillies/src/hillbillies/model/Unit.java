@@ -1,8 +1,5 @@
 package hillbillies.model;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import org.junit.experimental.theories.Theories;
 
@@ -446,6 +443,34 @@ public class Unit {
 	public Vector getPosition() {
 		return this.position;
 	}
+	
+	/**
+	 * Return a set containing all cubes directly adjacent to the Unit's current position
+	 * that are not outside the gameworld.
+	 */
+	public Set<Vector> getDirectlyAdjacentPositions(){
+		Set<Vector> result = new HashSet<>();
+		Vector one = new Vector(this.getPosition().getCubeX() + 1, this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+		if (this.getWorld().isInsideWorld(one))
+			result.add(one);
+		Vector two = new Vector(this.getPosition().getCubeX() - 1, this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+		if (this.getWorld().isInsideWorld(two))
+			result.add(two);
+		Vector three = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY() + 1, this.getPosition().getCubeZ());
+		if (this.getWorld().isInsideWorld(three))
+			result.add(three);
+		Vector four = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY() - 1, this.getPosition().getCubeZ());
+		if (this.getWorld().isInsideWorld(four))
+			result.add(four);
+		Vector five = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ() + 1);
+		if (this.getWorld().isInsideWorld(five))
+			result.add(five);
+		Vector six = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ() - 1);
+		if (this.getWorld().isInsideWorld(six))
+			result.add(six);
+		//TODO: Hier moet een betere manier voor bestaan.
+		return result;
+	}
 
 	/**
 	 * Check whether the given position is a valid position for
@@ -460,13 +485,13 @@ public class Unit {
 	 *       |				(component >= MIN_COORDINATE) &&
 	 *       |				(component < MAX_COORDINATE)
 	 */
-	private   boolean isValidPosition(Vector position) {
+	private boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
 		//TODO: updaten van maxcoordinates
-		double[] arrayposition=  position.toArray();
+		double[] arrayposition =  position.toArray();
 		for(int i=0;i<3;i++){
-			if (arrayposition[i]>world.maxCoordinates()[i]+1) {
+			if (arrayposition[i]>this.getWorld().maxCoordinates()[i]+1) {
 				return false;
 			}
 		}
@@ -475,6 +500,32 @@ public class Unit {
 		}
 		return true;
 	}
+	
+	/**
+	 * Check whether this Unit can stand at the given position.
+	 * @param position
+	 * 			The position to be checked.
+	 * @return true if and only if the given position is inside the gameworld, in passable terrain and at least
+	 * 			one directly adjacent cube is solid or the position is at the minimum z - coordinate.
+	 * 			result == (isValidPosition(position))
+	 * 						&& for some vector in this.getDirectlyAdjacentPositions():
+	 * 							this.getWorld().isSolidGround(vector.getCubeX(),
+	 * 															vector.getCubeY(),
+	 * 															position.getCubeZ())
+	 * 						|| position.getCubeZ() == 0
+	 * 		
+	 */
+	private boolean canStandHere(Vector position){
+		if (!isValidPosition(position))
+			return false;
+		if (position.getCubeZ() == 0)
+			return true;
+		for (Vector vector:this.getDirectlyAdjacentPositions())
+			if (this.getWorld().isSolidGround(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()))
+				return true;
+		return false;
+	}
+	
 	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
@@ -2598,7 +2649,19 @@ public class Unit {
 			return (world != null);
 	}
 	
-	
+	/**
+	 * Adds this Unit to the given World
+	 * @param world
+	 * 			The World to add this Unit to.
+	 * @throws IllegalStateException
+	 * 			The Unit is already part of a World
+	 * 			| this.getWorld() != null
+	 */
+	public void addToWorld(World world) throws IllegalStateException{
+		if (this.getWorld() != null)
+			throw new IllegalStateException("This Unit is already in a World!");
+		//TODO: afwerken
+	}
 	
 	
 	/**

@@ -71,7 +71,7 @@ public class Vector {
 	/**
 	 * Return the x-coordinate of this Vector.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public double getX() {
 		return this.x;
 	}
@@ -79,7 +79,7 @@ public class Vector {
 	/**
 	 * Return the x-coordinate of the cube this Vector lies in.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public int getCubeX(){
 		return (int) Math.floor(this.getX());
 	}
@@ -105,7 +105,7 @@ public class Vector {
 	/**
 	 * Return the y-coordinate of this Vector.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public double getY() {
 		return this.y;
 	}
@@ -113,7 +113,7 @@ public class Vector {
 	/**
 	 * Return the y-coordinate of the cube this Vector lies in.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public int getCubeY(){
 		return (int) Math.floor(this.getY());
 	}
@@ -139,7 +139,7 @@ public class Vector {
 	/**
 	 * Return the z-coordinate of this Vector.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public double getZ() {
 		return this.z;
 	}
@@ -147,7 +147,7 @@ public class Vector {
 	/**
 	 * Return the z-coordinate of the cube this Vector lies in.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public int getCubeZ(){
 		return (int) Math.floor(this.getZ());
 	}

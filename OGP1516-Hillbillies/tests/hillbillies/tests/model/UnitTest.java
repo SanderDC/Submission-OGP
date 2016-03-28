@@ -279,7 +279,7 @@ public class UnitTest {
 		assertFalse(idleUnit.getSprinting());
 		assertFalse(adjacentUnit.getSprinting());
 		assertTrue(idleUnit.isAttacking());
-		assertTrue(adjacentUnit.isdefending());
+		
 	}
 	
 	

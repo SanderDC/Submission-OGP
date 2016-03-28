@@ -1551,8 +1551,9 @@ public class Unit {
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
 			
-			other.updatePosition(this);
+			
 			other.defend(this);
+			other.updatePosition(this);
 			this.setStatus(Status.IDLE);
 			if (this.getDistantTarget() != null){
 				Vector target = this.getDistantTarget();

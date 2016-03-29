@@ -237,6 +237,31 @@ public class Unit {
 		this.setFallPosition(0);
 		this.setExp(0);
 	}
+	
+	/**
+	 * Create a new Unit with random properties in the given World.
+	 * @param world
+	 * 			The World in which to create this new Unit
+	 * @param enableDefaultBehavior
+	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
+	 */
+	public Unit(World world, boolean enableDefaultBehavior){
+//		Random random = new Random();
+//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
+//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
+//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
+//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
+//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
+//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
+		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
+				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
+				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
+				new Random().nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT,
+				" ",
+				new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
+				enableDefaultBehavior);
+		this.addToWorld(world);
+	}
 
 	/**
 	 * Return the value of the progress this unit has made to losing a single point of stamina.
@@ -515,7 +540,7 @@ public class Unit {
 	 * 						|| position.getCubeZ() == 0
 	 * 		
 	 */
-	private boolean canStandHere(Vector position){
+	private boolean canStandAt(Vector position){
 		if (!isValidPosition(position))
 			return false;
 		if (position.getCubeZ() == 0)
@@ -1043,6 +1068,11 @@ public class Unit {
 	 * Variable registering the largest legal value for a Unit's weight
 	 */
 	public static final int MAX_WEIGHT = 200;
+	
+	/**
+	 * Variable registering the smallest legal value for a new Unit's weight
+	 */
+	public static final int MIN_INITIAL_WEIGHT = 25;
 
 	/**
 	 * Variable registering the largest legal value for a new Unit's weight
@@ -2653,6 +2683,14 @@ public class Unit {
 	 * Adds this Unit to the given World
 	 * @param world
 	 * 			The World to add this Unit to.
+	 * @post	This Unit occupies a position it can stand on in the given World
+	 * 			| (new this).canStandAt((new this).getPosition())
+	 * @post	This Unit has been added to the given World
+	 * 			| (new world).hasAsUnit(this)
+	 * 			| (new this).getWorld() == world
+	 * @post	This Unit is in a faction in the given World
+	 * 			| (new world).hasAsFaction((new this).getFaction())
+	 * 			| && (new this).getFaction().hasAsUnit(this)
 	 * @throws IllegalStateException
 	 * 			The Unit is already part of a World
 	 * 			| this.getWorld() != null
@@ -2661,6 +2699,37 @@ public class Unit {
 		if (this.getWorld() != null)
 			throw new IllegalStateException("This Unit is already in a World!");
 		//TODO: afwerken
+		this.world = world;
+		world.addUnit(this);
+		boolean positionFound = false;
+		int x = 0; int y = 0; int z = 0;
+		while ((x < world.maxCoordinates()[0]) && !positionFound){
+			while ((y < world.maxCoordinates()[1]) && !positionFound){
+				while ((z < world.maxCoordinates()[2]) && !positionFound){
+					if (this.canStandAt(new Vector(x,y,z))){
+						this.setPosition(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z + CUBELENGTH/2));
+						positionFound = true;
+					}
+					z += 1;
+				}
+				y += 1;
+			}
+			x += 1;
+		}
+		if (world.getActiveFactions().size() < 5){
+			Faction faction = new Faction(world);
+			this.addToFaction(faction);
+		} else {
+			int nbUnits = Integer.MAX_VALUE;
+			Faction smallestFaction = null;
+			for (Faction faction:world.getActiveFactions()){
+				if (faction.getNbUnits() < nbUnits){
+					smallestFaction = faction;
+					nbUnits = faction.getNbUnits();
+				}
+			}
+			this.addToFaction(smallestFaction);
+		}
 	}
 	
 	

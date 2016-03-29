@@ -16,15 +16,18 @@ import be.kuleuven.cs.som.annotate.*;
 public class Faction {
 
 	/**
-	 * Initialize this new Faction as a non-terminated Faction with 
+	 * Initialize this new Faction in a given World as a non-terminated Faction with 
 	 * no Units yet.
 	 * 
 	 * @post   This new Faction has no Units yet.
 	 *       | new.getNbUnits() == 0
+	 * @post	This new Faction has been added to the given World.
+	 * 			| (new this).getWorld() == world && (new world).hasAsFaction(this)
 	 */
 	@Raw
-	public Faction() {
+	public Faction(World world) {
 		this.terminated = false;
+		this.addToWorld(world);
 	}
 
 	/**

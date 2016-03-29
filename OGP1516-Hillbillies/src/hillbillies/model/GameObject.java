@@ -194,12 +194,15 @@ public abstract class GameObject {
 	 * Variable registering whether this GameObject has been terminated.
 	 */
 	private boolean isTerminated;
+	
 	public void advanceTime(double time){
 		//TODO: constantes in aparte file?
 		
 		if (!world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1)&&this.getPosition().getCubeZ()-1!=0) {
 			setStatus(Status.FALLING);
-			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
+			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
+										this.getPosition().getCubeY()+World.CUBELENGTH/2,
+										this.getPosition().getZ()));
 
 		}
 	if (status==Status.FALLING) {
@@ -210,7 +213,9 @@ public abstract class GameObject {
 		Vector displacement = fallspeed.scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
-			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
+										this.getPosition().getCubeY()+World.CUBELENGTH/2,
+										this.getPosition().getCubeZ()+World.CUBELENGTH/2));
 			this.setStatus(Status.IDLE);
 			
 			

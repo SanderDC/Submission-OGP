@@ -81,6 +81,13 @@ public class Faction {
 		}
 		return true;
 	}
+	
+	/**
+	 * Return all Units in this Faction.
+	 */
+	public Set<Unit> getUnits(){
+		return this.Units;
+	}
 
 	/**
 	 * Return the number of Units associated with this Faction.

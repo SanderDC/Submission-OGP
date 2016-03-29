@@ -191,7 +191,8 @@ public class Unit {
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
 		
-		this.setPosition(position);
+//		this.setPosition(position);
+		this.position = new Vector(World.CUBELENGTH/2,World.CUBELENGTH/2,World.CUBELENGTH/2);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
 		this.setDistantTarget(null);
@@ -257,7 +258,7 @@ public class Unit {
 				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
 				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
 				new Random().nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT,
-				" ",
+				"John",
 				new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
 				enableDefaultBehavior);
 		this.addToWorld(world);

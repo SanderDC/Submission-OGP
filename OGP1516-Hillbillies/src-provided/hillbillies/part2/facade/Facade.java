@@ -242,7 +242,7 @@ public class Facade implements IFacade{
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return new World(terrainTypes);
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class Facade implements IFacade{
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		world.advanceTime(dt);
 	}
 
 	@Override
@@ -281,25 +281,24 @@ public class Facade implements IFacade{
 	@Override
 	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return new Unit(world, enableDefaultBehavior);
 	}
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		unit.addToWorld(world);
 	}
 
 	@Override
 	public Set<Unit> getUnits(World world) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return world.getUnits();
 	}
 
 	@Override
@@ -335,13 +334,13 @@ public class Facade implements IFacade{
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return faction.getUnits();
 	}
 
 	@Override
@@ -352,7 +351,7 @@ public class Facade implements IFacade{
 	@Override
 	public double[] getPosition(Boulder boulder) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return boulder.getPosition().toArray();
 	}
 
 	@Override
@@ -364,7 +363,7 @@ public class Facade implements IFacade{
 	@Override
 	public double[] getPosition(Log log) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return log.getPosition().toArray();
 	}
 
 	@Override

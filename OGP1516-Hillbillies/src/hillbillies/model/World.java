@@ -19,6 +19,8 @@ import be.kuleuven.cs.som.annotate.*;
  *
  */
 public class World {
+	
+	public static final double CUBELENGTH = 1;
 
 	/**
 	 * Initialize a new World with given coordinates and without any Units, Factions or GameObjects.
@@ -158,6 +160,13 @@ public class World {
 				return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Return all Units currently living in this World.
+	 */
+	public Set<Unit> getUnits(){
+		return this.Units;
 	}
 
 	/**
@@ -489,9 +498,9 @@ public class World {
 		setCubeType(x, y, z, 0);
 		if (Math.random()>=0.25) {
 			if (value==1)
-				addGameObject(new Boulder(new Vector(x+Cubelength/2, y+Cubelength/2, z+Cubelength/2)));
+				addGameObject(new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2)));
 			else {
-				addGameObject(new Log(new Vector(x+Cubelength/2, y+Cubelength/2, z+Cubelength/2)));
+				addGameObject(new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2)));
 			}
 		}
 	}

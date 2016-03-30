@@ -547,8 +547,6 @@ public class Unit {
 		if (position.getCubeZ() == 0)
 			return true;
 		for (Vector vector:this.getDirectlyAdjacentPositions()){
-			String test = "test";
-			test.length();
 			if (this.getWorld().isSolidGround(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()))
 				return true;
 		}

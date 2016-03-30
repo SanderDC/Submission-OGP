@@ -88,6 +88,9 @@ public class World {
 	public void advanceTime(double time)throws IllegalArgumentException {
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
+		for (Unit unit:this.getUnits()){
+			unit.advanceTime(time);
+		}
 	}
 	
 	public  int getCubeType(int x,int y, int z) {

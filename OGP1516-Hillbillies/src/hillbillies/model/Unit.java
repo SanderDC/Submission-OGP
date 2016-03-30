@@ -537,7 +537,7 @@ public class Unit {
 	 * 						&& for some vector in this.getDirectlyAdjacentPositions():
 	 * 							this.getWorld().isSolidGround(vector.getCubeX(),
 	 * 															vector.getCubeY(),
-	 * 															position.getCubeZ())
+	 * 															vector.getCubeZ())
 	 * 						|| position.getCubeZ() == 0
 	 * 		
 	 */

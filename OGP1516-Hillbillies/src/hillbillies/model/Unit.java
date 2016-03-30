@@ -546,9 +546,12 @@ public class Unit {
 			return false;
 		if (position.getCubeZ() == 0)
 			return true;
-		for (Vector vector:this.getDirectlyAdjacentPositions())
+		for (Vector vector:this.getDirectlyAdjacentPositions()){
+			String test = "test";
+			test.length();
 			if (this.getWorld().isSolidGround(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()))
 				return true;
+		}
 		return false;
 	}
 	
@@ -2705,9 +2708,11 @@ public class Unit {
 		boolean positionFound = false;
 		int x = 0; int y = 0; int z = 0;
 		while ((x < world.maxCoordinates()[0]) && !positionFound){
+			y = 0;
 			while ((y < world.maxCoordinates()[1]) && !positionFound){
+				z = 0;
 				while ((z < world.maxCoordinates()[2]) && !positionFound){
-					if (this.canStandAt(new Vector(x,y,z))){
+					if (this.canStandAt(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z +CUBELENGTH/2))){
 						this.setPosition(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z + CUBELENGTH/2));
 						positionFound = true;
 					}

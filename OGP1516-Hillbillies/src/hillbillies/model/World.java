@@ -77,7 +77,7 @@ public class World {
 	boolean isInsideWorld(Vector position){
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
-			if ((positionArray[i] < this.maxCoordinates()[i]) || (positionArray[i] >= this.maxCoordinates()[i]))
+			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i]))
 				return false;
 		}
 		return true;

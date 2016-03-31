@@ -2649,7 +2649,10 @@ public class Unit {
 		this.world = world;
 		world.addUnit(this);
 		int index = new Random().nextInt(world.getStandablePositions().size());
-		this.setPosition(world.getStandablePositions().get(index));
+		Vector startPos = world.getStandablePositions().get(index);
+		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
+									startPos.getCubeY() + CUBELENGTH/2,
+									startPos.getCubeZ() + CUBELENGTH/2));
 		if (world.getActiveFactions().size() < 5){
 			Faction faction = new Faction(world);
 			this.addToFaction(faction);
@@ -2690,4 +2693,41 @@ public class Unit {
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject;
+	
+	/**
+	 * Find a path to a given cube in the gameworld
+	 * @param x
+	 * 			The x-coordinate of the target cube
+	 * @param y
+	 * 			The y-coordinate of the target cube
+	 * @param z
+	 * 			The z-coordinate of the target cube
+	 * @throws IllegalArgumentException
+	 * 			The given cube is not a position where a Unit can stand.
+	 * 			! this.getWorld().unitCanStandAt(x,y,z)
+	 */
+	@SuppressWarnings("unused")
+	private void findPath(int x, int y, int z) throws IllegalArgumentException{
+		if (!this.getWorld().unitCanStandAt(x, y, z))
+			throw new IllegalArgumentException("The Unit cannot move to this position!");
+		Set<Node> open = new HashSet<>();
+		Set<Node> closed = new HashSet<>();
+		Node end = new Node(new Vector(x,y,z),Integer.MAX_VALUE,0);
+		Node start = new Node(this.getPosition(),0,Node.calculateHCost(this.getPosition(), end.getCubeCoordinates()));
+		open.add(start);
+		boolean finished = false;
+		while (!finished){
+			int lowestFCost = Integer.MAX_VALUE;
+			Node current = null;
+			for (Node node:open){
+				if (node.getFCost() < lowestFCost)
+					current = node;
+			}
+			open.remove(current);
+			closed.add(current);
+			if (current.equals(end))
+				return;
+			
+		}
+	}
 }

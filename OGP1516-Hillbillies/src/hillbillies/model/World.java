@@ -39,8 +39,8 @@ public class World {
 					 if(!isValidMaterial(Coordinates[x][y][z])){
 						 Coordinates[x][y][z]=0;
 					 }
-					 if (unitCanStandAt(new Vector(x+CUBELENGTH/2,y+CUBELENGTH/2,z+CUBELENGTH/2)))
-						 this.addStandablePosition(new Vector(x+CUBELENGTH/2,y+CUBELENGTH/2,z+CUBELENGTH/2));
+					 if (unitCanStandAt(new Vector(x,y,z)))
+						 this.addStandablePosition(new Vector(x,y,z));
 				 }}}
 		
 	}
@@ -539,30 +539,36 @@ public class World {
 	}
 	
 	/**
+	 * Check whether a Unit can stand at the cube with the given cube coordinates
+	 * @param x
+	 * 			The x-coordinate of the cube to check
+	 * @param y
+	 * 			The y-coordinate of the cube to check
+	 * @param z
+	 * 			The z-coordinate of the cube to check
+	 * @return unitCanStandAt(new Vector(x,y,z))
+	 */
+	boolean unitCanStandAt(int x, int y, int z){
+		return unitCanStandAt(new Vector(x,y,z));
+	}
+	
+	/**
 	 * Return a set containing all cubes directly adjacent to the given position
 	 * that are not outside the gameworld.
 	 */
 	public Set<Vector> getDirectlyAdjacentPositions(Vector position){
 		Set<Vector> result = new HashSet<>();
-		Vector one = new Vector(position.getCubeX() + 1, position.getCubeY(), position.getCubeZ());
-		if (this.isInsideWorld(one))
-			result.add(one);
-		Vector two = new Vector(position.getCubeX() - 1, position.getCubeY(), position.getCubeZ());
-		if (this.isInsideWorld(two))
-			result.add(two);
-		Vector three = new Vector(position.getCubeX(), position.getCubeY() + 1, position.getCubeZ());
-		if (this.isInsideWorld(three))
-			result.add(three);
-		Vector four = new Vector(position.getCubeX(), position.getCubeY() - 1, position.getCubeZ());
-		if (this.isInsideWorld(four))
-			result.add(four);
-		Vector five = new Vector(position.getCubeX(), position.getCubeY(), position.getCubeZ() + 1);
-		if (this.isInsideWorld(five))
-			result.add(five);
-		Vector six = new Vector(position.getCubeX(), position.getCubeY(), position.getCubeZ() - 1);
-		if (this.isInsideWorld(six))
-			result.add(six);
-		//TODO: Hier moet een betere manier voor bestaan.
+		for (int x = -1; x <= 1; x++){
+			for (int y = -1; y <= 1; y++){
+				for(int z = -1; z <= 1; z++){
+					if(Math.abs(x)+Math.abs(y)+Math.abs(z) == 1){
+						Vector vector = position.add(new Vector(x,y,z));
+						if(isInsideWorld(vector))
+							result.add(vector);
+					}
+				}
+			}
+		}
 		return result;
 	}
 	

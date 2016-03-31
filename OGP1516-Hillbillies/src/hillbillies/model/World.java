@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.Vector;
 
 /**
  * A class defining a game World for Units to exist in
@@ -504,5 +505,61 @@ public class World {
 				addGameObject(new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2)));
 			}
 		}
+	}
+	
+	/**
+	 * Check whether a Unit can stand at the given position.
+	 * @param position
+	 * 			The position to be checked.
+	 * @return true if and only if the given position is inside the gameworld, in passable terrain and at least
+	 * 			one directly adjacent cube is solid or the position is at the minimum z - coordinate.
+	 * 			result == (isInsideWorld(position))
+	 * 						&& for some vector in this.getDirectlyAdjacentPositions():
+	 * 							this.getWorld().isSolidGround(vector.getCubeX(),
+	 * 															vector.getCubeY(),
+	 * 															vector.getCubeZ())
+	 * 						|| position.getCubeZ() == 0
+	 * 		
+	 */
+	boolean unitCanStandAt(Vector position){
+		if (!isInsideWorld(position))
+			return false;
+		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))
+			return false;
+		if (position.getCubeZ() == 0)
+			return true;
+		for (Vector vector:this.getDirectlyAdjacentPositions(position)){
+			if (isSolidGround(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Return a set containing all cubes directly adjacent to the given position
+	 * that are not outside the gameworld.
+	 */
+	public Set<Vector> getDirectlyAdjacentPositions(Vector position){
+		Set<Vector> result = new HashSet<>();
+		Vector one = new Vector(position.getCubeX() + 1, position.getCubeY(), position.getCubeZ());
+		if (this.isInsideWorld(one))
+			result.add(one);
+		Vector two = new Vector(position.getCubeX() - 1, position.getCubeY(), position.getCubeZ());
+		if (this.isInsideWorld(two))
+			result.add(two);
+		Vector three = new Vector(position.getCubeX(), position.getCubeY() + 1, position.getCubeZ());
+		if (this.isInsideWorld(three))
+			result.add(three);
+		Vector four = new Vector(position.getCubeX(), position.getCubeY() - 1, position.getCubeZ());
+		if (this.isInsideWorld(four))
+			result.add(four);
+		Vector five = new Vector(position.getCubeX(), position.getCubeY(), position.getCubeZ() + 1);
+		if (this.isInsideWorld(five))
+			result.add(five);
+		Vector six = new Vector(position.getCubeX(), position.getCubeY(), position.getCubeZ() - 1);
+		if (this.isInsideWorld(six))
+			result.add(six);
+		//TODO: Hier moet een betere manier voor bestaan.
+		return result;
 	}
 }

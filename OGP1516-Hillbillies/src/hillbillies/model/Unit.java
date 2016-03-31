@@ -469,34 +469,6 @@ public class Unit {
 	public Vector getPosition() {
 		return this.position;
 	}
-	
-	/**
-	 * Return a set containing all cubes directly adjacent to the Unit's current position
-	 * that are not outside the gameworld.
-	 */
-	public Set<Vector> getDirectlyAdjacentPositions(){
-		Set<Vector> result = new HashSet<>();
-		Vector one = new Vector(this.getPosition().getCubeX() + 1, this.getPosition().getCubeY(), this.getPosition().getCubeZ());
-		if (this.getWorld().isInsideWorld(one))
-			result.add(one);
-		Vector two = new Vector(this.getPosition().getCubeX() - 1, this.getPosition().getCubeY(), this.getPosition().getCubeZ());
-		if (this.getWorld().isInsideWorld(two))
-			result.add(two);
-		Vector three = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY() + 1, this.getPosition().getCubeZ());
-		if (this.getWorld().isInsideWorld(three))
-			result.add(three);
-		Vector four = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY() - 1, this.getPosition().getCubeZ());
-		if (this.getWorld().isInsideWorld(four))
-			result.add(four);
-		Vector five = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ() + 1);
-		if (this.getWorld().isInsideWorld(five))
-			result.add(five);
-		Vector six = new Vector(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ() - 1);
-		if (this.getWorld().isInsideWorld(six))
-			result.add(six);
-		//TODO: Hier moet een betere manier voor bestaan.
-		return result;
-	}
 
 	/**
 	 * Check whether the given position is a valid position for
@@ -525,32 +497,6 @@ public class Unit {
 			return false;
 		}
 		return true;
-	}
-	
-	/**
-	 * Check whether this Unit can stand at the given position.
-	 * @param position
-	 * 			The position to be checked.
-	 * @return true if and only if the given position is inside the gameworld, in passable terrain and at least
-	 * 			one directly adjacent cube is solid or the position is at the minimum z - coordinate.
-	 * 			result == (isValidPosition(position))
-	 * 						&& for some vector in this.getDirectlyAdjacentPositions():
-	 * 							this.getWorld().isSolidGround(vector.getCubeX(),
-	 * 															vector.getCubeY(),
-	 * 															vector.getCubeZ())
-	 * 						|| position.getCubeZ() == 0
-	 * 		
-	 */
-	private boolean canStandAt(Vector position){
-		if (!isValidPosition(position))
-			return false;
-		if (position.getCubeZ() == 0)
-			return true;
-		for (Vector vector:this.getDirectlyAdjacentPositions()){
-			if (this.getWorld().isSolidGround(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()))
-				return true;
-		}
-		return false;
 	}
 	
 	/**
@@ -2710,7 +2656,7 @@ public class Unit {
 			while ((y < world.maxCoordinates()[1]) && !positionFound){
 				z = 0;
 				while ((z < world.maxCoordinates()[2]) && !positionFound){
-					if (this.canStandAt(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z +CUBELENGTH/2))){
+					if (world.unitCanStandAt(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z +CUBELENGTH/2))){
 						this.setPosition(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z + CUBELENGTH/2));
 						positionFound = true;
 					}

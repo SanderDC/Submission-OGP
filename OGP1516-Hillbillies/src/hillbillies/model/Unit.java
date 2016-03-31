@@ -2666,7 +2666,6 @@ public class Unit {
 		}
 	}
 	
-	
 	/**
 	 * Remove this Unit from its current World
 	 * @pre		This Unit has died and must be terminated

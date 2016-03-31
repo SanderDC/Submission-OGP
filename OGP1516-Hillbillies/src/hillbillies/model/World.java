@@ -593,7 +593,7 @@ public class World {
 	/**
 	 * A Set containing all positions in this game World where a Unit can stand.
 	 */
-	private List<Vector> standablePositions = new ArrayList<>();
+	private List<Vector> standablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
 	
 	
 	

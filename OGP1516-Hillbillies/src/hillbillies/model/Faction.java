@@ -129,11 +129,16 @@ public class Faction {
 	 * @post   This Faction no longer has the given Unit as
 	 *         one of its Units.
 	 *       | ! new.hasAsUnit(Unit)
+	 * @post	If this Faction is empty, it is terminated
+	 * 			| if new.getUnits().size == 0
+	 * 			| then new.isTerminated()
 	 */
 	@Raw
 	public void removeUnit(Unit Unit) {
 		assert this.hasAsUnit(Unit) && (Unit.getFaction() == null);
 		Units.remove(Unit);
+		if (Units.size() == 0)
+			this.terminate();
 	}
 	
 	/**
@@ -165,6 +170,21 @@ public class Faction {
 	@Basic
 	public boolean isTerminated(){
 		return this.terminated;
+	}
+	
+	/**
+	 * Terminate this Faction.
+	 * @pre		This Faction does not have any Units.
+	 * 			| this.getNbUnits() == 0
+	 * @post	This Faction has been terminated
+	 * 			and removed from the World it existed in.
+	 * 			| (new this).isTerminated() &&
+	 * 			| (new this).getWorld == null && !(new this.getWorld()).hasAsFaction(this)
+	 */
+	private void terminate(){
+		assert (this.getNbUnits() == 0);
+		this.terminated = true;
+		this.removeFromWorld();
 	}
 	
 	/**
@@ -205,11 +225,25 @@ public class Faction {
 	 * @throws	IllegalArgumentException
 	 * 			The given game World is not a valid game World for this Faction
 	 */
-	public void addToWorld(World world) throws IllegalArgumentException{
+	private void addToWorld(World world) throws IllegalArgumentException{
 		if (! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException("This is not a valid gameworld!");
 		this.world = world;
 		world.addFaction(this);
+	}
+	
+	/**
+	 * Remove this Faction from its World
+	 * @pre		This faction's World is not the null reference
+	 * 			| this.getWorld() != null
+	 * @post	This Faction has been removed from its game World.
+	 * 			| (new this).getWorld() == null && !(new this.getWorld()).hasAsFaction(this)
+	 */
+	private void removeFromWorld(){
+		assert (this.getWorld() != null);
+		World oldWorld = this.getWorld();
+		this.world = null;
+		oldWorld.removeFaction(this);
 	}
 	
 	/**

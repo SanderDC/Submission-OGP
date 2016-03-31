@@ -2,8 +2,6 @@ package hillbillies.model;
 
 import java.util.*;
 
-import org.hamcrest.core.Is;
-
 import be.kuleuven.cs.som.annotate.*;
 
 /**

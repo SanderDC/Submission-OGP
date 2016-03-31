@@ -2646,26 +2646,10 @@ public class Unit {
 	public void addToWorld(World world) throws IllegalStateException{
 		if (this.getWorld() != null)
 			throw new IllegalStateException("This Unit is already in a World!");
-		//TODO: afwerken
 		this.world = world;
 		world.addUnit(this);
-		boolean positionFound = false;
-		int x = 0; int y = 0; int z = 0;
-		while ((x < world.maxCoordinates()[0]) && !positionFound){
-			y = 0;
-			while ((y < world.maxCoordinates()[1]) && !positionFound){
-				z = 0;
-				while ((z < world.maxCoordinates()[2]) && !positionFound){
-					if (world.unitCanStandAt(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z +CUBELENGTH/2))){
-						this.setPosition(new Vector(x + CUBELENGTH/2, y + CUBELENGTH/2, z + CUBELENGTH/2));
-						positionFound = true;
-					}
-					z += 1;
-				}
-				y += 1;
-			}
-			x += 1;
-		}
+		int index = new Random().nextInt(world.getStandablePositions().size());
+		this.setPosition(world.getStandablePositions().get(index));
 		if (world.getActiveFactions().size() < 5){
 			Faction faction = new Faction(world);
 			this.addToFaction(faction);

@@ -39,7 +39,10 @@ public class World {
 					 if(!isValidMaterial(Coordinates[x][y][z])){
 						 Coordinates[x][y][z]=0;
 					 }
+					 if (unitCanStandAt(new Vector(x+CUBELENGTH/2,y+CUBELENGTH/2,z+CUBELENGTH/2)))
+						 this.addStandablePosition(new Vector(x+CUBELENGTH/2,y+CUBELENGTH/2,z+CUBELENGTH/2));
 				 }}}
+		
 	}
 
 	private int[][][]getCoordinates () {
@@ -562,4 +565,47 @@ public class World {
 		//TODO: Hier moet een betere manier voor bestaan.
 		return result;
 	}
+	
+	/**
+	 * Return a Set containing all positions in this game World where a Unit can stand.
+	 */
+	List<Vector> getStandablePositions(){
+		List<Vector> result = new ArrayList<>();
+		for (Vector vector:this.standablePositions)
+			result.add(vector);
+		return result;
+	}
+	
+	/**
+	 * Add a position to the Set of positions where a Unit can stand.
+	 * @param position
+	 * 			The position to be added to the Set of standable positions.
+	 * @pre		It is possible for a Unit to stand at this position.
+	 * 			| unitCanStandAt(position)
+	 * @post	The given position has been added to the Set of standable positions.
+	 * 			| this.getStandablePositions().contains(position)
+	 */
+	private void addStandablePosition(Vector position){
+		assert (unitCanStandAt(position));
+		this.standablePositions.add(position);
+	}
+	
+	/**
+	 * A Set containing all positions in this game World where a Unit can stand.
+	 */
+	private List<Vector> standablePositions = new ArrayList<>();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

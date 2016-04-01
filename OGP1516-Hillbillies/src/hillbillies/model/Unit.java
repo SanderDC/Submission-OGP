@@ -2947,8 +2947,11 @@ public class Unit {
 		return this.gameObject;
 	}
 	private void setGameObject(GameObject gObject) {
-		this.gameObject=gObject;
-		gObject.pickedUp(this);
+		if (!hasGameObject()) {
+			this.gameObject=gObject;
+			gObject.pickedUp(this);
+		}
+		
 		
 	}
 	private int weightGameObject() {

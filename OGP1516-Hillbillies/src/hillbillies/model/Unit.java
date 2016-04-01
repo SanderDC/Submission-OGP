@@ -988,6 +988,11 @@ public class Unit {
 	public int getWeight() {
 		return this.weight;
 	}
+	/**
+	 *  
+	 * @return the weigh of the unit and the object it may be carrying
+	 */
+	 
 	public int getTotalWeight(){
 		return this.weight+this.weightGameObject();
 	}
@@ -1854,7 +1859,7 @@ public class Unit {
 			}
 			
 			else {
-					if (containsLogandBoulder(x, y, z)&&world.getCubeType(x, y, z)==3) {
+					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {
 						setWorkorder(2);
 						moveTo(x, y, z);
 					}
@@ -1876,7 +1881,13 @@ public class Unit {
 		
 	}
 	
-	
+	/**
+	 * bekijkt of een cube zowel een builder als een Log bevat
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
 	private boolean containsLogandBoulder(int x, int y, int z) {
 		boolean containsLog=false;
 		boolean containsBoulder=false;
@@ -1918,7 +1929,9 @@ public class Unit {
 		return false;
 	}
 	}
-	
+	/**
+	 * bekijkt of een cube een gameobject bevat
+	 */
 	private boolean containsGameObject(int x, int y, int z) {
 		for (GameObject object : world.getGameObjects()) {
 			if (object.getPosition().getCubeX()==x){
@@ -1971,6 +1984,10 @@ public class Unit {
 			this.setActivityTime(this.getActivityTime()-time);
 	}
 	private Set<GameObject> upgradematerial;
+	
+	/**
+	 * vernietigt materialen na upgrade
+	 */
 	private void terminateBoulderAndLog() {
 		
 		for (GameObject object : world.getGameObjects()) {
@@ -2010,7 +2027,11 @@ public class Unit {
 	upgradematerial.clear();
 	}
 	
-	
+	/**
+	 * bekijkt of de workorder nog altijd valid is
+	 * @param workorder
+	 * @return 
+	 */
 	private boolean validWorkorder(int workorder){
 		if (workorder==0)
 			return true;
@@ -2040,6 +2061,13 @@ public class Unit {
 		
 		return true;
 	}
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * pakt een object op
+	 */
 	private void pickUpObject(int x,int y,int z){
 		for (GameObject object : world.getGameObjects()) {
 			
@@ -2068,6 +2096,9 @@ public class Unit {
 			}
 		}
 	}
+	/**
+	 * laat het object vallen
+	 */
 	private void dropObject() {
 		this.getGameObject().dropped(this);
 	}
@@ -2075,6 +2106,10 @@ public class Unit {
 	
 	private int workorder;
 	private Vector workposition;
+	/**
+	 * positie waar de actie zich voldoet(niet position van waar unit zal staan)
+	 * @return
+	 */
 	public Vector getWorkposition() {
 		return workposition;
 	}

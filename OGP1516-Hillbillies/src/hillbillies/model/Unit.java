@@ -1969,11 +1969,40 @@ public class Unit {
 			if (workorder==4) {
 				pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ());
 			}
+			setWorkorder(0);
 		} else
 			this.setActivityTime(this.getActivityTime()-time);
 	}
 	
-	
+	private boolean validWorkorder(int workorder){
+		if (workorder==0)
+			return true;
+		
+		if (workorder==1) {
+			if (!isValidPosition(workposition)) {
+				return false;
+				}
+			}
+		if (workorder==2) {
+			if (!containsLogandBoulder(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
+				return false;
+			}
+		}
+		if (workorder==3) {
+			if ((world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=1)&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=2)) {
+				return false;
+			}
+		}
+		if (workorder==4) {
+			if (!isValidPosition(workposition)||!containsGameObject(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
+				return false;
+				}
+		}
+		
+		
+		
+		return true;
+	}
 	private void pickUpObject(int x,int y,int z){
 		for (GameObject object : world.getGameObjects()) {
 			

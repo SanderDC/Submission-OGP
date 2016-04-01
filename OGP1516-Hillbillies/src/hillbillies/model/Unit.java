@@ -1875,7 +1875,6 @@ public class Unit {
 		
 	}
 	
-	private List<GameObject> upgradeMaterial;
 	
 	private boolean containsLogandBoulder(int x, int y, int z) {
 		boolean containsLog=false;
@@ -1886,9 +1885,8 @@ public class Unit {
 				if (object.getPosition().getCubeY()==y){
 					if (object.getPosition().getCubeZ()==z){
 						containsBoulder=true;
-						if (upgradeMaterial.size()==0) {
-							upgradeMaterial.add(object);
-						}
+						
+						
 						
 					}
 					}
@@ -1905,9 +1903,7 @@ public class Unit {
 				if (object.getPosition().getCubeY()==y){
 					if (object.getPosition().getCubeZ()==z){
 						containsLog=true;
-						if (upgradeMaterial.size()==1) {
-							upgradeMaterial.add(object);
-						}
+						
 					}
 					}
 				}
@@ -1917,7 +1913,7 @@ public class Unit {
 		return true;
 	}
 	else {
-		upgradeMaterial.clear();
+		
 		return false;
 	}
 	}
@@ -1961,8 +1957,8 @@ public class Unit {
 			if (workorder==2){
 				setToughness(this.getToughness()+1);
 				setWeight(this.getWeight()+1);
-				for(GameObject gameObject: upgradeMaterial)
-					gameObject.terminate();
+				terminateBoulderAndLog();
+					
 			}
 			if (workorder==3)
 				world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()));
@@ -1973,6 +1969,45 @@ public class Unit {
 		} else
 			this.setActivityTime(this.getActivityTime()-time);
 	}
+	private Set<GameObject> upgradematerial;
+	private void terminateBoulderAndLog() {
+		
+		for (GameObject object : world.getGameObjects()) {
+			if (object instanceof Boulder){
+			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+				if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+					if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+						
+						if (upgradematerial.size()==0) {
+							upgradematerial.add(object);
+						}
+						
+						
+						
+					}
+					}
+				}
+			}
+		}
+		for (GameObject object : world.getGameObjects()) {
+			
+			if (object instanceof Log){
+			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+				if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+					if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+						if (upgradematerial.size()==1) {
+							upgradematerial.add(object);
+						}
+					}
+					}
+				}
+			}
+		}
+	for (GameObject gameObject : upgradematerial) {
+		gameObject.terminate();
+	}
+	}
+	
 	
 	private boolean validWorkorder(int workorder){
 		if (workorder==0)

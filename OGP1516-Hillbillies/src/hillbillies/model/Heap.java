@@ -80,6 +80,23 @@ public class Heap<T extends Comparable<T>> {
 	}
 	
 	/**
+	 * Return the element at the given index in this Heap
+	 * @param index
+	 * 			The index of the element to retrieve
+	 * @return	The element at the given index
+	 * 			| result == this.values.get(index)
+	 * @throws IndexOutOfBoundsException
+	 * 			The index is smaller than zero or larger than or equal to
+	 * 			the size of the list.
+	 * 			| (index < 0) || (index > this.size())
+	 */
+	public T get(int index) throws IndexOutOfBoundsException{
+		if ((index < 0) || (index >= this.size()))
+			throw new IndexOutOfBoundsException();
+		return this.values.get(index);
+	}
+	
+	/**
 	 * Return the item at the top of the tree.
 	 */
 	public T pop(){
@@ -176,4 +193,9 @@ public class Heap<T extends Comparable<T>> {
 	 * Array storing all values in this Heap
 	 */
 	private List<T> values = new ArrayList<>();
+	
+	@Override
+	public String toString(){
+		return this.values.toString();
+	}
 }

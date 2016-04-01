@@ -182,6 +182,7 @@ public class Facade implements IFacade{
 	public void work(Unit unit) throws ModelException {
 		try {
 			unit.setDefaultBehaviorBoolean(false);
+			//TODO: work functie updaten?
 			unit.setToWork();
 		} catch (IllegalStateException e) {
 			throw new ModelException(e);

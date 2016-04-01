@@ -1945,7 +1945,7 @@ public class Unit {
 	return false;
 	}
 	
-	private void setToWork(){
+	public void setToWork(){
 		this.setStatus(Status.WORKING);
 		this.setActivityTime(calculatingWorkTime());
 		

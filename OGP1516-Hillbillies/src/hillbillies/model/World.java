@@ -1,6 +1,9 @@
 package hillbillies.model;
 
+import java.awt.Checkbox;
 import java.util.*;
+
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Vector;
@@ -611,6 +614,29 @@ public class World {
 	
 	
 	
+	
+	
+	public boolean isConnectedToBorder(int x, int y, int z){
+		CheckadjacentValidPositions(x,y,z);
+		for (int i: CheckadjacentValidPositions()) {
+			
+		}
+		
+	}
+	public int []  CheckadjacentValidPositions(int X, int Y, int Z) {
+		int []  validpositions= new int [6];
+		for(int x=-1; x<=1;x++){
+			
+		}
+			
+		for(int y=-1;y<=1;y++){
+			
+		}
+				
+		for(int z=-1; z<=1;z++){
+			
+		}
+	}
 	
 	
 	

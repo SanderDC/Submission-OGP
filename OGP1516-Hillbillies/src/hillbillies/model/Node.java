@@ -10,7 +10,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @author Bram Belpaire
  *
  */
-public class Node implements Comparable {
+public class Node implements Comparable<Node> {
 
 	/**
 	 * Initialize a new Node with a given position, G-cost and H-Cost.
@@ -31,8 +31,8 @@ public class Node implements Comparable {
 	 */
 	public Node(Vector position, int GCost, int HCost){
 		this.setCubeCoordinates(position);
-		this.setGCost(GCost);
-		this.setHCost(HCost);
+		this.GCost = GCost;
+		this.HCost = HCost;
 		this.setFCost();
 	}
 
@@ -115,10 +115,13 @@ public class Node implements Comparable {
 	 * 			| GCost >= 0
 	 * @post	The Node's GCost equals the given GCost
 	 * 			| new.getGCost() == GCost
+	 * @effect	The Node's FCost is updated according to its new GCost.
+	 * 			| this.setFCost()
 	 */
 	public void setGCost(int GCost){
 		assert (GCost >= 0);
 		this.GCost = GCost;
+		this.setFCost();
 	}
 
 	/**
@@ -141,10 +144,13 @@ public class Node implements Comparable {
 	 * 			| HCost >= 0
 	 * @post	The Node's HCost equals the given HCost
 	 * 			| new.getHCost() == HCost
+	 * @effect	The Node's FCost is updated according to its new HCost
+	 * 			| this.setFCost()
 	 */
 	public void setHCost(int HCost){
 		assert (HCost >= 0);
 		this.HCost = HCost;
+		this.setFCost();
 	}
 
 	/**
@@ -204,23 +210,99 @@ public class Node implements Comparable {
 			return false;
 		return (this.getCubeCoordinates().equals(((Node) other).getCubeCoordinates()));
 	}
-
 	
+	/**
+	 * Return this Node's parent Node.
+	 */
+	public Node getParent(){
+		return this.parent;
+	}
+	
+	/**
+	 * Check whether the given Node is a valid parent Node for this Node.
+	 * @param parent
+	 * 			The Node to check
+	 * @return	true if the given Node is the null reference or if
+	 * 			the given Node is a neighbour of this Node.
+	 * 			| result == (parent == null) || (parent.isNeighbourOf(this))
+	 */
+	private boolean canHaveAsParent(Node parent){
+		return (parent == null) || (parent.isNeighbourOf(this));
+	}
+	
+	/**
+	 * Set this Node's parent node to the given Node
+	 * @param parent
+	 * 			The Node to set this Node's parent to.
+	 * @pre		The given Node must be a Node neighbouring this Node.
+	 * 			| parent.isNeighbourOf(this)
+	 * @post	This Node's parent Node is the given Node.
+	 * 			| (new this).getParent() == parent
+	 */
+	public void setParent(Node parent){
+		assert (this.canHaveAsParent(parent));
+		this.parent = parent;
+	}
+	
+	private Node parent;	
+	
+//	@Override
+//	public int compareTo(Object other) {
+//		if (!Node.class.isInstance(other))
+//			throw new IllegalArgumentException();
+//		if (this.getFCost() < ((Node) other).getFCost())
+//			return -1;
+//		else if (this.getFCost() > ((Node) other).getFCost())
+//			return 1;
+//		else {
+//			if (this.getHCost() < ((Node) other).getHCost())
+//				return -1;
+//			else if (this.getHCost() > ((Node) other).getHCost())
+//				return 1;
+//			else
+//				return 0;
+//		}
+//	}
+
 	@Override
-	public int compareTo(Object other) {
-		if (!Node.class.isInstance(other))
-			throw new IllegalArgumentException();
-		if (this.getFCost() < ((Node) other).getFCost())
+	public int compareTo(Node other) {
+		if (this.getFCost() < other.getFCost())
 			return -1;
-		else if (this.getFCost() > ((Node) other).getFCost())
+		else if (this.getFCost() > other.getFCost())
 			return 1;
 		else {
-			if (this.getHCost() < ((Node) other).getHCost())
+			if (this.getHCost() < other.getHCost())
 				return -1;
-			else if (this.getHCost() > ((Node) other).getHCost())
+			else if (this.getHCost() > other.getHCost())
 				return 1;
 			else
 				return 0;
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return "A node at ("+this.getCubeCoordinates().getX()+", " +
+				this.getCubeCoordinates().getY()+", " + 
+				this.getCubeCoordinates().getZ()+") with a G-Cost of " +
+				this.getGCost() + " and an H-Cost of " + this.getHCost();
+	}
+	
+	/**
+	 * Check whether a given Node is a neighbour of this Node
+	 * @param other
+	 * 			The Node for which to check whether it is a neighbour of this Node.
+	 * @return true if and only if the absolute values of the differences between
+	 * 			the respective coordinates of the position Vectors of the Nodes
+	 * 			never exceed one
+	 * 			| result == for each component in other.getCubeCoordinates().add(this.getCubeCoordinates().scalarMultiply(-1)).toArray():
+	 * 			|				Math.abs(component) <= 1
+	 */
+	public boolean isNeighbourOf(Node other){
+		Vector distance = other.getCubeCoordinates().add(this.getCubeCoordinates().scalarMultiply(-1));
+		for (double component:distance.toArray())
+			if (Math.abs(component) > 1)
+				return false;
+		return true;
 	}
 }

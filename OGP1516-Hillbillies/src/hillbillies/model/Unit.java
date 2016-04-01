@@ -190,8 +190,8 @@ public class Unit {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-		
-//		this.setPosition(position);
+
+		//		this.setPosition(position);
 		this.position = new Vector(World.CUBELENGTH/2,World.CUBELENGTH/2,World.CUBELENGTH/2);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
@@ -238,7 +238,7 @@ public class Unit {
 		this.setFallPosition(0);
 		this.setExp(0);
 	}
-	
+
 	/**
 	 * Create a new Unit with random properties in the given World.
 	 * @param world
@@ -247,13 +247,13 @@ public class Unit {
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
-//		Random random = new Random();
-//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
-//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
-//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
-//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
-//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
-//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
+		//		Random random = new Random();
+		//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
+		//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
+		//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
+		//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
+		//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
+		//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
 				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
 				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
@@ -396,7 +396,7 @@ public class Unit {
 		if (enemy.isFalling()) {
 			return false;
 		}
-		
+
 		if (enemy==this) {
 			return false;
 		}
@@ -406,8 +406,8 @@ public class Unit {
 		else if (this.isAdjacentPosition(enemy.getPosition())) {
 			return true;
 		} 
-		
-		
+
+
 		else {
 			return false;
 		}
@@ -498,7 +498,7 @@ public class Unit {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
@@ -1016,7 +1016,7 @@ public class Unit {
 	 * Variable registering the largest legal value for a Unit's weight
 	 */
 	public static final int MAX_WEIGHT = 200;
-	
+
 	/**
 	 * Variable registering the smallest legal value for a new Unit's weight
 	 */
@@ -1436,7 +1436,7 @@ public class Unit {
 	 * Variable registering the TimeUntilRest of this Unit.
 	 */
 	private double timeUntilRest;
-	
+
 	/**
 	 * Variable registering the interval between two obligatory rests for any Unit.
 	 */
@@ -1488,7 +1488,7 @@ public class Unit {
 	 * Variable registering the ActivityTime of this Unit.
 	 */
 	private double ActivityTime;
-	
+
 	/**
 	 * initiates the unit to attack another Unit
 	 * @param other
@@ -1525,7 +1525,7 @@ public class Unit {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
-		
+
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!canHaveAsEnemy(other))
@@ -1542,13 +1542,13 @@ public class Unit {
 		}
 		this.setStatus(Status.ATTACKING);
 		this.setEnemy(other);
-		
-		
-		
-		
-		
+
+
+
+
+
 	}
-	
+
 	/**
 	 * prepares the attack and when the attack is finished, instantiates an immediate response of the defender
 	 * @param time
@@ -1579,8 +1579,8 @@ public class Unit {
 		this.updatePosition(other);
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
-			
-			
+
+
 			other.defend(this);
 			other.updatePosition(this);
 			this.setStatus(Status.IDLE);
@@ -1613,7 +1613,7 @@ public class Unit {
 	 * 		|new.gethipoints()==this.getHitpoints()-attacker.getStrength()/10
 	 * 		|if(attacker.getStrength()/10==0)
 	 * 		|then new.gethipoints()==this.getHitpoints()-1
-	
+
 	 * 		
 	 */
 	private void defend(Unit attacker){
@@ -1631,9 +1631,9 @@ public class Unit {
 				}
 				else {
 					setHitpoints(this.getHitpoints()-1);
-					}
-				
-				
+				}
+
+
 			}
 			if (this.getHitpoints()-attacker.getStrength()/10>0) {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
@@ -1643,10 +1643,10 @@ public class Unit {
 			}
 			enemy.setExp(enemy.getExp()+20);
 		}
-		
-			this.setStatus(Status.IDLE);
-		
-		
+
+		this.setStatus(Status.IDLE);
+
+
 		if (this.getDistantTarget() != null){
 			Vector target = this.getDistantTarget();
 			this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
@@ -1805,7 +1805,7 @@ public class Unit {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * tells the unit to start working
 	 * @effect 
@@ -2142,7 +2142,7 @@ public class Unit {
 		} else
 			this.setPosition(new_pos);
 	}
-	
+
 	/**
 	 * Calculate the time a Unit needs to recover one hitpoint.
 	 * @return	The time a Unit needs to recover one hitpoint
@@ -2259,7 +2259,7 @@ public class Unit {
 		}
 		setActivityTime(this.getActivityTime()+time);
 	} 
-	
+
 	/**
 	 * sets the timeuntilRest To the resting interval if possible
 	 * @post
@@ -2271,7 +2271,7 @@ public class Unit {
 			this.setTimeUntilRest(RESTING_INTERVAL);
 		}
 	}
-	
+
 	/**
 	 * returns a boolean to make sure its minRestTime has already passed if the Unit is resting
 	 * 	 @return
@@ -2286,7 +2286,7 @@ public class Unit {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * caculating the time it takes to restore 1 point of hitpoints
 	 * @return
@@ -2295,7 +2295,7 @@ public class Unit {
 	private double calculateHPRestore(double time){
 		return this.getToughness()*time/40;
 	}
-	
+
 	/**
 	 * caculating the time it takes to restore 1 point of stamina
 	 * @return
@@ -2316,7 +2316,7 @@ public class Unit {
 			this.resting();
 		}
 	}
-	
+
 	/**
 	 * if a Unit is idle and it has defaultbehavior enabled, it will choose an activity at random
 	 * @post	With a chance of one in three, movement to a random cube in the gameworld is initiated.
@@ -2346,21 +2346,21 @@ public class Unit {
 				this.resting();}
 		}
 	}
-	
+
 	/**
 	 * Enable the Unit's default behavior
 	 */
 	public void startDefaultBehavior(){
 		setDefaultBehaviorBoolean(true);
 	}
-	
+
 	/**
 	 * Disable the Unit's default behavior
 	 */
 	public void stopDefaultBehavior(){
 		setDefaultBehaviorBoolean(false);
 	}
-	
+
 	/**
 	 * Return the defaultbehaviorboolean of this Unit.
 	 */
@@ -2389,30 +2389,30 @@ public class Unit {
 	 * Variable registering whether the Unit's default behavior is currently enabled
 	 */
 	private boolean defaultBehaviorBoolean;
-	
-	
-	
-	
+
+
+
+
 	public boolean Fallcheck() {
-		
+
 		for(int x=1;x>=-1;x--) {
 			for(int y=1;y>=-1;y--){
 				for(int z=1;z>=-1;z--){
 					if ((x==0)&&(y==0)&&(z==0)) {
-						
+
 					}
-					
-				else if (world.isSolidGround(x, y, z))
+
+					else if (world.isSolidGround(x, y, z))
 						return true;
-					}
-				
+				}
+
 			}
-			
+
 		}
-		
+
 		return false;
 	}
-	
+
 	public double  getFallPosition() {
 		return this.fallPosition;
 	}
@@ -2421,7 +2421,7 @@ public class Unit {
 		if (this.fallPosition<0) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		this.fallPosition = fallPosition;
 	}
 
@@ -2434,36 +2434,36 @@ public class Unit {
 			return false;
 		}
 	}
-	
-	
-	
+
+
+
 	public void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
-		
+
 	}
 	public void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
-			
+
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
-			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
-			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
-			this.setStatus(Status.IDLE);
-			this.setFallPosition(0);
+				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
+				this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+				this.setStatus(Status.IDLE);
+				this.setFallPosition(0);
 			}
 			else{
 				terminate();
 			}
 		}
-		
+
 		else{
 			this.setPosition(new_pos);
-			}
-		
+		}
+
 	}
 	/**
 	 * @return the exp
@@ -2507,14 +2507,14 @@ public class Unit {
 			this.setExp(this.getExp()-10);
 		}
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether the Unit has been terminated
 	 */
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
-	
+
 	/**
 	 * Terminate this Unit
 	 * TODO: documentatie uitbreiden
@@ -2531,21 +2531,21 @@ public class Unit {
 		this.isTerminated=true;
 		this.removeFromFaction();
 		this.removeFromWorld();
-		
+
 	}
-	
+
 	/**
 	 * Variable registering whether the Unit has died
 	 */
 	private boolean isTerminated=false;
-	
+
 	/**
 	 * Return the faction this Unit belongs to.
 	 */
 	public Faction getFaction() {
 		return this.faction;
 	}
-	
+
 	/**
 	 * Check whether the given faction is a valid faction for this Unit
 	 * @param faction
@@ -2564,7 +2564,7 @@ public class Unit {
 		else
 			return (faction != null) && (!faction.isTerminated());
 	}
-	
+
 	/**
 	 * Add this Unit to the given faction
 	 * @param faction
@@ -2582,7 +2582,7 @@ public class Unit {
 		this.faction = faction;
 		faction.addUnit(this);
 	}
-	
+
 	/**
 	 * Remove this Unit from its current faction
 	 * @pre		This Unit has died and must be terminated
@@ -2597,19 +2597,19 @@ public class Unit {
 		this.faction = null;
 		oldFaction.removeUnit(this);
 	}
-	
+
 	/**
 	 * Variable registering the Faction this Unit belongs to.
 	 */
 	private Faction faction;
-	
+
 	/**
 	 * Return the World this Unit lives in
 	 */
 	public World getWorld() {
 		return this.world;
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether the given World is a valid World for this Unit
 	 * @param world
@@ -2626,7 +2626,7 @@ public class Unit {
 		else
 			return (world != null);
 	}
-	
+
 	/**
 	 * Adds this Unit to the given World
 	 * @param world
@@ -2651,8 +2651,8 @@ public class Unit {
 		int index = new Random().nextInt(world.getStandablePositions().size());
 		Vector startPos = world.getStandablePositions().get(index);
 		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
-									startPos.getCubeY() + CUBELENGTH/2,
-									startPos.getCubeZ() + CUBELENGTH/2));
+				startPos.getCubeY() + CUBELENGTH/2,
+				startPos.getCubeZ() + CUBELENGTH/2));
 		if (world.getActiveFactions().size() < 5){
 			Faction faction = new Faction(world);
 			this.addToFaction(faction);
@@ -2668,7 +2668,7 @@ public class Unit {
 			this.addToFaction(smallestFaction);
 		}
 	}
-	
+
 	/**
 	 * Remove this Unit from its current World
 	 * @pre		This Unit has died and must be terminated
@@ -2683,17 +2683,17 @@ public class Unit {
 		this.world = null;
 		oldWorld.removeUnit(this);
 	}
-	
+
 	/**
 	 * Variable registering the World this Unit lives in
 	 */
 	private World world;
-	
+
 	/**
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject;
-	
+
 	/**
 	 * Find a path to a given cube in the gameworld
 	 * @param x
@@ -2707,33 +2707,48 @@ public class Unit {
 	 * 			! this.getWorld().unitCanStandAt(x,y,z)
 	 */
 	@SuppressWarnings("unused")
-	private void findPath(int x, int y, int z) throws IllegalArgumentException{
+	public void findPath(int x, int y, int z) throws IllegalArgumentException{
 		if (!this.getWorld().unitCanStandAt(x, y, z))
 			throw new IllegalArgumentException("The Unit cannot move to this position!");
-		List<Node> open = new ArrayList<>();
+		Heap<Node> open = new Heap<>();
 		List<Node> closed = new ArrayList<>();
-		List<Node> allNodes = new ArrayList<>();
 		Node end = new Node(new Vector(x,y,z),Integer.MAX_VALUE,0);
 		Node start = new Node(this.getPosition());
 		open.add(start);
 		boolean finished = false;
 		while (!finished){
-			Node current = open.get(0);
-			for (Node node:open){
-				if (node.getFCost() < current.getFCost() ||
-						node.getFCost() == current.getFCost() && node.getHCost() < current.getHCost())
-					current = node;
-			}
-			open.remove(current);
+			Node current = open.pop();
 			closed.add(current);
-			if (current.equals(end))
-				return;
+			if (current.equals(end)){
+				finished = true;
+				setPath(closed,start,end);
+			}
 			for (Node neighbour:current.getNeighbouringNodes()){
 				if (!this.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
 						closed.contains(neighbour))
 					continue;
-				
+				neighbour.setGCost(current.getGCost()+Node.calculateDistance(current, neighbour));
+				neighbour.setHCost(Node.calculateDistance(neighbour, end));
+				neighbour.setParent(current);
+				if (!open.contains(neighbour)){
+					open.add(neighbour);
+				}
+				else {
+					int index = open.getIndex(neighbour);
+					if (neighbour.compareTo(open.get(index)) < 0){
+						open.replace(index, neighbour);
+					}
+				}
 			}
 		}
 	}
+
+	private void setPath(List<Node> closed, Node start, Node end) {
+		List<Vector> result = new ArrayList<>();
+		Node current = closed.get(closed.indexOf(end));
+		while (!current.equals(start)){
+			result.add(0, current.getCubeCoordinates().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2)));
+			current = current.getParent();
+		}
+	}	
 }

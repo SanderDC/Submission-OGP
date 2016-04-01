@@ -2006,6 +2006,7 @@ public class Unit {
 	for (GameObject gameObject : upgradematerial) {
 		gameObject.terminate();
 	}
+	upgradematerial.clear();
 	}
 	
 	

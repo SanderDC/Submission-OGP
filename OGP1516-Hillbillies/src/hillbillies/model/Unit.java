@@ -2710,24 +2710,30 @@ public class Unit {
 	private void findPath(int x, int y, int z) throws IllegalArgumentException{
 		if (!this.getWorld().unitCanStandAt(x, y, z))
 			throw new IllegalArgumentException("The Unit cannot move to this position!");
-		Set<Node> open = new HashSet<>();
-		Set<Node> closed = new HashSet<>();
+		List<Node> open = new ArrayList<>();
+		List<Node> closed = new ArrayList<>();
+		List<Node> allNodes = new ArrayList<>();
 		Node end = new Node(new Vector(x,y,z),Integer.MAX_VALUE,0);
-		Node start = new Node(this.getPosition(),0,Node.calculateHCost(this.getPosition(), end.getCubeCoordinates()));
+		Node start = new Node(this.getPosition());
 		open.add(start);
 		boolean finished = false;
 		while (!finished){
-			int lowestFCost = Integer.MAX_VALUE;
-			Node current = null;
+			Node current = open.get(0);
 			for (Node node:open){
-				if (node.getFCost() < lowestFCost)
+				if (node.getFCost() < current.getFCost() ||
+						node.getFCost() == current.getFCost() && node.getHCost() < current.getHCost())
 					current = node;
 			}
 			open.remove(current);
 			closed.add(current);
 			if (current.equals(end))
 				return;
-			
+			for (Node neighbour:current.getNeighbouringNodes()){
+				if (!this.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
+						closed.contains(neighbour))
+					continue;
+				
+			}
 		}
 	}
 }

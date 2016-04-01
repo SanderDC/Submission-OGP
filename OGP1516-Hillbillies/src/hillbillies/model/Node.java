@@ -10,8 +10,8 @@ import be.kuleuven.cs.som.annotate.*;
  * @author Bram Belpaire
  *
  */
-public class Node {
-	
+public class Node implements Comparable {
+
 	/**
 	 * Initialize a new Node with a given position, G-cost and H-Cost.
 	 * @param position
@@ -20,10 +20,14 @@ public class Node {
 	 * 			The G-cost of this new Node.
 	 * @param HCost
 	 * 			The H-cost of this new Node.
-	 * @effect	this.setCubeCoordinates(position)
-	 * @effect	this.setGCost(GCost)
-	 * @effect	this.setHCost(HCost)
-	 * @effect	this.setFCost()
+	 * @effect	The position of this new Node is set to the given position.
+	 * 			| this.setCubeCoordinates(position)
+	 * @effect	The G-cost of this new Node is set to the given G-cost.
+	 * 			| this.setGCost(GCost)
+	 * @effect	The H-cost of this new Node is set to the given H-cost.
+	 * 			| this.setHCost(HCost)
+	 * @effect	The F-cost of this new Node is set according to its G-cost and H-cost.
+	 * 			| this.setFCost()
 	 */
 	public Node(Vector position, int GCost, int HCost){
 		this.setCubeCoordinates(position);
@@ -31,7 +35,24 @@ public class Node {
 		this.setHCost(HCost);
 		this.setFCost();
 	}
-	
+
+	/**
+	 * Initialize a new Node with a given position and no G-cost or H-cost yet
+	 * @param position
+	 * 			The position of this new Node.
+	 * @effect	The position of this new Node is set to the given position.
+	 * 			| this.setCubeCoordinates(position)
+	 * @effect	The G-cost of this new Node is set to the largest possible value.
+	 * 			| this.setGCost(Integer.MAX_VALUE)
+	 * @effect	The H-cost of this new Node is set to the largest possible value.
+	 * 			| this.setHCost(Integer.MAX_VALUE)
+	 * @effect	The F-cost of this new Node is set according to its G-cost and H-cost.
+	 * 			| this.setFCost()
+	 */
+	public Node(Vector position){
+		this(position,Integer.MAX_VALUE,Integer.MAX_VALUE);
+	}
+
 	/**
 	 * Return the CubeCoordinates of this Node.
 	 */
@@ -39,7 +60,7 @@ public class Node {
 	public Vector getCubeCoordinates(){
 		return this.cubeCoordinates;
 	}
-	
+
 	/**
 	 * Set the cube coordinates for this Node to the cube coordinates of the given Vector
 	 * @param position
@@ -52,19 +73,19 @@ public class Node {
 	private void setCubeCoordinates(Vector position){
 		this.cubeCoordinates = new Vector(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 	}
-	
+
 	/**
 	 * Variable registering the coordinates of this Node.
 	 */
 	private Vector cubeCoordinates;
-	
+
 	/**
 	 * Return the F-Cost of this Node.
 	 */
 	public int getFCost(){
 		return this.FCost;
 	}
-	
+
 	/**
 	 * Set the FCost of this Node to the given FCost.
 	 * @post	The FCost of this Node equals the sum of its GCost and its HCost.
@@ -73,19 +94,19 @@ public class Node {
 	private void setFCost(){
 		this.FCost = this.getGCost() + this.getHCost();
 	}
-	
+
 	/**
 	 * Variable registering the F-Cost of this Node.
 	 */
 	private int FCost;
-	
+
 	/**
 	 * Return the G-Cost of this Node.
 	 */
 	public int getGCost(){
 		return this.GCost;
 	}
-	
+
 	/**
 	 * Set this Node's GCost to the given
 	 * @param 	GCost
@@ -99,19 +120,19 @@ public class Node {
 		assert (GCost >= 0);
 		this.GCost = GCost;
 	}
-	
+
 	/**
 	 * Variable registering the G-Cost of this Node.
 	 */
 	private int GCost;
-	
+
 	/**
 	 * Return the G-Cost of this Node.
 	 */
 	public int getHCost(){
 		return this.HCost;
 	}
-	
+
 	/**
 	 * Set this Node's HCost to the given
 	 * @param 	HCost
@@ -125,32 +146,32 @@ public class Node {
 		assert (HCost >= 0);
 		this.HCost = HCost;
 	}
-	
+
 	/**
 	 * Variable registering the G-Cost of this Node.
 	 */
 	private int HCost;
-	
-	public static int calculateHCost(Vector start, Vector end){
-		int x = (int) Math.abs(end.getCubeX() - start.getCubeX());
-		int y = (int) Math.abs(end.getCubeY() - start.getCubeY());
-		int z = (int) Math.abs(end.getCubeZ() - start.getCubeZ());
-		int HCost = 0;
+
+	public static int calculateDistance(Node start, Node end){
+		int x = (int) Math.abs(end.getCubeCoordinates().getCubeX() - start.getCubeCoordinates().getCubeX());
+		int y = (int) Math.abs(end.getCubeCoordinates().getCubeY() - start.getCubeCoordinates().getCubeY());
+		int z = (int) Math.abs(end.getCubeCoordinates().getCubeZ() - start.getCubeCoordinates().getCubeZ());
+		int distance = 0;
 		while ((x > 0) && (y > 0) && (z > 0)){
-			HCost += 17;
+			distance += 17;
 			x -= 1; y -= 1; z -= 1;
 		}
 		while (((x > 0) && (y > 0)) || ((x > 0) && (z > 0)) || ((y > 0) && (z > 0))){
-			HCost += 14;
+			distance += 14;
 			x -= 1; y -= 1; z -= 1;
 		}
 		while ((x > 0) || (y > 0) || (z > 0)){
-			HCost += 10;
+			distance += 10;
 			x -= 1; y -= 1; z -= 1;
 		}
-		return HCost;
+		return distance;
 	}
-	
+
 	/**
 	 * Return a set containing all Nodes neighbouring this Node.
 	 */
@@ -159,15 +180,16 @@ public class Node {
 		for (int x = -1; x <= 1; x++){
 			for (int y = -1; y <= 1; y++){
 				for(int z = -1; z <= 1; z++){
-					if(Math.abs(x)+Math.abs(y)+Math.abs(z) == 1){
-						
+					if ((x != 0) || (y != 0) || (z != 0)){
+						Vector neighbourPosition = this.getCubeCoordinates().add(new Vector(x,y,z));
+						result.add(new Node(neighbourPosition));
 					}
 				}
 			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether this Node is equal to a given Node.
 	 * @param	other
@@ -181,5 +203,24 @@ public class Node {
 		if (!Node.class.isInstance(other))
 			return false;
 		return (this.getCubeCoordinates().equals(((Node) other).getCubeCoordinates()));
+	}
+
+	
+	@Override
+	public int compareTo(Object other) {
+		if (!Node.class.isInstance(other))
+			throw new IllegalArgumentException();
+		if (this.getFCost() < ((Node) other).getFCost())
+			return -1;
+		else if (this.getFCost() > ((Node) other).getFCost())
+			return 1;
+		else {
+			if (this.getHCost() < ((Node) other).getHCost())
+				return -1;
+			else if (this.getHCost() > ((Node) other).getHCost())
+				return 1;
+			else
+				return 0;
+		}
 	}
 }

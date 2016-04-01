@@ -986,10 +986,11 @@ public class Unit {
 	@Basic
 	@Raw
 	public int getWeight() {
-		//TODO: getWeight wordt hierdoor normaal niet verstoord, moet mss nog nagekeken worden
+		return this.weight;
+	}
+	public int getTotalWeight(){
 		return this.weight+this.weightGameObject();
 	}
-
 	/**
 	 * Check whether the given weight is a valid weight for this Unit.
 	 * 

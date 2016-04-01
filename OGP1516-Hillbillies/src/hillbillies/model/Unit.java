@@ -65,6 +65,9 @@ import ogp.framework.util.Util;
  *         	| isValidProgress(getProgress())
  * @invar	A Unit can only be sprinting when it is moving
  * 			| if (getSprinting()) then (ismoving())
+ * @invar  	The path of a Unit must be a valid path for that
+ *         	Unit.
+ *       	| canHaveAsPath(getPath())
  * @author Sander Declercq
  * @author Bram Belpaire
  *
@@ -188,6 +191,8 @@ public class Unit {
 	 * 			| new.getmaxStamina() == Math.ceil(new.getToughness()*new.getWeight()/50.0)
 	 * @effect	The ActivityTime of the Unit is set to zero.
 	 * 			| this.setActivityTime(0)
+	 * @effect	The path of this new Unit is set to the null reference.
+	 * 			| this.setPath(null);
 	 * 
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
@@ -239,6 +244,7 @@ public class Unit {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
+		this.setPath(null);
 	}
 	
 	/**
@@ -988,6 +994,7 @@ public class Unit {
 	public int getWeight() {
 		return this.weight;
 	}
+
 	/**
 	 *  
 	 * @return the weigh of the unit and the object it may be carrying
@@ -2296,15 +2303,17 @@ public class Unit {
 				this.settingInitialResttimeOk();
 		}
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
-		if (! isValidPosition(target))
+		if (! this.getWorld().unitCanStandAt(target))
 			throw new IllegalArgumentException();
 		if (this.ismoving()){
 			this.setStatus(Status.MOVINGDISTANT);
 			this.setDistantTarget(target);
+			this.findPath(cubeX, cubeY, cubeZ);
 			return;
 		}
 		this.setStatus(Status.MOVINGDISTANT);
 		this.setDistantTarget(target);
+		this.findPath(cubeX, cubeY, cubeZ);
 		this.moveToNextCube();
 	}
 
@@ -2316,17 +2325,7 @@ public class Unit {
 	 * 			|	(int) Math.signum(cubeZ - this.getPosition().getCubeZ()))
 	 */
 	private void moveToNextCube(){
-		double cubeX = Math.floor(this.getDistantTarget().getX());
-		double cubeY = Math.floor(this.getDistantTarget().getY());
-		double cubeZ = Math.floor(this.getDistantTarget().getZ());
-		int dx; int dy; int dz;
-		dx = (int) Math.signum(cubeX - this.getPosition().getCubeX());
-		dy = (int) Math.signum(cubeY - this.getPosition().getCubeY());
-		dz = (int) Math.signum(cubeZ - this.getPosition().getCubeZ());
-		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
-				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
-				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
-		this.setNearTarget(target);
+		this.setNearTarget(this.getPath().remove(0));
 		this.setupSpeed();
 	}
 
@@ -2415,7 +2414,11 @@ public class Unit {
 					this.setStatus(Status.IDLE);
 				}
 				else {
-					this.moveToNextCube();
+					if (!isValidPath(this.getPath())){
+						this.findPath(this.getDistantTarget());
+						this.moveToNextCube();
+					} else
+						this.moveToNextCube();
 				}
 			} else {
 				this.setSprinting(false);
@@ -3016,34 +3019,104 @@ public class Unit {
 	 * 			The given cube is not a position where a Unit can stand.
 	 * 			! this.getWorld().unitCanStandAt(x,y,z)
 	 */
-	@SuppressWarnings("unused")
 	private void findPath(int x, int y, int z) throws IllegalArgumentException{
 		if (!this.getWorld().unitCanStandAt(x, y, z))
 			throw new IllegalArgumentException("The Unit cannot move to this position!");
-		List<Node> open = new ArrayList<>();
+		Heap<Node> open = new Heap<>();
 		List<Node> closed = new ArrayList<>();
-		List<Node> allNodes = new ArrayList<>();
 		Node end = new Node(new Vector(x,y,z),Integer.MAX_VALUE,0);
 		Node start = new Node(this.getPosition());
 		open.add(start);
 		boolean finished = false;
 		while (!finished){
-			Node current = open.get(0);
-			for (Node node:open){
-				if (node.getFCost() < current.getFCost() ||
-						node.getFCost() == current.getFCost() && node.getHCost() < current.getHCost())
-					current = node;
-			}
-			open.remove(current);
+			Node current = open.pop();
 			closed.add(current);
-			if (current.equals(end))
-				return;
+			if (current.equals(end)){
+				finished = true;
+				setPath(closed,start,end);
+			}
 			for (Node neighbour:current.getNeighbouringNodes()){
 				if (!this.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
 						closed.contains(neighbour))
 					continue;
-				
+				neighbour.setGCost(current.getGCost()+Node.calculateDistance(current, neighbour));
+				neighbour.setHCost(Node.calculateDistance(neighbour, end));
+				neighbour.setParent(current);
+				if (!open.contains(neighbour)){
+					open.add(neighbour);
+				}
+				else {
+					int index = open.getIndex(neighbour);
+					if (neighbour.compareTo(open.get(index)) < 0){
+						open.replace(index, neighbour);
+					}
+				}
 			}
 		}
 	}
+	
+	private void findPath(Vector target) throws IllegalArgumentException{
+		findPath(target.getCubeX(),target.getCubeY(),target.getCubeZ());
+	}
+
+	/**
+	 * Return the path of this Unit.
+	 */
+	@Basic @Raw
+	private List<Vector> getPath() {
+		return this.path;
+	}
+
+	/**
+	 * Check whether the given path is a valid path for
+	 * any Unit.
+	 *  
+	 * @param  path
+	 *         The path to check.
+	 * @return 
+	 *       | result == (path == null) ||
+	 *       |				for each vector in path: this.getWorld.unitCanStandAt(vector)
+	 */
+	private boolean isValidPath(List<Vector> path) {
+		if (path == null)
+			return true;
+		for (Vector vector:path){
+			if(!this.getWorld().unitCanStandAt(vector))
+				return false;
+		}
+		return true;
+	}
+	
+	private void setPath(List<Node> closed, Node start, Node end) {
+		List<Vector> result = new ArrayList<>();
+		Node current = closed.get(closed.indexOf(end));
+		while (!current.equals(start)){
+			result.add(0, current.getCubeCoordinates().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2)));
+			current = current.getParent();
+		}
+		this.setPath(result);
+	}	
+
+	/**
+	 * Set the path of this Unit to the given path.
+	 * 
+	 * @param  path
+	 *         The new path for this Unit.
+	 * @pre    The given path must be a valid path for any
+	 *         Unit.
+	 *       | isValidPath(path)
+	 * @post   The path of this Unit is equal to the given
+	 *         path.
+	 *       | new.getPath() == path
+	 */
+	@Raw
+	private void setPath(List<Vector> path) {
+		assert isValidPath(path);
+		this.path = path;
+	}
+
+	/**
+	 * Variable registering the path of this Unit.
+	 */
+	private List<Vector> path;
 }

@@ -473,6 +473,11 @@ public class World {
 	 */
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
 	
+	public Set<GameObject> getGameObjects(){
+		return this.gameObjects;
+	}
+	
+	
 	public boolean IsSolidMaterial(int i){
 		if(i==1||i==2)
 			return true;

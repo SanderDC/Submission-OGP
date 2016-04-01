@@ -66,11 +66,11 @@ public abstract class GameObject {
 	 *       | result == 
 	 */
 	public  boolean isValidPosition(Vector position) {
-		//TODO: isValidPosition uitwerken
+		
 		if (position==null){
 			return true;
 		}
-		//TODO: updaten van maxcoordinates
+		
 		double[] arrayposition=  position.toArray();
 		for(int i=0;i<3;i++){
 			if (arrayposition[i]>world.maxCoordinates()[i]+1) {
@@ -186,7 +186,11 @@ public abstract class GameObject {
 	 * Terminate this GameObject.
 	 */
 	void terminate(){
-		//TODO: terminate schrijven.
+		this.isTerminated=true;
+		World oldWorld= this.world;
+		this.world=null;
+		oldWorld.removeGameObject(this);
+		this.setPosition(null);
 	}
 	private final Vector fallspeed=new Vector(0, 0, -3);
 	
@@ -196,7 +200,7 @@ public abstract class GameObject {
 	private boolean isTerminated;
 	
 	public void advanceTime(double time){
-		//TODO: constantes in aparte file?
+		
 		
 		if (!world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1)&&this.getPosition().getCubeZ()-1!=0) {
 			setStatus(Status.FALLING);
@@ -226,4 +230,17 @@ public abstract class GameObject {
 			}
 		
 	}
+	public void pickedUp(Unit unit) {
+		World oldWorld= this.world;
+		this.world=null;
+		oldWorld.removeGameObject(this);
+		this.setPosition(null);
+		
+	}
+	public void dropped(Unit unit) {
+		this.world=unit.getWorld();
+		this.position=unit.getPosition();
+		this.world.addGameObject(this);
+	}
+	
 }

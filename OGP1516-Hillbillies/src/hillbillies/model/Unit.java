@@ -1,7 +1,9 @@
 package hillbillies.model;
 import java.util.*;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.experimental.theories.Theories;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.Util;
@@ -486,7 +488,7 @@ public class Unit {
 	private boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
-		//TODO: updaten van maxcoordinates
+	
 		double[] arrayposition =  position.toArray();
 		for(int i=0;i<3;i++){
 			if (arrayposition[i]>this.getWorld().maxCoordinates()[i]+1) {
@@ -984,7 +986,8 @@ public class Unit {
 	@Basic
 	@Raw
 	public int getWeight() {
-		return this.weight;
+		//TODO: getWeight wordt hierdoor normaal niet verstoord, moet mss nog nagekeken worden
+		return this.weight+this.weightGameObject();
 	}
 
 	/**
@@ -1816,7 +1819,7 @@ public class Unit {
 	 * 		| (isAttacking()) || (ismoving())||(!this.hasRestedEnough())
 	 * 
 	 */
-	public void setToWork()throws IllegalStateException {
+	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
 		if (isAttacking()) {
 			throw new IllegalStateException("Unit is fighting");
 		}
@@ -1825,14 +1828,118 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
+		if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
+			if (hasGameObject()) 
+				throw new IllegalArgumentException("not possible");
+				
+			
+		}
+		if (!containsGameObject(x, y, z)) {
+			throw new IllegalArgumentException("no GameObjects Found");
+		}
+		
 		if (this.hasRestedEnough()){
+			setWorkposition(x, y, z);
 			this.settingInitialResttimeOk();
-			this.setStatus(Status.WORKING);
-			this.setActivityTime(calculatingWorkTime());
+			if (hasGameObject()){
+				setWorkorder(1);
+				moveTo(x, y, z);
+				return;
+				}
+			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
+				setWorkorder(3);
+				moveTo(x-1, y-1, z);
+				return;
+			}
+			
+			else {
+					if (containsLogandBoulder(x, y, z)&&world.getCubeType(x, y, z)==3) {
+						setWorkorder(2);
+						moveTo(x, y, z);
+					}
+					else {
+						setWorkorder(4);
+						moveTo(x, y, z);
+					}
+			}
+			
+			
+			
+			
+			
 		}
 		else {
 			throw new IllegalStateException("Unit has to rest a little bit");
 		}
+		
+		
+	}
+	
+	private List<GameObject> upgradeMaterial;
+	
+	private boolean containsLogandBoulder(int x, int y, int z) {
+		boolean containsLog=false;
+		boolean containsBoulder=false;
+		for (GameObject object : world.getGameObjects()) {
+			if (object instanceof Boulder){
+			if (object.getPosition().getCubeX()==x){
+				if (object.getPosition().getCubeY()==y){
+					if (object.getPosition().getCubeZ()==z){
+						containsBoulder=true;
+						if (upgradeMaterial.size()==0) {
+							upgradeMaterial.add(object);
+						}
+						
+					}
+					}
+				}
+			}
+		}
+		if (containsBoulder==false) {
+			return false;
+		}
+		for (GameObject object : world.getGameObjects()) {
+			
+			if (object instanceof Log){
+			if (object.getPosition().getCubeX()==x){
+				if (object.getPosition().getCubeY()==y){
+					if (object.getPosition().getCubeZ()==z){
+						containsLog=true;
+						if (upgradeMaterial.size()==1) {
+							upgradeMaterial.add(object);
+						}
+					}
+					}
+				}
+			}
+		}
+	if (containsBoulder&&containsLog) {
+		return true;
+	}
+	else {
+		upgradeMaterial.clear();
+		return false;
+	}
+	}
+	
+	private boolean containsGameObject(int x, int y, int z) {
+		for (GameObject object : world.getGameObjects()) {
+			if (object.getPosition().getCubeX()==x){
+				if (object.getPosition().getCubeY()==y){
+					if (object.getPosition().getCubeZ()==z){
+						return true;
+					}
+				}
+			}
+		}
+	return false;
+	}
+	
+	private void setToWork(){
+		this.setStatus(Status.WORKING);
+		this.setActivityTime(calculatingWorkTime());
+		
+			
 	}
 	/**
 	 * updates the time the unit has to spend working
@@ -1847,8 +1954,82 @@ public class Unit {
 			this.setActivityTime(0);
 			this.setStatus(Status.IDLE);
 			this.setExp(this.getExp()+10);
+			if (workorder==1) {
+				dropObject();
+				
+			}
+			if (workorder==2){
+				setToughness(this.getToughness()+1);
+				setWeight(this.getWeight()+1);
+				for(GameObject gameObject: upgradeMaterial)
+					gameObject.terminate();
+			}
+			if (workorder==3)
+				world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()));
+			if (workorder==4) {
+				pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ());
+			}
 		} else
 			this.setActivityTime(this.getActivityTime()-time);
+	}
+	
+	
+	private void pickUpObject(int x,int y,int z){
+		for (GameObject object : world.getGameObjects()) {
+			
+			if (object instanceof Boulder){
+			if (object.getPosition().getCubeX()==x){
+				if (object.getPosition().getCubeY()==y){
+					if (object.getPosition().getCubeZ()==z){
+						setGameObject(object);
+						return;
+					}
+					}
+				}
+			}
+		}
+		for (GameObject object : world.getGameObjects()) {
+			
+			if (object instanceof Log){
+			if (object.getPosition().getCubeX()==x){
+				if (object.getPosition().getCubeY()==y){
+					if (object.getPosition().getCubeZ()==z){
+						setGameObject(object);
+						return;
+					}
+					}
+				}
+			}
+		}
+	}
+	private void dropObject() {
+		this.getGameObject().dropped(this);
+	}
+	
+	
+	private int workorder;
+	private Vector workposition;
+	public Vector getWorkposition() {
+		return workposition;
+	}
+	public void setWorkposition(int x, int y, int z) {
+		this.workposition = new Vector(x, y, z);
+	}
+	
+	public int getWorkorder() {
+		return workorder;
+	}
+	/**
+	 * 
+	 * @param workorder
+	 * workorder=0:no workorder
+	 * workorder=1:drop gameobject
+	 * workorder=2:improve equipment
+	 * workorder=3:remove solidGround
+	 * workorder=4:pick up gameObject
+	 */
+	public void setWorkorder(int workorder) {
+		this.workorder = workorder;
 	}
 
 	/**
@@ -2529,6 +2710,9 @@ public class Unit {
 	private void terminate(){
 		assert (this.getHitpoints() == 0);
 		this.isTerminated=true;
+		if (hasGameObject()) {
+			dropObject();
+		}
 		this.removeFromFaction();
 		this.removeFromWorld();
 		
@@ -2694,6 +2878,28 @@ public class Unit {
 	 */
 	private GameObject gameObject;
 	
+	private GameObject getGameObject () {
+		return this.gameObject;
+	}
+	private void setGameObject(GameObject gObject) {
+		this.gameObject=gObject;
+		gObject.pickedUp(this);
+		
+	}
+	private int weightGameObject() {
+		if (this.gameObject!=null)
+			return 0;
+		else {
+			return this.gameObject.getWeight();
+		}
+	}
+	private boolean hasGameObject() {
+		if (this.gameObject!=null)
+				return true;
+		else {
+			return false;
+		}
+	}
 	/**
 	 * Find a path to a given cube in the gameworld
 	 * @param x

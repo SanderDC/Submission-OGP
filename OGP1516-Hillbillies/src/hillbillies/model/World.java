@@ -623,17 +623,28 @@ public class World {
 	
 	
 	public boolean backtrack(int x, int y, int z){			
+		
+		Set <Vector>  positionsToRemove = new HashSet<>() ;
 		if (isBorder(x, y, z)) {
 			return true;
 		}
 		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
 		for (Vector vector : Positions) {
 			for(Vector vector2: prevPos) {
-				if (vector==vector2){
-					Positions.remove(vector);
+				if (vector.equals(vector2)){
+					positionsToRemove.add(vector);
+					System.out.println("x");
+					System.out.println(vector.getCubeX());
+					System.out.println("y");
+					System.out.println(vector.getCubeY());
+					System.out.println("z");
+					System.out.println(vector.getCubeZ());
 				}
 			}
-		}					
+		}
+		for (Vector vector : positionsToRemove) {
+			Positions.remove(vector);
+		}
 		for (Vector vector: Positions) {
 			prevPos.add(vector);
 			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){

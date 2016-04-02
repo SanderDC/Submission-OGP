@@ -39,7 +39,7 @@ public class WorldTest {
 		coordinates[3][1][2]=1;
 		coordinates[2][1][2]=1;
 		coordinates[0][1][0]=1;
-		coordinates[0][1][1]=1;
+		
 		world3= new World(coordinates);
 	}
 
@@ -49,7 +49,7 @@ public class WorldTest {
 	
 	@Test
 	public void isConnectedtoBorderWorld3(){
-		assertTrue(world3.isConnectedToBorder(3, 1, 2));
+		assertFalse(world3.isConnectedToBorder(3, 1, 2));
 	}
 
 }

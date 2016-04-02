@@ -489,9 +489,6 @@ public class World {
 		}
 	}
 	public boolean isSolidGround(int x, int y, int z) {
-		if (!isInsideWorld(new Vector(x, y, z))){
-			return false;
-		}
 		return IsSolidMaterial(getCubeType(x,y,z));
 	}
 	
@@ -625,15 +622,7 @@ public class World {
 	
 	
 	public boolean backtrack(int x, int y, int z){
-		prevPos.add(new Vector(x, y, z));
-		for (Vector vector : prevPos){
-			System.out.println("x");
-			System.out.println(vector.getCubeX());
-			System.out.println("y");
-			System.out.println(vector.getCubeY());
-			System.out.println("z");
-			System.out.println(vector.getCubeZ());}
-		
+		prevPos.add(new Vector(x, y, z));				
 		if (isBorder(x, y, z)) {
 			return true;
 		}
@@ -644,17 +633,10 @@ public class World {
 					Positions.remove(vector);
 				}
 			}
-		}
-		
-			
+		}					
 		for (Vector vector: Positions) {
 			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 				return true;
-			
-			
-				
-			
-			
 			}
 		prevPos.remove(new Vector(x, y, z));
 		return false;

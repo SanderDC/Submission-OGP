@@ -677,12 +677,7 @@ public class World {
 			for(Vector vector2: prevPos) {
 				if (vector.equals(vector2)){
 					positionsToRemove.add(vector);
-					System.out.println("x");
-					System.out.println(vector.getCubeX());
-					System.out.println("y");
-					System.out.println(vector.getCubeY());
-					System.out.println("z");
-					System.out.println(vector.getCubeZ());
+					
 				}
 			}
 		}

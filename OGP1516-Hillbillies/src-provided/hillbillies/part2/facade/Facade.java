@@ -344,7 +344,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public Set<Boulder> getBoulders(World world) throws ModelException {
-		return getBoulders(world);
+		return null;
 	}
 
 	@Override
@@ -354,7 +354,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
-		return getLogs(world);
+		return null;
 	}
 	
 }

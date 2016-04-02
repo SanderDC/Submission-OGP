@@ -318,7 +318,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
+		unit.WorkAt(x, y, z);
 		
 	}
 

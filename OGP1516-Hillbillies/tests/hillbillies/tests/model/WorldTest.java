@@ -2,6 +2,8 @@ package hillbillies.tests.model;
 
 import static org.junit.Assert.*;
 
+import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,13 +15,11 @@ import hillbillies.model.Vector;
 import hillbillies.model.World;
 
 public class WorldTest {
-
+	private static World world3;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		int [][][] coordinates=new int[3][3][3];
-		coordinates[1][1][1]=1;
-		World world3= new World(coordinates);
+		
 		
 	}
 	
@@ -29,7 +29,16 @@ public class WorldTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
+		int [][][] coordinates=new int[5][5][5];
+		coordinates[1][1][1]=1;
+		coordinates[1][1][2]=1;
+		coordinates[0][0][0]=1;
+		coordinates[1][2][2]=1;
+		coordinates[1][3][2]=1;
+		coordinates[1][1][3]=1;
+		coordinates[3][1][2]=1;
+		coordinates[2][1][2]=1;
+		world3= new World(coordinates);
 	}
 
 	@After
@@ -38,7 +47,7 @@ public class WorldTest {
 	
 	@Test
 	public void isConnectedtoBorderWorld3(){
-		world3
+		assertFalse(world3.isConnectedToBorder(1, 1, 1));
 	}
 
 }

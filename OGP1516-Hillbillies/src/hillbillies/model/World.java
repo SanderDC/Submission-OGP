@@ -489,6 +489,9 @@ public class World {
 		}
 	}
 	public boolean isSolidGround(int x, int y, int z) {
+		if (!isInsideWorld(new Vector(x, y, z))){
+			return false;
+		}
 		return IsSolidMaterial(getCubeType(x,y,z));
 	}
 	
@@ -612,15 +615,26 @@ public class World {
 	
 	
 	
-	
-	
-	
-	
 	public boolean isConnectedToBorder(int x, int y, int z){
+		boolean returnvalue;
+		returnvalue=backtrack(x, y, z);
+		prevPos.clear();
+		return returnvalue;
+	}
+	
+	
+	
+	public boolean backtrack(int x, int y, int z){
 		prevPos.add(new Vector(x, y, z));
+		for (Vector vector : prevPos){
+			System.out.println("x");
+			System.out.println(vector.getCubeX());
+			System.out.println("y");
+			System.out.println(vector.getCubeY());
+			System.out.println("z");
+			System.out.println(vector.getCubeZ());}
 		
 		if (isBorder(x, y, z)) {
-			prevPos.clear();
 			return true;
 		}
 		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
@@ -631,10 +645,10 @@ public class World {
 				}
 			}
 		}
-		if (Positions.size()==0)
-			return false;
+		
+			
 		for (Vector vector: Positions) {
-			if(isConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
+			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 				return true;
 			
 			
@@ -696,7 +710,7 @@ public class World {
 	}
 	}
 	
-	private Set<Vector> prevPos;
+	private Set<Vector> prevPos=new HashSet<>();
 	
 	
 	

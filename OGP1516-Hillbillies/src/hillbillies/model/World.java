@@ -617,30 +617,85 @@ public class World {
 	
 	
 	public boolean isConnectedToBorder(int x, int y, int z){
-		CheckadjacentValidPositions(x,y,z);
-		for (int i: CheckadjacentValidPositions()) {
+		prevPos.add(new Vector(x, y, z));
+		
+		if (isBorder(x, y, z)) {
+			return true;
+		}
+		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
+		for (Vector vector : Positions) {
+			for(Vector vector2: prevPos) {
+				if (vector==vector2){
+					Positions.remove(vector);
+				}
+			}
+		}
+		if (Positions.size()==0)
+			return false;
+		for (Vector vector: Positions) {
+			if(isConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
+				return true;
 			
+			
+				
+			
+			
+			}
+		prevPos.remove(new Vector(x, y, z));
+		return false;
 		}
 		
-	}
-	public int []  CheckadjacentValidPositions(int X, int Y, int Z) {
-		int []  validpositions= new int [6];
+	
+	public Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
+		Set <Vector>  validpositions = null;
 		for(int x=-1; x<=1;x++){
+			if (x==0) {
+				
+			}
+			else {
+				if (isSolidGround(x+X, Y, Z)) {
+					validpositions.add(new Vector(x+X, Y, Z));
+				}
+			}
 			
 		}
 			
 		for(int y=-1;y<=1;y++){
+			if (y==0) {
+				
+			}
+			else {
+				if (isSolidGround(X, Y+y, Z)) {
+					validpositions.add(new Vector(X, Y+y, Z));
+				}
 			
+			}
 		}
 				
 		for(int z=-1; z<=1;z++){
+			if (z==0) {
+				
+			}
+			else {
+				if (isSolidGround(X, Y, Z+z)) {
+					validpositions.add(new Vector(X, Y, Z+z));
+				}
 			
+			}
 		}
+		return validpositions;
 	}
 	
+	private boolean isBorder(int x,int y,int z){
+		if (x==0||x==maxCoordinates()[0]||y==0||y==maxCoordinates()[1]||z==0||z==maxCoordinates()[2]) {
+			return true;
+		}
+	else {
+		return false;
+	}
+	}
 	
-	
-	
+	private Set<Vector> prevPos;
 	
 	
 	

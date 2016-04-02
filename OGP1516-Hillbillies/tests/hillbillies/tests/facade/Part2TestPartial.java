@@ -70,5 +70,6 @@ public class Part2TestPartial {
 			facade.advanceTime(world, step);
 		facade.advanceTime(world, time - n * step);
 	}
+	
 
 }

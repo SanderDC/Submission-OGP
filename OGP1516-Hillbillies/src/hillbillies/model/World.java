@@ -45,9 +45,27 @@ public class World {
 					 if (unitCanStandAt(new Vector(x,y,z)))
 						 this.addStandablePosition(new Vector(x,y,z));
 				 }}}
+		for (int x=0;x<nbCoordinateX();x++){
+			 for (int y=0;y<nbCoordinateY();y++){
+				 for (int z=0;z<nbCoordinateZ();z++){
+					 if (isSolidGround(x, y, z)) {
+						 if(!isConnectedToBorder(x, y, z)){
+							 partOfCaveIn.add(new Vector(x, y, z));
+						}
+						 }
+						 
+					 
+					 
+					 
+				 
+				 }
+			 }
+		for (Vector vector : partOfCaveIn) {
+			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
+		}
 		
-	}
-
+	}}
+	private Set<Vector> partOfCaveIn =new HashSet<>();
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
@@ -636,6 +654,9 @@ public class World {
 	
 	
 	public boolean isConnectedToBorder(int x, int y, int z){
+		if (!isSolidGround(x, y, z)) {
+			return false;
+		}
 		boolean returnvalue;
 		prevPos.add(new Vector(x, y, z));	
 		returnvalue=backtrack(x, y, z);

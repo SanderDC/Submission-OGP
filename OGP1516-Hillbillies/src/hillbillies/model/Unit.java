@@ -2306,15 +2306,19 @@ public class Unit {
 		if (! this.getWorld().unitCanStandAt(target))
 			throw new IllegalArgumentException();
 		if (this.ismoving()){
+			this.findPath(cubeX, cubeY, cubeZ);
 			this.setStatus(Status.MOVINGDISTANT);
 			this.setDistantTarget(target);
-			this.findPath(cubeX, cubeY, cubeZ);
 			return;
 		}
-		this.setStatus(Status.MOVINGDISTANT);
-		this.setDistantTarget(target);
-		this.findPath(cubeX, cubeY, cubeZ);
-		this.moveToNextCube();
+		try {
+			this.findPath(cubeX, cubeY, cubeZ);
+			this.setStatus(Status.MOVINGDISTANT);
+			this.setDistantTarget(target);
+			this.moveToNextCube();
+		} catch (IllegalArgumentException e) {
+			System.out.println("unreachable position");
+		}
 	}
 
 
@@ -3034,6 +3038,7 @@ public class Unit {
 			if (current.equals(end)){
 				finished = true;
 				setPath(closed,start,end);
+				return;
 			}
 			for (Node neighbour:current.getNeighbouringNodes()){
 				if (!this.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
@@ -3051,6 +3056,10 @@ public class Unit {
 						open.replace(index, neighbour);
 					}
 				}
+			}
+			if (open.size() == 0){
+				//No more nodes to evaluate and path has not been found
+				throw new IllegalArgumentException("Unreachable position");
 			}
 		}
 	}

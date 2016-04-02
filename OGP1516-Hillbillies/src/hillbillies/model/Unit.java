@@ -3007,6 +3007,24 @@ public class Unit {
 			return false;
 		}
 	}
+	public boolean isCarryingBoulder() {
+		if (this.gameObject instanceof Boulder) {
+			return true;
+			
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean isCarryingLog() {
+		if (this.gameObject instanceof Log) {
+			return true;
+			
+		}
+		else {
+			return false;
+		}
+	}
 	/**
 	 * Find a path to a given cube in the gameworld
 	 * @param x

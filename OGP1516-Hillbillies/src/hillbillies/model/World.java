@@ -96,6 +96,9 @@ public class World {
 		for (Unit unit:this.getUnits()){
 			unit.advanceTime(time);
 		}
+		for (GameObject gObject:this.getGameObjects()){
+			gObject.advanceTime(time);
+		}
 	}
 	
 	public  int getCubeType(int x,int y, int z) {
@@ -474,7 +477,27 @@ public class World {
 	 *       |   ( (gameObject != null) &&
 	 *       |     (! gameObject.isTerminated()) )
 	 */
+	
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
+	
+	public Set<Log> GetAllLogs() {
+		Set<Log> Logs= new HashSet<>();
+		for (GameObject log : gameObjects) {
+			if (log instanceof Log) {
+				Logs.add((Log)log);
+			}
+		}
+		return Logs;
+	}
+	public Set<Boulder> GetAllBoulders() {
+		Set<Boulder> Boulders= new HashSet<>();
+		for (GameObject bObject : gameObjects) {
+			if (bObject instanceof Boulder) {
+				Boulders.add((Boulder)bObject);
+			}
+		}
+		return Boulders;
+	}
 	
 	public Set<GameObject> getGameObjects(){
 		return this.gameObjects;

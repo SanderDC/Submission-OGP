@@ -620,6 +620,7 @@ public class World {
 		prevPos.add(new Vector(x, y, z));
 		
 		if (isBorder(x, y, z)) {
+			prevPos.clear();
 			return true;
 		}
 		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
@@ -647,7 +648,7 @@ public class World {
 		
 	
 	public Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
-		Set <Vector>  validpositions = null;
+		Set <Vector>  validpositions = new HashSet<>() ;
 		for(int x=-1; x<=1;x++){
 			if (x==0) {
 				
@@ -687,7 +688,7 @@ public class World {
 	}
 	
 	private boolean isBorder(int x,int y,int z){
-		if (x==0||x==maxCoordinates()[0]||y==0||y==maxCoordinates()[1]||z==0||z==maxCoordinates()[2]) {
+		if ((x==0||x==maxCoordinates()[0]||y==0||y==maxCoordinates()[1]||z==0||z==maxCoordinates()[2])&&(isSolidGround(x, y, z))) {
 			return true;
 		}
 	else {

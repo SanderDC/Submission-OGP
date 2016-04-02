@@ -614,6 +614,7 @@ public class World {
 	
 	public boolean isConnectedToBorder(int x, int y, int z){
 		boolean returnvalue;
+		prevPos.add(new Vector(x, y, z));	
 		returnvalue=backtrack(x, y, z);
 		prevPos.clear();
 		return returnvalue;
@@ -621,8 +622,7 @@ public class World {
 	
 	
 	
-	public boolean backtrack(int x, int y, int z){
-		prevPos.add(new Vector(x, y, z));				
+	public boolean backtrack(int x, int y, int z){			
 		if (isBorder(x, y, z)) {
 			return true;
 		}
@@ -635,10 +635,14 @@ public class World {
 			}
 		}					
 		for (Vector vector: Positions) {
-			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
+			prevPos.add(vector);
+			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){
 				return true;
+				}
+			prevPos.remove(vector);
+				
 			}
-		prevPos.remove(new Vector(x, y, z));
+		
 		return false;
 		}
 		

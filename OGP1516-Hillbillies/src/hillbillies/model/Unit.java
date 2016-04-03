@@ -2685,8 +2685,12 @@ public class Unit {
 						newlist.add(vector);
 					}
 					Collections.shuffle(newlist);
-					for (Vector vector : newlist) {
+					for (Vector vector : newlist) {try {
 						WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+					} catch (IllegalArgumentException e) {
+						// TODO: handle exception
+					}
+						
 					}
 				}
 					}

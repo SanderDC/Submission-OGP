@@ -9,7 +9,7 @@ public class Boulder extends GameObject {
 	 * @post	The Boulder's position equals the given position.
 	 * @post	The Boulder's weight is a random value between 10 and 50, inclusive.
 	 */
-	public Boulder(Vector position){
-		super(position);
+	public Boulder(Vector position, World world){
+		super(position, world);
 	}
 }

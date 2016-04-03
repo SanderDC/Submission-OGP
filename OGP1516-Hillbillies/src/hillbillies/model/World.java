@@ -35,7 +35,7 @@ public class World {
 	 */
 	public World(int[][][] Coordinates, TerrainChangeListener modelListener){
 
-
+		this.modelListener = modelListener;
 		this.Coordinates=Coordinates;
 		for (int x=0;x<nbCoordinateX();x++){
 			for (int y=0;y<nbCoordinateY();y++){
@@ -65,7 +65,6 @@ public class World {
 		for (Vector vector : partOfCaveIn) {
 			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 		}
-		this.modelListener = modelListener;
 	}
 	
 	private TerrainChangeListener modelListener;

@@ -1829,6 +1829,9 @@ public class Unit {
 	 * 
 	 */
 	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
+		if (!isAdjacentPosition(new Vector(x, y, z))) {
+			throw new IllegalStateException();
+		}
 		if (isAttacking()) {
 			throw new IllegalStateException("Unit is fighting");
 		}

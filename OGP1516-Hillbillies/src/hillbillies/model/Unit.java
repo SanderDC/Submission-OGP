@@ -2077,7 +2077,6 @@ public class Unit {
 				if (object.getPosition().getCubeX()==x){
 					if (object.getPosition().getCubeY()==y){
 						if (object.getPosition().getCubeZ()==z){
-							object.removeFromWorld();
 							setGameObject(object);
 							return;
 						}
@@ -2091,7 +2090,6 @@ public class Unit {
 				if (object.getPosition().getCubeX()==x){
 					if (object.getPosition().getCubeY()==y){
 						if (object.getPosition().getCubeZ()==z){
-							object.removeFromWorld();
 							setGameObject(object);
 							return;
 						}

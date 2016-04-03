@@ -54,11 +54,6 @@ public class World {
 							partOfCaveIn.add(new Vector(x, y, z));
 						}
 					}
-
-
-
-
-
 				}
 			}
 		}
@@ -67,9 +62,46 @@ public class World {
 		}
 	}
 	
+	public boolean isConnectedToBorderStartup(int x, int y, int z){
+		if (!isSolidGround(x, y, z)) {
+			return false;
+		}
+		boolean returnvalue;
+		prevPos.add(new Vector(x, y, z));
+		returnvalue=backtrackstartup(x, y, z);
+		prevPos.clear();
+		return returnvalue;
+	}
+	public boolean backtrackstartup(int x, int y, int z){			
+		allVisited.add(new Vector(x, y, z));
+		Set <Vector>  positionsToRemove = new HashSet<>() ;
+		if (isBorder(x, y, z)) {
+			return true;
+		}
+		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
+		for (Vector vector : Positions) {
+			for(Vector vector2: prevPos) {
+				if (vector.equals(vector2)){
+					positionsToRemove.add(vector);
+
+				}
+			}
+		}
+		for (Vector vector : positionsToRemove) {
+			Positions.remove(vector);
+		}
+		for (Vector vector: Positions) {
+			prevPos.add(vector);
+			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){
+				return true;
+			}
+			prevPos.remove(vector);
+		}
+		return false;
+	}
+	private Set<Vector>partOfCaveIn=new HashSet<>();
+	private Set<Vector>allVisited=new HashSet<>();
 	private TerrainChangeListener modelListener;
-	
-	private Set<Vector> partOfCaveIn =new HashSet<>();
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}

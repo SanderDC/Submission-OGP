@@ -3016,7 +3016,7 @@ public class Unit {
 		
 	}
 	private int weightGameObject() {
-		if (this.gameObject!=null)
+		if (this.gameObject==null)
 			return 0;
 		else {
 			return this.gameObject.getWeight();

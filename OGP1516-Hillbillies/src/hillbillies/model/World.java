@@ -834,7 +834,20 @@ public class World {
 	}
 
 	private Set<Vector> prevPos=new HashSet<>();
-
+	
+	public List<Vector> getSolidPositions(){
+		List<Vector>Solidgrounds=new ArrayList<>();
+		for (int x=0;x<nbCoordinateX();x++){
+			for (int y=0;y<nbCoordinateY();y++){
+				for (int z=0;z<nbCoordinateZ();z++){
+					if (isSolidGround(x, y, z)) {
+								Solidgrounds.add(new Vector(x, y, z));			
+					}
+				}
+				}
+			}
+		return Solidgrounds;
+	}
 
 
 }

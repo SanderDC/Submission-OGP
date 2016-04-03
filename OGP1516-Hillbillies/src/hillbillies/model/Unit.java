@@ -2648,27 +2648,74 @@ public class Unit {
 			Random randomgenerator= new Random();
 			int randomnumber=randomgenerator.nextInt(3);
 			if (randomnumber==0){
-				try {
-					int randomPositionIndex = randomgenerator.nextInt(this.getWorld().getStandablePositions().size());
-					this.moveTo(this.getWorld().getStandablePositions().get(randomPositionIndex));
+				List <Vector>newlist= this.getWorld().getStandablePositions();
+				Collections.shuffle(newlist);
+				for (Vector vector : newlist) {
+					try {
+						this.moveTo(vector);
+						int randomnumber1=randomgenerator.nextInt(2);
+						if (randomnumber1==1) {
+							try {
+								setSprinting(true);
+							} catch (IllegalStateException e){
+								this.setSprinting(false);
+							}
+						}
+						else{
+							setSprinting(false);
+
+						}
+						return;
+					} catch (PathfindingException e) {
+						
+					}
+				}
+				}
+				
+			if (randomnumber==1){				
+				if (hasGameObject()) {
+					List <Vector>newlist= this.getWorld().getStandablePositions();
+					Collections.shuffle(newlist);
+					for (Vector vector : newlist) {
+						try {
+							this.WorkAt(vector.getCubeX(),vector.getCubeY(),vector.getCubeZ());
+							return;}
+						catch (PathfindingException e) {
+							
+						}
+				}}
+				else {
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
-						try {
-							setSprinting(true);
-						} catch (IllegalStateException e){
-							this.setSprinting(false);
+						Set<GameObject> gameobjects=this.getWorld().getGameObjects();
+						List<GameObject>newlist=new ArrayList<GameObject>();
+						for (GameObject gameObject : gameobjects) {
+							newlist.add(gameObject);
+						}
+						Collections.shuffle(newlist);
+						for (GameObject gameObject : newlist) {
+							try {
+								this.WorkAt(gameObject.getPosition().getCubeX(), gameObject.getPosition().getCubeY(), gameObject.getPosition().getCubeZ());
+							} catch (PathfindingException e) {
+								
+							}
 						}
 					}
-					else{
-						setSprinting(false);
-
+					else {
+						List<Vector>newlist=this.getWorld().getSolidPositions();
+						Collections.shuffle(newlist);
+						for (Vector vector : newlist) {
+							try {
+								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+								
+							} catch (PathfindingException e) {
+								
+							}
+						}
 					}
-				} catch (PathfindingException e) {
-					defaultbehavior();
+					
 				}
-			}
-			if (randomnumber==1){
-				this.setToWork();}
+				}
 			if (randomnumber==2){
 				this.resting();}
 		}

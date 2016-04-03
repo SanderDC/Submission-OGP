@@ -1849,7 +1849,7 @@ public class Unit {
 			this.settingInitialResttimeOk();
 			if (hasGameObject()&&!(world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2)){
 				setWorkorder(1);				
-				return;
+				
 			}
 			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
 				setWorkorder(3);				

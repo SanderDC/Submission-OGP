@@ -3078,6 +3078,7 @@ public class Unit {
 			if (current.equals(end)){
 				finished = true;
 				setPath(closed,start,end);
+				return;
 			}
 			for (Node neighbour:current.getNeighbouringNodes()){
 				if (!this.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||

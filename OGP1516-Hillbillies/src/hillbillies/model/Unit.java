@@ -1945,7 +1945,7 @@ public class Unit {
 		this.setStatus(Status.WORKING);
 		this.setActivityTime(calculatingWorkTime());
 		if (getWorkorder()==3) {
-			this.orientation=Math.atan2(this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getX());
+			this.orientation=Math.atan2(this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getX());
 		}
 
 

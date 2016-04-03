@@ -2311,6 +2311,8 @@ public class Unit {
 			else
 				this.settingInitialResttimeOk();
 		}
+		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
+			return; //TODO: documentatie updaten
 		if (isWorking()) {
 			setWorkorder(0);
 		}
@@ -2427,6 +2429,9 @@ public class Unit {
 		}
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
+		String test = "test";
+		if (this.getNearTarget() == null)
+			test.length();
 		if ((this.getNearTarget().liesBetween(this.getPosition(), new_pos)) ||
 				(this.getNearTarget().equals(new_pos))){
 			this.setExp(this.getExp() + 1);
@@ -3074,13 +3079,15 @@ public class Unit {
 	 * @param z
 	 * 			The z-coordinate of the target cube
 	 * @throws IllegalArgumentException
-	 * 			The given cube is not a position where a Unit can stand.
-	 * 			! this.getWorld().unitCanStandAt(x,y,z)
+	 * 			The given cube is not a position where a Unit can stand
+	 * 			or the Unit is already at the given cube
+	 * 			| ! this.getWorld().unitCanStandAt(x,y,z) ||
+	 * 			| this.getPosition().getCubePosition().equals(new Vector(x,y,z))
 	 * @throws PathfindingException
 	 * 			No path could be found to the given target position
 	 */
 	private void findPath(int x, int y, int z) throws IllegalArgumentException, PathfindingException{
-		if (!this.getWorld().unitCanStandAt(x, y, z))
+		if (!this.getWorld().unitCanStandAt(x, y, z) || (this.getPosition().getCubePosition().equals(new Vector(x,y,z))))
 			throw new IllegalArgumentException("The Unit cannot move to this position!");
 		Heap<Node> open = new Heap<>();
 		List<Node> closed = new ArrayList<>();

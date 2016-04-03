@@ -2999,6 +2999,11 @@ public class Unit {
 		assert (this.isTerminated());
 		World oldWorld = this.getWorld();
 		this.world = null;
+		for(Unit unit:oldWorld.getUnits()){
+			if (unit.getEnemy()==this) {
+				unit.setStatus(Status.IDLE);
+			}
+		}
 		oldWorld.removeUnit(this);
 	}
 	

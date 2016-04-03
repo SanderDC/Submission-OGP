@@ -2654,13 +2654,12 @@ public class Unit {
 						try {
 							setSprinting(true);
 						} catch (IllegalStateException e){
-							this.setSprinting(false);
+							//this.setSprinting(false);
 						}
 					}
-					else{
-						setSprinting(false);
-
-					}
+//					else{
+//						setSprinting(false);
+//					}
 				} catch (PathfindingException e) {
 					defaultbehavior();
 				}

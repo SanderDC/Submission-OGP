@@ -21,7 +21,7 @@ public abstract class GameObject {
 	 * @effect 	The position of this new GameObject is set to
 	 *         	the given position.
 	 */
-	public GameObject(Vector position,World world) throws IllegalArgumentException{
+	public GameObject(Vector position) throws IllegalArgumentException{
 		this.setPosition(position);
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;

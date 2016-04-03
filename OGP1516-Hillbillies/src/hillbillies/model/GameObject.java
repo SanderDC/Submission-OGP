@@ -240,8 +240,9 @@ public abstract class GameObject {
 	}
 	public void dropped(Unit unit) {
 		this.world=unit.getWorld();
-		this.position=unit.getPosition();
+		setPosition(unit.getPosition());
 		this.world.addGameObject(this);
+		unit.setGameObject(null);
 	}
 	
 }

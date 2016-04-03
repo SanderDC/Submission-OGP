@@ -399,23 +399,17 @@ public class Unit {
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
 	private boolean canHaveAsEnemy(Unit enemy) {
+		if (enemy==null) {
+			return true;
+		}
 		if( enemy.faction==this.faction)
 			return false;
 		if (enemy.isFalling()) {
 			return false;
 		}
-		
-		if (enemy==this) {
-			return false;
-		}
-		if (enemy==null) {
-			return true;
-		}
 		else if (this.isAdjacentPosition(enemy.getPosition())) {
 			return true;
 		} 
-		
-		
 		else {
 			return false;
 		}
@@ -1841,13 +1835,13 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-		if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
+		if (world.isSolidGround(x, y, z)) {
 			if (hasGameObject()) 
 				throw new IllegalArgumentException("not possible");
 				
 			
 		}
-		if (!containsGameObject(x, y, z)&&!world.isSolidGround(x, y, z)) {
+		if (!containsGameObject(x, y, z)&&!hasGameObject()&&!world.isSolidGround(x, y, z)) {
 			throw new IllegalArgumentException("no GameObjects Found");
 		}
 		
@@ -1855,24 +1849,25 @@ public class Unit {
 			setWorkposition(x, y, z);
 			this.settingInitialResttimeOk();
 			if (hasGameObject()){
-				setWorkorder(1);
 				moveTo(x, y, z);
+				setWorkorder(1);				
 				return;
 				}
 			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
-				setWorkorder(3);
 				moveTo(x-1, y-1, z);
+				setWorkorder(3);				
 				return;
 			}
 			
 			else {
-					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {
-						setWorkorder(2);
+					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
 						moveTo(x, y, z);
+						setWorkorder(2);
 					}
 					else {
-						setWorkorder(4);
 						moveTo(x, y, z);
+						setWorkorder(4);
+						
 					}
 			}															
 		}
@@ -3004,15 +2999,18 @@ public class Unit {
 	/**
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
-	private GameObject gameObject;
+	private GameObject gameObject=null;
 	
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
-	private void setGameObject(GameObject gObject) {
+	public void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
 			gObject.pickedUp(this);
+		}
+		if (hasGameObject()&&gObject==null) {
+			this.gameObject=null;
 		}
 		
 		
@@ -3167,4 +3165,55 @@ public class Unit {
 	 * Variable registering the path of this Unit.
 	 */
 	private List<Vector> path;
+	
+	
+	private boolean canbeInterruptedBy(Status status) {
+		if (this.status==Status.FALLING) {
+			return false;
+		}
+		if (this.status==Status.ATTACKING) {
+			if (status==Status.FALLING) {
+				return true;
+				}
+			else {
+				return false;
+			}
+			}
+		if (this.status==Status.RESTING) {
+			if (hasRestedEnough()) {
+				return true;
+			}
+			if (status==Status.ATTACKING||status==Status.FALLING) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (this.status==Status.WORKING) {
+			return true;
+		}
+		if (this.status==Status.IDLE) {
+			return true;
+		}
+		if (this.status==Status.MOVINGADJACENT) {
+			if (status==Status.FALLING) {
+				return true;
+				}
+		}
+	
+	if (this.status==Status.MOVINGDISTANT) {
+		if (status==Status.FALLING) {
+			return true;
+			}
+	}
+			
+		
+		
+		return true;
+	}
+	
+	
+	
+	
 }

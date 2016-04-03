@@ -2292,7 +2292,7 @@ public class Unit {
 	 * 			| (this.isresting() && !this.hasRestedEnough())
 	 */
 	public void moveTo(int cubeX, int cubeY, int cubeZ)
-			throws IllegalArgumentException,IllegalStateException{
+			throws IllegalArgumentException,IllegalStateException,PathfindingException{
 		if (this.isAttacking())
 			throw new IllegalStateException("The Unit cannot execute a movement while fighting");
 		if (this.isFalling())
@@ -2309,15 +2309,25 @@ public class Unit {
 		if (this.ismoving()){
 			this.setStatus(Status.MOVINGDISTANT);
 			this.setDistantTarget(target);
-			this.findPath(cubeX, cubeY, cubeZ);
 			return;
 		}
+		this.findPath(cubeX, cubeY, cubeZ);
 		this.setStatus(Status.MOVINGDISTANT);
 		this.setDistantTarget(target);
-		this.findPath(cubeX, cubeY, cubeZ);
 		this.moveToNextCube();
 	}
-
+	
+	/**
+	 * Initiate movement to the given target cube.
+	 * @param target
+	 * 			The target cube to start moving to.
+	 * @effect	If possible, movement to the given cube is initiated.
+	 * 			| this.moveTo(target.getCubeX(), target.getCubeY(), target.getCubeZ())
+	 */
+	private void moveTo(Vector target)
+	throws IllegalArgumentException,IllegalStateException,PathfindingException{
+		this.moveTo(target.getCubeX(), target.getCubeY(), target.getCubeZ());
+	}
 
 	/**
 	 * Make the Unit move to the next cube on its path to its distantTarget
@@ -2420,8 +2430,14 @@ public class Unit {
 				}
 				else {
 					if (!isValidPath(this.getPath())){
-						this.findPath(this.getDistantTarget());
-						this.moveToNextCube();
+						try {
+							this.findPath(this.getDistantTarget());
+							this.moveToNextCube();
+						} catch (IllegalArgumentException|PathfindingException e){
+							this.setDistantTarget(null);
+							this.setSprinting(false);
+							this.setStatus(Status.IDLE);
+						}
 					} else
 						this.moveToNextCube();
 				}
@@ -3041,8 +3057,10 @@ public class Unit {
 	 * @throws IllegalArgumentException
 	 * 			The given cube is not a position where a Unit can stand.
 	 * 			! this.getWorld().unitCanStandAt(x,y,z)
+	 * @throws PathfindingException
+	 * 			No path could be found to the given target position
 	 */
-	private void findPath(int x, int y, int z) throws IllegalArgumentException{
+	private void findPath(int x, int y, int z) throws IllegalArgumentException, PathfindingException{
 		if (!this.getWorld().unitCanStandAt(x, y, z))
 			throw new IllegalArgumentException("The Unit cannot move to this position!");
 		Heap<Node> open = new Heap<>();
@@ -3075,6 +3093,8 @@ public class Unit {
 					}
 				}
 			}
+			if (open.size() == 0) //No path could be found
+				throw new PathfindingException(this.getPosition(), new Vector(x,y,z));
 		}
 	}
 	
@@ -3107,7 +3127,8 @@ public class Unit {
 			if(!this.getWorld().unitCanStandAt(vector))
 				return false;
 		}
-		return true;
+		boolean result = (path.get(path.size()-1).equals(this.getDistantTarget()));
+		return result;
 	}
 	
 	private void setPath(List<Node> closed, Node start, Node end) {

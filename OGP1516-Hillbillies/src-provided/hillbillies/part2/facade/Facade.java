@@ -5,6 +5,7 @@ import java.util.Set;
 import hillbillies.model.Boulder;
 import hillbillies.model.Faction;
 import hillbillies.model.Log;
+import hillbillies.model.PathfindingException;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
@@ -173,7 +174,7 @@ public class Facade implements IFacade{
 		try {
 			unit.setDefaultBehaviorBoolean(false);
 			unit.moveTo(cube[0], cube[1], cube[2]);
-		} catch (IllegalArgumentException|IllegalStateException e) {
+		} catch (IllegalArgumentException|IllegalStateException|PathfindingException e) {
 			throw new ModelException(e);
 		}
 	}

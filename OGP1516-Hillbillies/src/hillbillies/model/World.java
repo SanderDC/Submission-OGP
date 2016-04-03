@@ -22,7 +22,7 @@ import hillbillies.part2.listener.TerrainChangeListener;
  *
  */
 public class World {
-	
+
 	public static final double CUBELENGTH = 1;
 
 	/**
@@ -33,41 +33,38 @@ public class World {
 	 * @post   This new World has no Factions yet.
 	 * @post   This new World has no GameObjects yet.
 	 */
-	public World(int[][][] Coordinates){
-		
-		
+	public World(int[][][] Coordinates, TerrainChangeListener modelListener){
+
+		this.modelListener = modelListener;
 		this.Coordinates=Coordinates;
 		for (int x=0;x<nbCoordinateX();x++){
-			 for (int y=0;y<nbCoordinateY();y++){
-				 for (int z=0;z<nbCoordinateZ();z++){
-					 if(!isValidMaterial(Coordinates[x][y][z])){
-						 Coordinates[x][y][z]=0;
-					 }
-					 if (unitCanStandAt(new Vector(x,y,z)))
-						 this.addStandablePosition(new Vector(x,y,z));
-				 }}}
+			for (int y=0;y<nbCoordinateY();y++){
+				for (int z=0;z<nbCoordinateZ();z++){
+					if(!isValidMaterial(Coordinates[x][y][z])){
+						Coordinates[x][y][z]=0;
+					}
+					if (unitCanStandAt(new Vector(x,y,z)))
+						this.addStandablePosition(new Vector(x,y,z));
+				}}}
 		for (int x=0;x<nbCoordinateX();x++){
-			 for (int y=0;y<nbCoordinateY();y++){
-				 for (int z=0;z<nbCoordinateZ();z++){
-					 if (isSolidGround(x, y, z)) {
-						 if(!isConnectedToBorder(x, y, z)){
-							 partOfCaveIn.add(new Vector(x, y, z));
+			for (int y=0;y<nbCoordinateY();y++){
+				for (int z=0;z<nbCoordinateZ();z++){
+					if (isSolidGround(x, y, z)) {
+						if(!isConnectedToBorder(x, y, z)){
+							partOfCaveIn.add(new Vector(x, y, z));
 						}
 					}
-						 
-					 
-					 
-					 
-				 
-				 }
-			 }
-		}
 
+
+
+
+
+				}
+			}
+		}
 		for (Vector vector : partOfCaveIn) {
 			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 		}
-		
-		this.modelListener = modelListener;
 	}
 	
 	private TerrainChangeListener modelListener;
@@ -88,7 +85,7 @@ public class World {
 	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
 	}
-	
+
 	public int [] maxCoordinates(){
 		int [] maxcoordinates= new int [3];
 		maxcoordinates[0]=nbCoordinateX()-1;
@@ -96,7 +93,7 @@ public class World {
 		maxcoordinates[2]=nbCoordinateZ()-1;
 		return maxcoordinates;
 	}
-	
+
 	/**
 	 * Check whether a given position is inside this gameworld.
 	 * @param position
@@ -112,9 +109,9 @@ public class World {
 		}
 		return true;
 	}
-	
+
 	private int [][][] Coordinates;
-	
+
 	public void advanceTime(double time)throws IllegalArgumentException {
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
@@ -125,7 +122,7 @@ public class World {
 			gObject.advanceTime(time);
 		}
 	}
-	
+
 	public  int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
 
@@ -133,17 +130,17 @@ public class World {
 	public void setCubeType(int x,int y, int z, int value) {
 		this.getCoordinates()[x][y][z]=value;
 	}
-	
+
 	public boolean isValidMaterial(int i) {
-			
-		
+
+
 		if (i>=0&&i<=3) {
 			return true;
 		}
 		else {
 			return false;
 		}
-		
+
 	}
 
 	/**
@@ -197,7 +194,7 @@ public class World {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Return all Units currently living in this World.
 	 */
@@ -502,9 +499,9 @@ public class World {
 	 *       |   ( (gameObject != null) &&
 	 *       |     (! gameObject.isTerminated()) )
 	 */
-	
+
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
-	
+
 	public Set<Log> GetAllLogs() {
 		Set<Log> Logs= new HashSet<>();
 		for (GameObject log : gameObjects) {
@@ -523,12 +520,12 @@ public class World {
 		}
 		return Boulders;
 	}
-	
+
 	public Set<GameObject> getGameObjects(){
 		return this.gameObjects;
 	}
-	
-	
+
+
 	public boolean IsSolidMaterial(int i){
 		if(i==1||i==2)
 			return true;
@@ -539,7 +536,7 @@ public class World {
 	public boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether the cube at the given coordinates is passable.
 	 * @param x
@@ -554,9 +551,10 @@ public class World {
 	boolean isPassable(int x, int y, int z){
 		return ((this.getCubeType(x, y, z) == 0) || (this.getCubeType(x, y, z) == 3));
 	}
-	
+
 	public void caveIn(int x, int y, int z, int value) {
 		setCubeType(x, y, z, 0);
+		this.modelListener.notifyTerrainChanged(x, y, z);
 		if (Math.random()>=0.25) {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
@@ -566,7 +564,7 @@ public class World {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check whether a Unit can stand at the given position.
 	 * @param position
@@ -594,7 +592,7 @@ public class World {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check whether a Unit can stand at the cube with the given cube coordinates
 	 * @param x
@@ -608,7 +606,7 @@ public class World {
 	boolean unitCanStandAt(int x, int y, int z){
 		return unitCanStandAt(new Vector(x,y,z));
 	}
-	
+
 	/**
 	 * Return a set containing all cubes directly adjacent to the given position
 	 * that are not outside the gameworld.
@@ -628,7 +626,7 @@ public class World {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return a Set containing all positions in this game World where a Unit can stand.
 	 */
@@ -638,7 +636,7 @@ public class World {
 			result.add(vector);
 		return result;
 	}
-	
+
 	/**
 	 * Add a position to the Set of positions where a Unit can stand.
 	 * @param position
@@ -652,15 +650,15 @@ public class World {
 		assert (unitCanStandAt(position));
 		this.standablePositions.add(position);
 	}
-	
+
 	/**
 	 * A Set containing all positions in this game World where a Unit can stand.
 	 */
 	private List<Vector> standablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
 
-	
-	
-	
+
+
+
 	public boolean isConnectedToBorder(int x, int y, int z){
 		if (!isSolidGround(x, y, z)) {
 			return false;
@@ -671,11 +669,11 @@ public class World {
 		prevPos.clear();
 		return returnvalue;
 	}
-	
-	
-	
+
+
+
 	public boolean backtrack(int x, int y, int z){			
-		
+
 		Set <Vector>  positionsToRemove = new HashSet<>() ;
 		if (isBorder(x, y, z)) {
 			return true;
@@ -685,7 +683,7 @@ public class World {
 			for(Vector vector2: prevPos) {
 				if (vector.equals(vector2)){
 					positionsToRemove.add(vector);
-					
+
 				}
 			}
 		}
@@ -696,66 +694,66 @@ public class World {
 			prevPos.add(vector);
 			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){
 				return true;
-				}
-			prevPos.remove(vector);
-				
 			}
-		
-		return false;
+			prevPos.remove(vector);
+
 		}
-		
-	
+
+		return false;
+	}
+
+
 	public Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
 		Set <Vector>  validpositions = new HashSet<>() ;
 		for(int x=-1; x<=1;x++){
 			if (x==0) {
-				
+
 			}
 			else {
 				if (isSolidGround(x+X, Y, Z)) {
 					validpositions.add(new Vector(x+X, Y, Z));
 				}
 			}
-			
+
 		}
-			
+
 		for(int y=-1;y<=1;y++){
 			if (y==0) {
-				
+
 			}
 			else {
 				if (isSolidGround(X, Y+y, Z)) {
 					validpositions.add(new Vector(X, Y+y, Z));
 				}
-			
+
 			}
 		}
-				
+
 		for(int z=-1; z<=1;z++){
 			if (z==0) {
-				
+
 			}
 			else {
 				if (isSolidGround(X, Y, Z+z)) {
 					validpositions.add(new Vector(X, Y, Z+z));
 				}
-			
+
 			}
 		}
 		return validpositions;
 	}
-	
+
 	private boolean isBorder(int x,int y,int z){
 		if ((x==0||x==maxCoordinates()[0]||y==0||y==maxCoordinates()[1]||z==0||z==maxCoordinates()[2])&&(isSolidGround(x, y, z))) {
 			return true;
 		}
-	else {
-		return false;
+		else {
+			return false;
+		}
 	}
-	}
-	
+
 	private Set<Vector> prevPos=new HashSet<>();
-	
-	
-	
+
+
+
 }

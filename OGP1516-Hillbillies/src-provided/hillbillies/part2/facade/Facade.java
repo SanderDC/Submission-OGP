@@ -242,7 +242,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
-		return new World(terrainTypes);
+		return new World(terrainTypes, modelListener);
 	}
 
 	@Override

@@ -262,7 +262,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		// TODO Auto-generated method stub
+		
 		world.advanceTime(dt);
 	}
 
@@ -318,7 +318,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
+		unit.WorkAt(x, y, z);
 		
 	}
 

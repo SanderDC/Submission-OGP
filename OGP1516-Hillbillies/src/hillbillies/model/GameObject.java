@@ -21,7 +21,7 @@ public abstract class GameObject {
 	 * @effect 	The position of this new GameObject is set to
 	 *         	the given position.
 	 */
-	public GameObject(Vector position) throws IllegalArgumentException{
+	public GameObject(Vector position,World world) throws IllegalArgumentException{
 		this.setPosition(position);
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;
@@ -73,7 +73,7 @@ public abstract class GameObject {
 		
 		double[] arrayposition=  position.toArray();
 		for(int i=0;i<3;i++){
-			if (arrayposition[i]>world.maxCoordinates()[i]+1) {
+			if (arrayposition[i]>=(world.maxCoordinates()[i])+1) {
 				return false;
 			}
 		}

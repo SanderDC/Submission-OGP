@@ -497,7 +497,7 @@ public class Unit {
 	
 		double[] arrayposition =  position.toArray();
 		for(int i=0;i<3;i++){
-			if (arrayposition[i]>this.getWorld().maxCoordinates()[i]+1) {
+			if (arrayposition[i]>=this.getWorld().maxCoordinates()[i]+1) {
 				return false;
 			}
 		}
@@ -1847,7 +1847,7 @@ public class Unit {
 				
 			
 		}
-		if (!containsGameObject(x, y, z)) {
+		if (!containsGameObject(x, y, z)&&!world.isSolidGround(x, y, z)) {
 			throw new IllegalArgumentException("no GameObjects Found");
 		}
 		
@@ -1874,12 +1874,7 @@ public class Unit {
 						setWorkorder(4);
 						moveTo(x, y, z);
 					}
-			}
-			
-			
-			
-			
-			
+			}															
 		}
 		else {
 			throw new IllegalStateException("Unit has to rest a little bit");
@@ -1904,10 +1899,7 @@ public class Unit {
 				if (object.getPosition().getCubeY()==y){
 					if (object.getPosition().getCubeZ()==z){
 						containsBoulder=true;
-						
-						
-						
-					}
+				}
 					}
 				}
 			}
@@ -1921,8 +1913,7 @@ public class Unit {
 			if (object.getPosition().getCubeX()==x){
 				if (object.getPosition().getCubeY()==y){
 					if (object.getPosition().getCubeZ()==z){
-						containsLog=true;
-						
+						containsLog=true;						
 					}
 					}
 				}
@@ -1967,19 +1958,20 @@ public class Unit {
 	 *		|then new.getActivityTime=This.getActivityTime-time
 	 */
 	private void advanceWork(double time){
-		if (this.getActivityTime() - time <= 0){
+		if (!validWorkorder(this.workorder)) {
+			setStatus(Status.IDLE);
+		}
+		else{if (this.getActivityTime() - time <= 0){
 			this.setActivityTime(0);
 			this.setStatus(Status.IDLE);
 			this.setExp(this.getExp()+10);
 			if (workorder==1) {
-				dropObject();
-				
+				dropObject();			
 			}
 			if (workorder==2){
 				setToughness(this.getToughness()+1);
 				setWeight(this.getWeight()+1);
-				terminateBoulderAndLog();
-					
+				terminateBoulderAndLog();				
 			}
 			if (workorder==3)
 				world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()));
@@ -1988,15 +1980,14 @@ public class Unit {
 			}
 			setWorkorder(0);
 		} else
-			this.setActivityTime(this.getActivityTime()-time);
+			this.setActivityTime(this.getActivityTime()-time);}
 	}
 	private Set<GameObject> upgradematerial;
 	
 	/**
 	 * vernietigt materialen na upgrade
 	 */
-	private void terminateBoulderAndLog() {
-		
+	private void terminateBoulderAndLog() {	
 		for (GameObject object : world.getGameObjects()) {
 			if (object instanceof Boulder){
 			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
@@ -2005,17 +1996,13 @@ public class Unit {
 						
 						if (upgradematerial.size()==0) {
 							upgradematerial.add(object);
-						}
-						
-						
-						
+						}					
 					}
 					}
 				}
 			}
 		}
-		for (GameObject object : world.getGameObjects()) {
-			
+		for (GameObject object : world.getGameObjects()) {			
 			if (object instanceof Log){
 			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
 				if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
@@ -2068,6 +2055,17 @@ public class Unit {
 		
 		return true;
 	}
+	
+	private boolean hasActualWorkOrder(){
+		if (workorder>0) {
+			return true;
+		}
+	else {
+		return false;
+	}
+	}
+	
+	
 	/**
 	 * 
 	 * @param x
@@ -2136,7 +2134,10 @@ public class Unit {
 	 * workorder=3:remove solidGround
 	 * workorder=4:pick up gameObject
 	 */
-	public void setWorkorder(int workorder) {
+	public void setWorkorder(int workorder)throws IllegalArgumentException {
+		if (workorder<0||workorder>4) {
+			throw new IllegalArgumentException();
+		}
 		this.workorder = workorder;
 	}
 
@@ -2362,9 +2363,13 @@ public class Unit {
 			this.setTimeUntilRest(0);
 		else
 			this.setTimeUntilRest(this.getTimeUntilRest()-time);
+		
 		this.hasToRest();
 		Status status = this.getStatus();
 		if (status == Status.IDLE){
+			if (hasActualWorkOrder()) {
+				setToWork();
+			}
 			if (getdefaultbehaviorboolean())
 				defaultbehavior();
 		}

@@ -197,8 +197,8 @@ public class Unit {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-		
-//		this.setPosition(position);
+
+		//		this.setPosition(position);
 		this.position = new Vector(World.CUBELENGTH/2,World.CUBELENGTH/2,World.CUBELENGTH/2);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
@@ -246,7 +246,7 @@ public class Unit {
 		this.setExp(0);
 		this.setPath(null);
 	}
-	
+
 	/**
 	 * Create a new Unit with random properties in the given World.
 	 * @param world
@@ -255,13 +255,13 @@ public class Unit {
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
-//		Random random = new Random();
-//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
-//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
-//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
-//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
-//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
-//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
+		//		Random random = new Random();
+		//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
+		//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
+		//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
+		//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
+		//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
+		//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
 				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
 				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
@@ -488,7 +488,7 @@ public class Unit {
 	private boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
-	
+
 		double[] arrayposition =  position.toArray();
 		for(int i=0;i<3;i++){
 			if (arrayposition[i]>=this.getWorld().maxCoordinates()[i]+1) {
@@ -500,7 +500,7 @@ public class Unit {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
@@ -993,7 +993,7 @@ public class Unit {
 	 *  
 	 * @return the weigh of the unit and the object it may be carrying
 	 */
-	 
+
 	public int getTotalWeight(){
 		return this.weight+this.weightGameObject();
 	}
@@ -1026,7 +1026,7 @@ public class Unit {
 	 * Variable registering the largest legal value for a Unit's weight
 	 */
 	public static final int MAX_WEIGHT = 200;
-	
+
 	/**
 	 * Variable registering the smallest legal value for a new Unit's weight
 	 */
@@ -1446,7 +1446,7 @@ public class Unit {
 	 * Variable registering the TimeUntilRest of this Unit.
 	 */
 	private double timeUntilRest;
-	
+
 	/**
 	 * Variable registering the interval between two obligatory rests for any Unit.
 	 */
@@ -1498,7 +1498,7 @@ public class Unit {
 	 * Variable registering the ActivityTime of this Unit.
 	 */
 	private double ActivityTime;
-	
+
 	/**
 	 * initiates the unit to attack another Unit
 	 * @param other
@@ -1535,7 +1535,7 @@ public class Unit {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
-		
+
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!canHaveAsEnemy(other))
@@ -1555,13 +1555,13 @@ public class Unit {
 		}
 		this.setStatus(Status.ATTACKING);
 		this.setEnemy(other);
-		
-		
-		
-		
-		
+
+
+
+
+
 	}
-	
+
 	/**
 	 * prepares the attack and when the attack is finished, instantiates an immediate response of the defender
 	 * @param time
@@ -1592,8 +1592,8 @@ public class Unit {
 		this.updatePosition(other);
 		this.setActivityTime(this.getActivityTime()+time);
 		if (this.getActivityTime()>=1){
-			
-			
+
+
 			other.defend(this);
 			other.updatePosition(this);
 			this.setStatus(Status.IDLE);
@@ -1626,7 +1626,7 @@ public class Unit {
 	 * 		|new.gethipoints()==this.getHitpoints()-attacker.getStrength()/10
 	 * 		|if(attacker.getStrength()/10==0)
 	 * 		|then new.gethipoints()==this.getHitpoints()-1
-	
+
 	 * 		
 	 */
 	private void defend(Unit attacker){
@@ -1644,9 +1644,9 @@ public class Unit {
 				}
 				else {
 					setHitpoints(this.getHitpoints()-1);
-					}
-				
-				
+				}
+
+
 			}
 			if (this.getHitpoints()-attacker.getStrength()/10>0) {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
@@ -1656,10 +1656,10 @@ public class Unit {
 			}
 			enemy.setExp(enemy.getExp()+20);
 		}
-		
-			this.setStatus(Status.IDLE);
-		
-		
+
+		this.setStatus(Status.IDLE);
+
+
 		if (this.getDistantTarget() != null){
 			Vector target = this.getDistantTarget();
 			this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
@@ -1818,7 +1818,7 @@ public class Unit {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * tells the unit to start working
 	 * @effect 
@@ -1841,13 +1841,13 @@ public class Unit {
 		if (world.isSolidGround(x, y, z)) {
 			if (hasGameObject()) 
 				throw new IllegalArgumentException("not possible");
-				
-			
+
+
 		}
 		if (!containsGameObject(x, y, z)&&!hasGameObject()&&!world.isSolidGround(x, y, z)) {
 			throw new IllegalArgumentException("no GameObjects Found");
 		}
-		
+
 		if (this.hasRestedEnough()){
 			setWorkposition(x, y, z);
 			this.settingInitialResttimeOk();
@@ -1855,13 +1855,13 @@ public class Unit {
 				moveTo(x, y, z);
 				setWorkorder(1);				
 				return;
-				}
+			}
 			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
 				moveTo(x-1, y-1, z);
 				setWorkorder(3);				
 				return;
 			}
-			
+
 			else {
 					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
 						moveTo(x, y, z);
@@ -1877,10 +1877,10 @@ public class Unit {
 		else {
 			throw new IllegalStateException("Unit has to rest a little bit");
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * bekijkt of een cube zowel een builder als een Log bevat
 	 * @param x
@@ -1893,11 +1893,11 @@ public class Unit {
 		boolean containsBoulder=false;
 		for (GameObject object : world.getGameObjects()) {
 			if (object instanceof Boulder){
-			if (object.getPosition().getCubeX()==x){
-				if (object.getPosition().getCubeY()==y){
-					if (object.getPosition().getCubeZ()==z){
-						containsBoulder=true;
-				}
+				if (object.getPosition().getCubeX()==x){
+					if (object.getPosition().getCubeY()==y){
+						if (object.getPosition().getCubeZ()==z){
+							containsBoulder=true;
+						}
 					}
 				}
 			}
@@ -1906,24 +1906,24 @@ public class Unit {
 			return false;
 		}
 		for (GameObject object : world.getGameObjects()) {
-			
+
 			if (object instanceof Log){
-			if (object.getPosition().getCubeX()==x){
-				if (object.getPosition().getCubeY()==y){
-					if (object.getPosition().getCubeZ()==z){
-						containsLog=true;						
-					}
+				if (object.getPosition().getCubeX()==x){
+					if (object.getPosition().getCubeY()==y){
+						if (object.getPosition().getCubeZ()==z){
+							containsLog=true;						
+						}
 					}
 				}
 			}
 		}
-	if (containsBoulder&&containsLog) {
-		return true;
-	}
-	else {
-		
-		return false;
-	}
+		if (containsBoulder&&containsLog) {
+			return true;
+		}
+		else {
+
+			return false;
+		}
 	}
 	/**
 	 * bekijkt of een cube een gameobject bevat
@@ -1938,17 +1938,17 @@ public class Unit {
 				}
 			}
 		}
-	return false;
+		return false;
 	}
-	
+
 	public void setToWork(){
 		this.setStatus(Status.WORKING);
 		this.setActivityTime(calculatingWorkTime());
 		if (getWorkorder()==3) {
 			this.orientation=Math.atan2(this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getX());
 		}
-		
-			
+
+
 	}
 	/**
 	 * updates the time the unit has to spend working
@@ -1984,44 +1984,44 @@ public class Unit {
 			this.setActivityTime(this.getActivityTime()-time);}
 	}
 	private Set<GameObject> upgradematerial;
-	
+
 	/**
 	 * vernietigt materialen na upgrade
 	 */
 	private void terminateBoulderAndLog() {	
 		for (GameObject object : world.getGameObjects()) {
 			if (object instanceof Boulder){
-			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-				if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-					if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-						
-						if (upgradematerial.size()==0) {
-							upgradematerial.add(object);
-						}					
-					}
+				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+
+							if (upgradematerial.size()==0) {
+								upgradematerial.add(object);
+							}					
+						}
 					}
 				}
 			}
 		}
 		for (GameObject object : world.getGameObjects()) {			
 			if (object instanceof Log){
-			if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-				if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-					if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-						if (upgradematerial.size()==1) {
-							upgradematerial.add(object);
+				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+							if (upgradematerial.size()==1) {
+								upgradematerial.add(object);
+							}
 						}
-					}
 					}
 				}
 			}
 		}
-	for (GameObject gameObject : upgradematerial) {
-		gameObject.terminate();
+		for (GameObject gameObject : upgradematerial) {
+			gameObject.terminate();
+		}
+		upgradematerial.clear();
 	}
-	upgradematerial.clear();
-	}
-	
+
 	/**
 	 * bekijkt of de workorder nog altijd valid is
 	 * @param workorder
@@ -2030,12 +2030,12 @@ public class Unit {
 	private boolean validWorkorder(int workorder){
 		if (workorder==0)
 			return true;
-		
+
 		if (workorder==1) {
 			if (!isValidPosition(workposition)) {
 				return false;
-				}
 			}
+		}
 		if (workorder==2) {
 			if (!containsLogandBoulder(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
 				return false;
@@ -2049,24 +2049,24 @@ public class Unit {
 		if (workorder==4) {
 			if (!isValidPosition(workposition)||!containsGameObject(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
 				return false;
-				}
+			}
 		}
-		
-		
-		
+
+
+
 		return true;
 	}
-	
+
 	private boolean hasActualWorkOrder(){
 		if (workorder>0) {
 			return true;
 		}
-	else {
-		return false;
+		else {
+			return false;
+		}
 	}
-	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param x
@@ -2076,27 +2076,29 @@ public class Unit {
 	 */
 	private void pickUpObject(int x,int y,int z){
 		for (GameObject object : world.getGameObjects()) {
-			
+
 			if (object instanceof Boulder){
-			if (object.getPosition().getCubeX()==x){
-				if (object.getPosition().getCubeY()==y){
-					if (object.getPosition().getCubeZ()==z){
-						setGameObject(object);
-						return;
-					}
+				if (object.getPosition().getCubeX()==x){
+					if (object.getPosition().getCubeY()==y){
+						if (object.getPosition().getCubeZ()==z){
+							object.removeFromWorld();
+							setGameObject(object);
+							return;
+						}
 					}
 				}
 			}
 		}
 		for (GameObject object : world.getGameObjects()) {
-			
+
 			if (object instanceof Log){
-			if (object.getPosition().getCubeX()==x){
-				if (object.getPosition().getCubeY()==y){
-					if (object.getPosition().getCubeZ()==z){
-						setGameObject(object);
-						return;
-					}
+				if (object.getPosition().getCubeX()==x){
+					if (object.getPosition().getCubeY()==y){
+						if (object.getPosition().getCubeZ()==z){
+							object.removeFromWorld();
+							setGameObject(object);
+							return;
+						}
 					}
 				}
 			}
@@ -2106,10 +2108,13 @@ public class Unit {
 	 * laat het object vallen
 	 */
 	private void dropObject() {
-		this.getGameObject().dropped(this);
+		GameObject oldObject = this.getGameObject();
+		this.setGameObject(null);
+		oldObject.addToWorld(getWorld());
+		oldObject.setPosition(position);
 	}
-	
-	
+
+
 	private int workorder;
 	private Vector workposition;
 	/**
@@ -2122,7 +2127,7 @@ public class Unit {
 	public void setWorkposition(int x, int y, int z) {
 		this.workposition = new Vector(x, y, z);
 	}
-	
+
 	public int getWorkorder() {
 		return workorder;
 	}
@@ -2323,7 +2328,7 @@ public class Unit {
 		this.setDistantTarget(target);
 		this.moveToNextCube();
 	}
-	
+
 	/**
 	 * Initiate movement to the given target cube.
 	 * @param target
@@ -2332,7 +2337,7 @@ public class Unit {
 	 * 			| this.moveTo(target.getCubeX(), target.getCubeY(), target.getCubeZ())
 	 */
 	private void moveTo(Vector target)
-	throws IllegalArgumentException,IllegalStateException,PathfindingException{
+			throws IllegalArgumentException,IllegalStateException,PathfindingException{
 		this.moveTo(target.getCubeX(), target.getCubeY(), target.getCubeZ());
 	}
 
@@ -2380,7 +2385,7 @@ public class Unit {
 			this.setTimeUntilRest(0);
 		else
 			this.setTimeUntilRest(this.getTimeUntilRest()-time);
-		
+
 		this.hasToRest();
 		Status status = this.getStatus();
 		if (status == Status.IDLE){
@@ -2456,7 +2461,7 @@ public class Unit {
 		} else
 			this.setPosition(new_pos);
 	}
-	
+
 	/**
 	 * Calculate the time a Unit needs to recover one hitpoint.
 	 * @return	The time a Unit needs to recover one hitpoint
@@ -2573,7 +2578,7 @@ public class Unit {
 		}
 		setActivityTime(this.getActivityTime()+time);
 	} 
-	
+
 	/**
 	 * sets the timeuntilRest To the resting interval if possible
 	 * @post
@@ -2585,7 +2590,7 @@ public class Unit {
 			this.setTimeUntilRest(RESTING_INTERVAL);
 		}
 	}
-	
+
 	/**
 	 * returns a boolean to make sure its minRestTime has already passed if the Unit is resting
 	 * 	 @return
@@ -2600,7 +2605,7 @@ public class Unit {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * caculating the time it takes to restore 1 point of hitpoints
 	 * @return
@@ -2609,7 +2614,7 @@ public class Unit {
 	private double calculateHPRestore(double time){
 		return this.getToughness()*time/40;
 	}
-	
+
 	/**
 	 * caculating the time it takes to restore 1 point of stamina
 	 * @return
@@ -2630,7 +2635,7 @@ public class Unit {
 			this.resting();
 		}
 	}
-	
+
 	/**
 	 * if a Unit is idle and it has defaultbehavior enabled, it will choose an activity at random
 	 * @post	With a chance of one in three, movement to a random cube in the gameworld is initiated.
@@ -2659,21 +2664,21 @@ public class Unit {
 				this.resting();}
 		}
 	}
-	
+
 	/**
 	 * Enable the Unit's default behavior
 	 */
 	public void startDefaultBehavior(){
 		setDefaultBehaviorBoolean(true);
 	}
-	
+
 	/**
 	 * Disable the Unit's default behavior
 	 */
 	public void stopDefaultBehavior(){
 		setDefaultBehaviorBoolean(false);
 	}
-	
+
 	/**
 	 * Return the defaultbehaviorboolean of this Unit.
 	 */
@@ -2702,30 +2707,30 @@ public class Unit {
 	 * Variable registering whether the Unit's default behavior is currently enabled
 	 */
 	private boolean defaultBehaviorBoolean;
-	
-	
-	
-	
+
+
+
+
 	public boolean Fallcheck() {
-		
+
 		for(int x=1;x>=-1;x--) {
 			for(int y=1;y>=-1;y--){
 				for(int z=1;z>=-1;z--){
 					if ((x==0)&&(y==0)&&(z==0)) {
-						
+
 					}
-					
-				else if (world.isSolidGround(x, y, z))
+
+					else if (world.isSolidGround(x, y, z))
 						return true;
-					}
-				
+				}
+
 			}
-			
+
 		}
-		
+
 		return false;
 	}
-	
+
 	public double  getFallPosition() {
 		return this.fallPosition;
 	}
@@ -2734,7 +2739,7 @@ public class Unit {
 		if (this.fallPosition<0) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		this.fallPosition = fallPosition;
 	}
 
@@ -2747,36 +2752,36 @@ public class Unit {
 			return false;
 		}
 	}
-	
-	
-	
+
+
+
 	public void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
-		
+
 	}
 	public void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
-			
+
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
-			this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
-			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
-			this.setStatus(Status.IDLE);
-			this.setFallPosition(0);
+				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
+				this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+				this.setStatus(Status.IDLE);
+				this.setFallPosition(0);
 			}
 			else{
 				terminate();
 			}
 		}
-		
+
 		else{
 			this.setPosition(new_pos);
-			}
-		
+		}
+
 	}
 	/**
 	 * @return the exp
@@ -2821,14 +2826,14 @@ public class Unit {
 			this.setExp(this.getExp()-10);
 		}
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether the Unit has been terminated
 	 */
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
-	
+
 	/**
 	 * Terminate this Unit
 	 * TODO: documentatie uitbreiden
@@ -2848,21 +2853,21 @@ public class Unit {
 		}
 		this.removeFromFaction();
 		this.removeFromWorld();
-		
+
 	}
-	
+
 	/**
 	 * Variable registering whether the Unit has died
 	 */
 	private boolean isTerminated=false;
-	
+
 	/**
 	 * Return the faction this Unit belongs to.
 	 */
 	public Faction getFaction() {
 		return this.faction;
 	}
-	
+
 	/**
 	 * Check whether the given faction is a valid faction for this Unit
 	 * @param faction
@@ -2881,7 +2886,7 @@ public class Unit {
 		else
 			return (faction != null) && (!faction.isTerminated());
 	}
-	
+
 	/**
 	 * Add this Unit to the given faction
 	 * @param faction
@@ -2899,7 +2904,7 @@ public class Unit {
 		this.faction = faction;
 		faction.addUnit(this);
 	}
-	
+
 	/**
 	 * Remove this Unit from its current faction
 	 * @pre		This Unit has died and must be terminated
@@ -2914,19 +2919,19 @@ public class Unit {
 		this.faction = null;
 		oldFaction.removeUnit(this);
 	}
-	
+
 	/**
 	 * Variable registering the Faction this Unit belongs to.
 	 */
 	private Faction faction;
-	
+
 	/**
 	 * Return the World this Unit lives in
 	 */
 	public World getWorld() {
 		return this.world;
 	}
-	
+
 	/**
 	 * Return a boolean reflecting whether the given World is a valid World for this Unit
 	 * @param world
@@ -2943,7 +2948,7 @@ public class Unit {
 		else
 			return (world != null);
 	}
-	
+
 	/**
 	 * Adds this Unit to the given World
 	 * @param world
@@ -2968,8 +2973,8 @@ public class Unit {
 		int index = new Random().nextInt(world.getSpawnablePositions().size());
 		Vector startPos = world.getSpawnablePositions().get(index);
 		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
-									startPos.getCubeY() + CUBELENGTH/2,
-									startPos.getCubeZ() + CUBELENGTH/2));
+				startPos.getCubeY() + CUBELENGTH/2,
+				startPos.getCubeZ() + CUBELENGTH/2));
 		if (world.getActiveFactions().size() < 5){
 			Faction faction = new Faction(world);
 			this.addToFaction(faction);
@@ -2985,7 +2990,7 @@ public class Unit {
 			this.addToFaction(smallestFaction);
 		}
 	}
-	
+
 	/**
 	 * Remove this Unit from its current World
 	 * @pre		This Unit has died and must be terminated
@@ -3005,17 +3010,17 @@ public class Unit {
 		}
 		oldWorld.removeUnit(this);
 	}
-	
+
 	/**
 	 * Variable registering the World this Unit lives in
 	 */
 	private World world;
-	
+
 	/**
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject=null;
-	
+
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
@@ -3038,16 +3043,12 @@ public class Unit {
 		}
 	}
 	private boolean hasGameObject() {
-		if (this.gameObject!=null)
-				return true;
-		else {
-			return false;
-		}
+		return (this.getGameObject() != null);
 	}
 	public boolean isCarryingBoulder() {
 		if (this.gameObject instanceof Boulder) {
 			return true;
-			
+
 		}
 		else {
 			return false;
@@ -3056,7 +3057,7 @@ public class Unit {
 	public boolean isCarryingLog() {
 		if (this.gameObject instanceof Log) {
 			return true;
-			
+
 		}
 		else {
 			return false;
@@ -3114,7 +3115,7 @@ public class Unit {
 				throw new PathfindingException(this.getPosition(), new Vector(x,y,z));
 		}
 	}
-	
+
 	private void findPath(Vector target) throws IllegalArgumentException{
 		findPath(target.getCubeX(),target.getCubeY(),target.getCubeZ());
 	}
@@ -3147,7 +3148,7 @@ public class Unit {
 		boolean result = (path.get(path.size()-1).equals(this.getDistantTarget()));
 		return result;
 	}
-	
+
 	private void setPath(List<Node> closed, Node start, Node end) {
 		List<Vector> result = new ArrayList<>();
 		Node current = closed.get(closed.indexOf(end));

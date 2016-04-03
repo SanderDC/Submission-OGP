@@ -48,7 +48,9 @@ public class World {
 						if ((z==0)||(isSolidGround(x, y, z-1)))
 							this.addSpawnablePosition(new Vector(x,y,z));
 					}
-				}}}
+				}
+			}
+		}
 		for (int x=0;x<nbCoordinateX();x++){
 			for (int y=0;y<nbCoordinateY();y++){
 				for (int z=0;z<nbCoordinateZ();z++){

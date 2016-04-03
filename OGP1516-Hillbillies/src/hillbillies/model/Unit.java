@@ -1863,15 +1863,15 @@ public class Unit {
 			}
 
 			else {
-					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
-						moveTo(x, y, z);
-						setWorkorder(2);
-					}
-					else {
-						moveTo(x, y, z);
-						setWorkorder(4);
-						
-					}
+				if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
+					moveTo(x, y, z);
+					setWorkorder(2);
+				}
+				else {
+					moveTo(x, y, z);
+					setWorkorder(4);
+
+				}
 			}															
 		}
 		else {
@@ -2648,16 +2648,25 @@ public class Unit {
 			Random randomgenerator= new Random();
 			int randomnumber=randomgenerator.nextInt(3);
 			if (randomnumber==0){
-				int randomPositionIndex = randomgenerator.nextInt(this.getWorld().getStandablePositions().size());
-				this.moveTo(this.getWorld().getStandablePositions().get(randomPositionIndex));
-				int randomnumber1=randomgenerator.nextInt(2);
-				if (randomnumber1==1) {
-					setSprinting(true);
-				}
-				else{
-					setSprinting(false);
+				try {
+					int randomPositionIndex = randomgenerator.nextInt(this.getWorld().getStandablePositions().size());
+					this.moveTo(this.getWorld().getStandablePositions().get(randomPositionIndex));
+					int randomnumber1=randomgenerator.nextInt(2);
+					if (randomnumber1==1) {
+						try {
+							setSprinting(true);
+						} catch (IllegalStateException e){
+							this.setSprinting(false);
+						}
+					}
+					else{
+						setSprinting(false);
 
-				}}
+					}
+				} catch (PathfindingException e) {
+					defaultbehavior();
+				}
+			}
 			if (randomnumber==1){
 				this.setToWork();}
 			if (randomnumber==2){
@@ -2799,7 +2808,7 @@ public class Unit {
 		}
 		else {
 			this.exp=this.getExp();
-			
+
 		}
 		this.levelUp();
 	}
@@ -3032,8 +3041,8 @@ public class Unit {
 		if (hasGameObject()&&gObject==null) {
 			this.gameObject=null;
 		}
-		
-		
+
+
 	}
 	private int weightGameObject() {
 		if (this.gameObject==null)
@@ -3181,8 +3190,8 @@ public class Unit {
 	 * Variable registering the path of this Unit.
 	 */
 	private List<Vector> path;
-	
-	
+
+
 	private boolean canbeInterruptedBy(Status status) {
 		if (this.status==Status.FALLING) {
 			return false;
@@ -3190,11 +3199,11 @@ public class Unit {
 		if (this.status==Status.ATTACKING) {
 			if (status==Status.FALLING) {
 				return true;
-				}
+			}
 			else {
 				return false;
 			}
-			}
+		}
 		if (this.status==Status.RESTING) {
 			if (hasRestedEnough()) {
 				return true;
@@ -3215,21 +3224,21 @@ public class Unit {
 		if (this.status==Status.MOVINGADJACENT) {
 			if (status==Status.FALLING) {
 				return true;
-				}
-		}
-	
-	if (this.status==Status.MOVINGDISTANT) {
-		if (status==Status.FALLING) {
-			return true;
 			}
-	}
-			
-		
-		
+		}
+
+		if (this.status==Status.MOVINGDISTANT) {
+			if (status==Status.FALLING) {
+				return true;
+			}
+		}
+
+
+
 		return true;
 	}
-	
-	
-	
-	
+
+
+
+
 }

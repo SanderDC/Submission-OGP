@@ -43,8 +43,11 @@ public class World {
 					if(!isValidMaterial(Coordinates[x][y][z])){
 						Coordinates[x][y][z]=0;
 					}
-					if (unitCanStandAt(new Vector(x,y,z)))
+					if (unitCanStandAt(x, y, z)){
 						this.addStandablePosition(new Vector(x,y,z));
+						if ((z==0)||(isSolidGround(x, y, z-1)))
+							this.addSpawnablePosition(new Vector(x,y,z));
+					}
 				}}}
 		for (int x=0;x<nbCoordinateX();x++){
 			for (int y=0;y<nbCoordinateY();y++){
@@ -684,22 +687,45 @@ public class World {
 	}
 
 	/**
-	 * Return a Set containing all positions in this game World where a Unit can stand.
+	 * Return a list containing all positions in this game World where a Unit can spawn.
 	 */
-	List<Vector> getStandablePositions(){
-		List<Vector> result = new ArrayList<>();
-		for (Vector vector:this.standablePositions)
-			result.add(vector);
-		return result;
+	List<Vector> getSpawnablePositions(){
+		return this.spawnablePositions;
 	}
 
 	/**
-	 * Add a position to the Set of positions where a Unit can stand.
+	 * Add a position to the List of positions where a Unit can spawn.
 	 * @param position
-	 * 			The position to be added to the Set of standable positions.
-	 * @pre		It is possible for a Unit to stand at this position.
+	 * 			The position to be added to the list of spawnable positions.
+	 * @pre		The cube below the Unit is either the lowest level or solid ground.
+	 * 			| (position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))
+	 * @post	The given position has been added to the list of spawnable positions.
+	 * 			| this.getSpawnablePositions().contains(position)
+	 */
+	private void addSpawnablePosition(Vector position){
+		assert ((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())));
+		this.spawnablePositions.add(position);
+	}
+
+	/**
+	 * A List containing all positions in this game World where a Unit can stand.
+	 */
+	private List<Vector> spawnablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
+	
+	/**
+	 * Return a list containing all positions in this game World where a Unit can stand.
+	 */
+	List<Vector> getStandablePositions(){
+		return this.standablePositions;
+	}
+
+	/**
+	 * Add a position to the List of positions where a Unit can stand.
+	 * @param position
+	 * 			The position to be added to the list of standable positions.
+	 * @pre		A Unit must be able to stand at the given position.
 	 * 			| unitCanStandAt(position)
-	 * @post	The given position has been added to the Set of standable positions.
+	 * @post	The given position has been added to the list of standable positions.
 	 * 			| this.getStandablePositions().contains(position)
 	 */
 	private void addStandablePosition(Vector position){
@@ -708,12 +734,9 @@ public class World {
 	}
 
 	/**
-	 * A Set containing all positions in this game World where a Unit can stand.
+	 * A List containing all positions in this game World where a Unit can stand.
 	 */
 	private List<Vector> standablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
-
-
-
 
 	public boolean isConnectedToBorder(int x, int y, int z){
 		if (!isSolidGround(x, y, z)) {

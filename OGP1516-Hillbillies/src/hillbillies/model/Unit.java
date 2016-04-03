@@ -2643,9 +2643,8 @@ public class Unit {
 			Random randomgenerator= new Random();
 			int randomnumber=randomgenerator.nextInt(3);
 			if (randomnumber==0){
-				this.moveTo(randomgenerator.nextInt(MAX_COORDINATE),
-						randomgenerator.nextInt(MAX_COORDINATE),
-						randomgenerator.nextInt(MAX_COORDINATE));
+				int randomPositionIndex = randomgenerator.nextInt(this.getWorld().getStandablePositions().size());
+				this.moveTo(this.getWorld().getStandablePositions().get(randomPositionIndex));
 				int randomnumber1=randomgenerator.nextInt(2);
 				if (randomnumber1==1) {
 					setSprinting(true);
@@ -2966,8 +2965,8 @@ public class Unit {
 			throw new IllegalStateException("This Unit is already in a World!");
 		this.world = world;
 		world.addUnit(this);
-		int index = new Random().nextInt(world.getStandablePositions().size());
-		Vector startPos = world.getStandablePositions().get(index);
+		int index = new Random().nextInt(world.getSpawnablePositions().size());
+		Vector startPos = world.getSpawnablePositions().get(index);
 		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
 									startPos.getCubeY() + CUBELENGTH/2,
 									startPos.getCubeZ() + CUBELENGTH/2));

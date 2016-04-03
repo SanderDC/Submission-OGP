@@ -552,12 +552,10 @@ public class World {
 		setCubeType(x, y, z, 0);
 		if (Math.random()>=0.25) {
 			if (value==1){
-				Boulder newBoulder = new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2));
-				newBoulder.addToWorld(this);
+				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}
 			else {
-				Log newLog = new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2));
-				newLog.addToWorld(this);
+				new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}
 		}
 	}

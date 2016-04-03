@@ -1829,7 +1829,7 @@ public class Unit {
 	 * 
 	 */
 	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
-		if (!isAdjacentPosition(new Vector(x, y, z))) {
+		if (!isAdjacentPosition(new Vector(x, y, z))&&!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)) {
 			throw new IllegalStateException();
 		}
 		if (isAttacking()) {

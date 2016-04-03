@@ -1547,6 +1547,9 @@ public class Unit {
 			if (this.getSprinting())
 				this.setSprinting(false);
 		}
+		if (isWorking()) {
+			setWorkorder(0);
+		}
 		if (!this.isAttacking()) {
 			this.setActivityTime(0);
 		}
@@ -2184,6 +2187,9 @@ public class Unit {
 			else
 				this.settingInitialResttimeOk();
 		}			
+		if (isWorking()) {
+			setWorkorder(0);
+		}
 		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
 				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
 				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
@@ -2300,6 +2306,9 @@ public class Unit {
 				throw new IllegalStateException("The Unit needs to rest more before moving");
 			else
 				this.settingInitialResttimeOk();
+		}
+		if (isWorking()) {
+			setWorkorder(0);
 		}
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
 		if (! this.getWorld().unitCanStandAt(target))
@@ -2420,6 +2429,7 @@ public class Unit {
 			Vector oldNearTarget = this.getNearTarget();
 			this.setNearTarget(null);
 			this.setSpeed(new Vector(0,0,0));
+			this.setExp(this.getExp()+1);
 			if (this.getDistantTarget() != null){
 				if (this.getDistantTarget().equals(oldNearTarget)){
 					this.setDistantTarget(null);
@@ -2785,8 +2795,9 @@ public class Unit {
 		}
 		else {
 			this.exp=this.getExp();
-			this.levelUp();
+			
 		}
+		this.levelUp();
 	}
 	private static boolean isValidExp(int exp) {
 		if (exp<0) {

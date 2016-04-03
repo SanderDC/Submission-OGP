@@ -551,10 +551,13 @@ public class World {
 	public void caveIn(int x, int y, int z, int value) {
 		setCubeType(x, y, z, 0);
 		if (Math.random()>=0.25) {
-			if (value==1)
-				addGameObject(new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2)));
+			if (value==1){
+				Boulder newBoulder = new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2));
+				newBoulder.addToWorld(this);
+			}
 			else {
-				addGameObject(new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2)));
+				Log newLog = new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2));
+				newLog.addToWorld(this);
 			}
 		}
 	}

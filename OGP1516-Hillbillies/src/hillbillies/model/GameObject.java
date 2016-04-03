@@ -172,6 +172,22 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Remove this gameObject from its World
+	 * @pre	The game World of this GameObject is not the null reference.
+	 * 		| this.getWorld() != null
+	 * @post	The game World of this gameObject is the null reference.
+	 * 			| this.getWorld() == null
+	 * @post	This GameObject has been removed from its game World
+	 * 			| !(this.getWorld()).hasAsGameObject(this)
+	 */
+	void removeFromWorld(){
+		assert (this.getWorld() != null);
+		World oldWorld = this.getWorld();
+		this.setWorld(null);
+		oldWorld.removeGameObject(this);
+	}
+	
+	/**
 	 * Variable registering the World this GameObject exists in.
 	 */
 	private World world;

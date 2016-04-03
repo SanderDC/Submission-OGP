@@ -244,7 +244,6 @@ public class Unit {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
-		this.setPath(null);
 	}
 
 	/**
@@ -2430,34 +2429,28 @@ public class Unit {
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getNearTarget().liesBetween(this.getPosition(), new_pos)) ||
 				(this.getNearTarget().equals(new_pos))){
+			this.setExp(this.getExp() + 1);
 			this.setPosition(this.getNearTarget());
-			Vector oldNearTarget = this.getNearTarget();
-			this.setNearTarget(null);
-			this.setSpeed(new Vector(0,0,0));
-			this.setExp(this.getExp()+1);
-			if (this.getDistantTarget() != null){
-				if (this.getDistantTarget().equals(oldNearTarget)){
-					this.setDistantTarget(null);
-					this.setSprinting(false);
-					this.setStatus(Status.IDLE);
-				}
-				else {
-					if (!isValidPath(this.getPath())){
-						try {
-							this.findPath(this.getDistantTarget());
-							this.moveToNextCube();
-						} catch (IllegalArgumentException|PathfindingException e){
-							this.setDistantTarget(null);
-							this.setSprinting(false);
-							this.setStatus(Status.IDLE);
-						}
-					} else
+			if (this.getPath().size() > 0){
+				if (!isValidPath(this.getPath())){
+					try {
+						this.findPath(this.getDistantTarget());
 						this.moveToNextCube();
+					} catch (IllegalArgumentException|PathfindingException e){
+						this.setDistantTarget(null);
+						this.setSprinting(false);
+						this.setStatus(Status.IDLE);
+					}
+				} else {
+					this.moveToNextCube();
 				}
-			} else {
+			} else{
+				this.setNearTarget(null);
+				this.setDistantTarget(null);
+				this.setSpeed(new Vector(0,0,0));
 				this.setSprinting(false);
 				this.setStatus(Status.IDLE);
-			}
+			}				
 		} else
 			this.setPosition(new_pos);
 	}
@@ -3236,7 +3229,7 @@ public class Unit {
 	/**
 	 * Variable registering the path of this Unit.
 	 */
-	private List<Vector> path;
+	private List<Vector> path = new ArrayList<>();
 
 
 	private boolean canbeInterruptedBy(Status status) {

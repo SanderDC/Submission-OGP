@@ -1837,12 +1837,6 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-		if (world.isSolidGround(x, y, z)) {
-			if (hasGameObject()) 
-				throw new IllegalArgumentException("not possible");
-
-
-		}
 		if (!containsGameObject(x, y, z)&&!hasGameObject()&&!world.isSolidGround(x, y, z)) {
 			throw new IllegalArgumentException("no GameObjects Found");
 		}
@@ -1850,28 +1844,24 @@ public class Unit {
 		if (this.hasRestedEnough()){
 			setWorkposition(x, y, z);
 			this.settingInitialResttimeOk();
-			if (hasGameObject()){
-				moveTo(x, y, z);
+			if (hasGameObject()&&!(world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2)){
 				setWorkorder(1);				
 				return;
 			}
 			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
-				moveTo(x-1, y-1, z);
 				setWorkorder(3);				
-				return;
 			}
 
 			else {
 				if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
-					moveTo(x, y, z);
 					setWorkorder(2);
 				}
 				else {
-					moveTo(x, y, z);
 					setWorkorder(4);
 
 				}
-			}															
+			}
+			setToWork();
 		}
 		else {
 			throw new IllegalStateException("Unit has to rest a little bit");
@@ -2390,9 +2380,6 @@ public class Unit {
 		this.hasToRest();
 		Status status = this.getStatus();
 		if (status == Status.IDLE){
-			if (hasActualWorkOrder()) {
-				setToWork();
-			}
 			if (getdefaultbehaviorboolean())
 				defaultbehavior();
 		}
@@ -2667,50 +2654,38 @@ public class Unit {
 				}
 				}
 				
-			if (randomnumber==1){				
+			if (randomnumber==1){
 				if (hasGameObject()) {
-					List <Vector>newlist= this.getWorld().getStandablePositions();
+					WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+				}
+				else {
+					if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
+						int randomnumber1=randomgenerator.nextInt(2);
+						if (randomnumber1==1) {
+							List<Vector> newlist=new ArrayList<>();
+							for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
+								newlist.add(vector);
+							}
+							Collections.shuffle(newlist);
+							for (Vector vector : newlist) {
+								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+							}}
+							else {
+								WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+							}
+						}
+				else {
+					List<Vector> newlist=new ArrayList<>();
+					for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
+						newlist.add(vector);
+					}
 					Collections.shuffle(newlist);
 					for (Vector vector : newlist) {
-						try {
-							this.WorkAt(vector.getCubeX(),vector.getCubeY(),vector.getCubeZ());
-							return;}
-						catch (PathfindingException e) {
-							
-						}
-				}}
-				else {
-					int randomnumber1=randomgenerator.nextInt(2);
-					if (randomnumber1==1) {
-						Set<GameObject> gameobjects=this.getWorld().getGameObjects();
-						List<GameObject>newlist=new ArrayList<GameObject>();
-						for (GameObject gameObject : gameobjects) {
-							newlist.add(gameObject);
-						}
-						Collections.shuffle(newlist);
-						for (GameObject gameObject : newlist) {
-							try {
-								this.WorkAt(gameObject.getPosition().getCubeX(), gameObject.getPosition().getCubeY(), gameObject.getPosition().getCubeZ());
-							} catch (PathfindingException e) {
-								
-							}
-						}
+						WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 					}
-					else {
-						List<Vector>newlist=this.getWorld().getSolidPositions();
-						Collections.shuffle(newlist);
-						for (Vector vector : newlist) {
-							try {
-								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
-								
-							} catch (PathfindingException e) {
-								
-							}
-						}
+				}
 					}
-					
-				}
-				}
+			}
 			if (randomnumber==2){
 				this.resting();}
 		}

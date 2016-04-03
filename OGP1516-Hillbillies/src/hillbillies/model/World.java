@@ -52,32 +52,38 @@ public class World {
 						 if(!isConnectedToBorder(x, y, z)){
 							 partOfCaveIn.add(new Vector(x, y, z));
 						}
-						 }
+					}
 						 
 					 
 					 
 					 
 				 
 				 }
-			 }}
+			 }
+		}
+
 		for (Vector vector : partOfCaveIn) {
 			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 		}
 		
+		this.modelListener = modelListener;
 	}
+	
+	private TerrainChangeListener modelListener;
+	
 	private Set<Vector> partOfCaveIn =new HashSet<>();
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
-	
+
 	public int nbCoordinateX() {
 		return getCoordinates().length;
 	}
-	
+
 	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
 	}
-	
+
 	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
 	}

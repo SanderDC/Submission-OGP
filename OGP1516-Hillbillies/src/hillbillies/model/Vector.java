@@ -171,6 +171,14 @@ public class Vector {
 	private final double z;
 	
 	/**
+	 * Return a new Vector with this Vector's cube coordinates as its coordinates.
+	 * @return result == new Vector(this.getCubeX(), this.getCubeY(), this.getCubeZ())
+	 */
+	public Vector getCubePosition(){
+		return new Vector(this.getCubeX(), this.getCubeY(), this.getCubeZ());
+	}
+	
+	/**
 	 * Return an array of doubles containing the x-, y- and z-coordinate
 	 * of this Vector in that order.
 	 */

@@ -50,13 +50,36 @@ public class World {
 			for (int y=0;y<nbCoordinateY();y++){
 				for (int z=0;z<nbCoordinateZ();z++){
 					if (isSolidGround(x, y, z)) {
-						if(!isConnectedToBorder(x, y, z)){
-							partOfCaveIn.add(new Vector(x, y, z));
+						if (partOfCaveIn.contains(new Vector(x, y, z))) {
+							
 						}
+						else {
+							if (NotpartOfCaveIn.contains(new Vector(x, y, z))) {
+								
+							}
+							else {
+								if(!isConnectedToBorderStartup(x, y, z)){
+									for (Vector vector : allVisited) {
+										partOfCaveIn.add(vector);
+									}
+									
+								}
+								else {
+									for (Vector vector : allVisited) {
+										NotpartOfCaveIn.add(vector);
+									}
+									
+								}
+								allVisited.clear();
+							}
+						}
+							
+						}
+						
 					}
 				}
 			}
-		}
+		
 		for (Vector vector : partOfCaveIn) {
 			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 		}
@@ -99,6 +122,7 @@ public class World {
 		}
 		return false;
 	}
+	private Set<Vector>NotpartOfCaveIn=new HashSet<>();
 	private Set<Vector>partOfCaveIn=new HashSet<>();
 	private Set<Vector>allVisited=new HashSet<>();
 	private TerrainChangeListener modelListener;
@@ -587,7 +611,7 @@ public class World {
 	public void caveIn(int x, int y, int z, int value) {
 		setCubeType(x, y, z, 0);
 		this.modelListener.notifyTerrainChanged(x, y, z);
-		if (Math.random()>=0.25) {
+		if (Math.random()<=0.25) {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}

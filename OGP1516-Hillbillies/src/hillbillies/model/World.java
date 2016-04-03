@@ -59,12 +59,12 @@ public class World {
 					 
 				 
 				 }
-			 }
+			 }}
 		for (Vector vector : partOfCaveIn) {
 			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
 		}
 		
-	}}
+	}
 	private Set<Vector> partOfCaveIn =new HashSet<>();
 	private int[][][]getCoordinates () {
 		return this.Coordinates;

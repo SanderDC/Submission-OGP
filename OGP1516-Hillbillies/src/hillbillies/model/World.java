@@ -7,6 +7,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Vector;
+import hillbillies.part2.listener.TerrainChangeListener;
 
 /**
  * A class defining a game World for Units to exist in

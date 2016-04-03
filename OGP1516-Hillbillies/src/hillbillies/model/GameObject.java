@@ -249,7 +249,7 @@ public abstract class GameObject {
 	}
 	public void pickedUp(Unit unit) {
 		World oldWorld= this.world;
-		this.world=null;
+		setWorld(null);
 		oldWorld.removeGameObject(this);
 		this.setPosition(null);
 		

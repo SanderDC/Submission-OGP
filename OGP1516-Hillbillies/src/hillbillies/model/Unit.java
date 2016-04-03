@@ -1829,8 +1829,8 @@ public class Unit {
 	 * 
 	 */
 	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
-		if (!isAdjacentPosition(new Vector(x, y, z))&&!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)) {
-			throw new IllegalStateException();
+		if (!isAdjacentPosition(new Vector(x, y, z))) {
+			throw new IllegalArgumentException("out of reach");
 		}
 		if (isAttacking()) {
 			throw new IllegalStateException("Unit is fighting");
@@ -1840,30 +1840,34 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-		if (!containsGameObject(x, y, z)&&!hasGameObject()&&!world.isSolidGround(x, y, z)) {
+		if ((this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)&&!(containsGameObject(x, y, z)&&!hasGameObject()))
 			throw new IllegalArgumentException("no GameObjects Found");
+		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)&&!world.isSolidGround(x, y, z)) {
+			throw new IllegalArgumentException("no Solid Ground");
 		}
-
 		if (this.hasRestedEnough()){
 			setWorkposition(x, y, z);
 			this.settingInitialResttimeOk();
-			if (hasGameObject()&&!(world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2)){
-				setWorkorder(1);				
-				
-			}
-			if (world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2) {
+			if (this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z) {
+				if (hasGameObject()&&!(world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2)){
+					setWorkorder(1);}
+					else{
+					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
+						setWorkorder(2);
+					}
+					else {
+						setWorkorder(4);
+
+					}
+					}
+				}
+			
+			
+			else  {
 				setWorkorder(3);				
 			}
 
-			else {
-				if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
-					setWorkorder(2);
-				}
-				else {
-					setWorkorder(4);
-
-				}
-			}
+			
 			setToWork();
 		}
 		else {

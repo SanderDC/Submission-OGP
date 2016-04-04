@@ -2854,7 +2854,7 @@ public class Unit {
 
 
 
-	public boolean Fallcheck() {
+	private boolean Fallcheck() {
 
 		for(int x=1;x>=-1;x--) {
 			for(int y=1;y>=-1;y--){
@@ -2874,11 +2874,11 @@ public class Unit {
 		return false;
 	}
 
-	public double  getFallPosition() {
+	private double  getFallPosition() {
 		return this.fallPosition;
 	}
 
-	public void setFallPosition(double fallPosition)throws IllegalArgumentException {
+	private void setFallPosition(double fallPosition)throws IllegalArgumentException {
 		if (this.fallPosition<0) {
 			throw new IllegalArgumentException();
 		}
@@ -2898,14 +2898,14 @@ public class Unit {
 
 
 
-	public void UnitFalls() {
+	private void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
 
 	}
-	public void falling(double time) {
+	private void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
@@ -2936,7 +2936,7 @@ public class Unit {
 	/**
 	 * @param exp the exp to set
 	 */
-	public void setExp(int exp) {
+	private void setExp(int exp) {
 		if (isValidExp(exp)) {
 			this.exp = exp;
 		}
@@ -2956,7 +2956,7 @@ public class Unit {
 	}
 
 	private int exp;
-	public void levelUp() {
+	private void levelUp() {
 		while (this.getExp()>=10) {
 			Random random= new Random();
 			int randomnumber=random.nextInt(3);
@@ -3167,7 +3167,7 @@ public class Unit {
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
-	public void setGameObject(GameObject gObject) {
+	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
 			gObject.pickedUp(this);

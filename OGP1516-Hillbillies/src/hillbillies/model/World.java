@@ -816,7 +816,7 @@ public class World {
 
 
 
-	public boolean backtrack(int x, int y, int z){			
+	private boolean backtrack(int x, int y, int z){			
 
 		Set <Vector>  positionsToRemove = new HashSet<>() ;
 		if (isBorder(x, y, z)) {

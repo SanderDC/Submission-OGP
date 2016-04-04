@@ -31,10 +31,10 @@ public abstract class GameObject {
 
 	private Status status;
 	
-	public Status getStatus() {
+	private Status getStatus() {
 		return this.status;
 	}
-	public void setStatus(Status status) {
+	private void setStatus(Status status) {
 		if (isValidStatus()) {
 			this.status = status;
 		}
@@ -216,7 +216,6 @@ public abstract class GameObject {
 	private boolean isTerminated;
 	
 	public void advanceTime(double time){
-		
 		
 		if (!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))) {
 			setStatus(Status.FALLING);

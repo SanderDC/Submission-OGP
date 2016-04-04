@@ -1653,7 +1653,7 @@ public class Unit {
 			else {
 				terminate();
 			}
-			enemy.setExp(enemy.getExp()+20);
+			attacker.setExp(attacker.getExp()+20);
 		}
 
 		this.setStatus(Status.IDLE);
@@ -2638,76 +2638,176 @@ public class Unit {
 	 */
 	private void defaultbehavior(){
 		if(this.getStatus()==Status.IDLE){
-			Random randomgenerator= new Random();
-			int randomnumber=randomgenerator.nextInt(3);
-			if (randomnumber==0){
-				List <Vector>newlist= this.getWorld().getStandablePositions();
-				Collections.shuffle(newlist);
-				for (Vector vector : newlist) {
-					try {
-						this.moveTo(vector);
-						int randomnumber1=randomgenerator.nextInt(2);
-						if (randomnumber1==1) {
-							try {
-								setSprinting(true);
-							} catch (IllegalStateException e){
+			if (!possibleattack()) {
+				defaultNoAttack();
+			}
+			else{
+				defaultWithAttack();
+			}
+	}
+		
+	}
+	private boolean possibleattack() {
+		for (Unit unit : this.getWorld().getUnits()) {
+			
+			if (canHaveAsEnemy(unit)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	private void defaultNoAttack(){
+		Random randomgenerator= new Random();
+		int randomnumber=randomgenerator.nextInt(3);
+		if (randomnumber==0){
+			List <Vector>newlist= this.getWorld().getStandablePositions();
+			Collections.shuffle(newlist);
+			for (Vector vector : newlist) {
+				try {
+					this.moveTo(vector);
+					int randomnumber1=randomgenerator.nextInt(2);
+					if (randomnumber1==1) {
+						try {
+							setSprinting(true);
+						} catch (IllegalStateException e){
 
-							}
 						}
-						return;
-					} catch (PathfindingException e) {
-
 					}
+					return;
+				} catch (PathfindingException e) {
+
 				}
 			}
+		}
 
-			if (randomnumber==1){
-				if (hasGameObject()) {
-					WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
-				}
-				else {
-					if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
-						int randomnumber1=randomgenerator.nextInt(2);
-						if (randomnumber1==1) {
-							List<Vector> newlist=new ArrayList<>();
-							for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
-								newlist.add(vector);
+		if (randomnumber==1){
+			if (hasGameObject()) {
+				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+			}
+			else {
+				if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
+					int randomnumber1=randomgenerator.nextInt(2);
+					if (randomnumber1==1) {
+						List<Vector> newlist=new ArrayList<>();
+						newlist.addAll(world.getDirectlyAdjacentPositions(position));
+						Collections.shuffle(newlist);
+						for (Vector vector : newlist) {
+							try {
+								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+							} catch (IllegalArgumentException e){
+								continue;
 							}
-							Collections.shuffle(newlist);
-							for (Vector vector : newlist) {
-								try {
-									WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
-								} catch (IllegalArgumentException e){
-									continue;
-								}
-							}
-						}
-						else {
-							WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
 						}
 					}
 					else {
-						List<Vector> newlist=new ArrayList<>();
-						for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
-							newlist.add(vector);
+						WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+					}
+				}
+				else {
+					List<Vector> newlist=new ArrayList<>();
+					newlist.addAll(world.getDirectlyAdjacentPositions(position)) ;
+					Collections.shuffle(newlist);
+					for (Vector vector : newlist){
+						try {
+							WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+						} catch (IllegalArgumentException e) {
+							continue;
 						}
-						Collections.shuffle(newlist);
-						for (Vector vector : newlist){
-							try {
-								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
-							} catch (IllegalArgumentException e) {
-								continue;
-							}
 
-						}
 					}
 				}
 			}
-			if (randomnumber==2){
-				this.resting();}
+		}
+		if (randomnumber==2){
+			this.resting();}
+	}
+	
+	
+	
+	
+	private void defaultWithAttack(){
+		Random randomgenerator= new Random();
+		int randomnumber=randomgenerator.nextInt(4);
+		if (randomnumber==0){
+			List <Vector>newlist= this.getWorld().getStandablePositions();
+			Collections.shuffle(newlist);
+			for (Vector vector : newlist) {
+				try {
+					this.moveTo(vector);
+					int randomnumber1=randomgenerator.nextInt(2);
+					if (randomnumber1==1) {
+						try {
+							setSprinting(true);
+						} catch (IllegalStateException e){
+
+						}
+					}
+					return;
+				} catch (PathfindingException e) {
+
+				}
+			}
+		}
+
+		if (randomnumber==1){
+			if (hasGameObject()) {
+				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+			}
+			else {
+				if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
+					int randomnumber1=randomgenerator.nextInt(2);
+					if (randomnumber1==1) {
+						List<Vector> newlist=new ArrayList<>();
+						newlist.addAll(world.getDirectlyAdjacentPositions(position));
+						Collections.shuffle(newlist);
+						for (Vector vector : newlist) {
+							try {
+								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+							} catch (IllegalArgumentException e){
+								continue;
+							}
+						}
+					}
+					else {
+						WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+					}
+				}
+				else {
+					List<Vector> newlist=new ArrayList<>();
+					newlist.addAll(world.getDirectlyAdjacentPositions(position)) ;
+					Collections.shuffle(newlist);
+					for (Vector vector : newlist){
+						try {
+							WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+						} catch (IllegalArgumentException e) {
+							continue;
+						}
+
+					}
+				}
+			}
+		}
+		if (randomnumber==2){
+			this.resting();}
+	
+		if (randomnumber==3) {
+			List <Unit>newlist= new ArrayList<Unit>();
+			newlist.addAll(this.getWorld().getUnits());
+			Collections.shuffle(newlist);
+			Unit unittoattack=null;
+			for (Unit unit : newlist) {
+				if (canHaveAsEnemy(unit)) {
+					unittoattack=unit;
+				}
+			}
+		this.startAttack(unittoattack);
 		}
 	}
-
+	
+	
+	
 	/**
 	 * Enable the Unit's default behavior
 	 */

@@ -28,7 +28,9 @@ public abstract class GameObject {
 		this.weight= random.nextInt(41)+10;
 		this.status=Status.IDLE;
 	}
-
+	/**
+	 * Variable registering this Unit's current status.
+	 */
 	private Status status;
 	
 	private Status getStatus() {

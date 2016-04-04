@@ -2387,9 +2387,14 @@ public class Unit {
 			this.setTimeUntilRest(0);
 		else
 			this.setTimeUntilRest(this.getTimeUntilRest()-time);
-
+		if (this.Fallcheck()&&!isFalling()) {
+			this.UnitFalls();
+		}
 		this.hasToRest();
 		Status status = this.getStatus();
+		if (status==Status.FALLING) {
+			this.falling(time);
+		}
 		if (status == Status.IDLE){
 			if (getdefaultbehaviorboolean())
 				defaultbehavior();
@@ -2954,8 +2959,21 @@ public class Unit {
 			return true;
 		}
 	}
-
+	
+	 
+	/**
+	 * variable registering the experience points this unit has
+	 */
 	private int exp;
+	
+	/**
+	 * @post	the exp of this unit will be lower than 10
+	 * 		|this.getnexexp<10
+	 * @post the units attributes will be the same or higher than they were before the method
+	 * 		|this.getnewStrength>=this.getoldStrength
+	 * 		|this.getnewAgility>=this.getoldAgility
+	 * 		|this.getnewToughness>=this.getToughness
+	 */
 	private void levelUp() {
 		while (this.getExp()>=10) {
 			Random random= new Random();
@@ -3167,6 +3185,21 @@ public class Unit {
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
+	/**
+	 * Set the Gameobject of the Unit to the given Gameobject
+	 * 
+	 * @param	gObject
+	 *            The new Gameobject to be set for this Unit
+	 * @post 	If the given Gameobject is null and the Unit has a Gameobject, the units gameobject will be set to null
+	 * 	        | if (gObject ==null)&& this.hasgameObject()
+	 *       	| then new.getgameobjec() == null
+	 * @effect	If the Unit has no gameobject yet it will pickup the gobject
+	 *       	the Unit's strength equals the maximum legal strength
+	 *       	| if this.hasnogameobject
+	 *       	| then new.getgameobjec() == gObject
+	 *       	| gObject.pickedUp(this)
+	 * 
+	 */
 	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
@@ -3178,6 +3211,14 @@ public class Unit {
 
 
 	}
+	/**
+	 * 
+	 * @return the weight of the gameobject the unit is carrying, if not carrying any object, returns 0
+	 * 	if (this.getgameobject==null)
+	 * 		result==0
+	 * 	else
+	 * 		result==this.getgameobject.getWeight
+	 */
 	private int weightGameObject() {
 		if (this.gameObject==null)
 			return 0;
@@ -3185,9 +3226,20 @@ public class Unit {
 			return this.gameObject.getWeight();
 		}
 	}
+	
+	/**
+	 * 
+	 * @return true if the gameobject of the unit is not null
+	 * 		result==(this.getgameObect!=null)
+	 */
 	private boolean hasGameObject() {
 		return (this.getGameObject() != null);
 	}
+	/**
+	 * 
+	 * @return true if the gameobject of the unit is a Boulder
+	 * 		result==(this.getgameObect instanceof Boulder)
+	 */
 	public boolean isCarryingBoulder() {
 		if (this.gameObject instanceof Boulder) {
 			return true;
@@ -3197,6 +3249,11 @@ public class Unit {
 			return false;
 		}
 	}
+	/**
+	 * 
+	 * @return true if the gameobject of the unit is a Log
+	 * 		result==(this.getgameObect instanceof Log)
+	 */
 	public boolean isCarryingLog() {
 		if (this.gameObject instanceof Log) {
 			return true;

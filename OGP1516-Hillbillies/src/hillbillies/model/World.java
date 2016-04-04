@@ -615,6 +615,27 @@ public class World {
 
 	public void caveIn(int x, int y, int z, int value) {
 		setCubeType(x, y, z, 0);
+		Vector position = new Vector(x,y,z);
+		for (Vector vector:this.getAdjacentPositions(position)){
+			if (this.getSpawnablePositions().contains(vector)){
+				if (!unitCanSpawnAt(vector))
+					this.getSpawnablePositions().remove(vector);
+			} else {
+				if (unitCanSpawnAt(vector))
+					this.addSpawnablePosition(vector);
+			}
+			if (this.getStandablePositions().contains(vector)){
+				if (!unitCanStandAt(vector))
+					this.getStandablePositions().remove(vector);
+			} else {
+				if (unitCanStandAt(vector))
+					this.addStandablePosition(vector);
+			}
+		}
+		if (unitCanStandAt(position))
+			this.addStandablePosition(position);
+		if (unitCanSpawnAt(position))
+			this.addSpawnablePosition(position);
 		this.modelListener.notifyTerrainChanged(x, y, z);
 		if (Math.random()<=0.25) {
 			if (value==1){
@@ -624,6 +645,101 @@ public class World {
 				new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}
 		}
+	}
+
+	/**
+	 * Return a set containing all cubes directly adjacent to the given position
+	 * that are not outside the gameworld.
+	 */
+	public Set<Vector> getDirectlyAdjacentPositions(Vector position){
+		Set<Vector> result = new HashSet<>();
+		position = position.getCubePosition();
+		for (int x = -1; x <= 1; x++){
+			for (int y = -1; y <= 1; y++){
+				for(int z = -1; z <= 1; z++){
+					if(Math.abs(x)+Math.abs(y)+Math.abs(z) == 1){
+						Vector vector = position.add(new Vector(x,y,z));
+						if(isInsideWorld(vector))
+							result.add(vector);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Return a Set containing all cubes adjacent to the given position
+	 * @param position
+	 *			The position for which to get the adjacent positions.
+	 */
+	public Set<Vector> getAdjacentPositions(Vector position){
+		Set<Vector> result = new HashSet<>();
+		position = position.getCubePosition();
+		for (int x = -1; x <= 1; x++){
+			for (int y = -1; y <= 1; y++){
+				for(int z = -1; z <= 1; z++){
+					if(Math.abs(x)+Math.abs(y)+Math.abs(z) != 0){
+						Vector vector = position.add(new Vector(x,y,z));
+						if(isInsideWorld(vector))
+							result.add(vector);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Return a list containing all positions in this game World where a Unit can spawn.
+	 */
+	List<Vector> getSpawnablePositions(){
+		return this.spawnablePositions;
+	}
+	
+	/**
+	 * Check whether a Unit can spawn at the given position
+	 * @param position
+	 * 			The position to check for whether a Unit can spawn there.
+	 * @return true if and only if the given position is inside the gameworld,
+	 * 			does not contain solid material and the ground below it is
+	 * 			either the bottom or solid ground.
+	 * 			| result == (isInsideWorld(position)) &&
+	 * 			|			(!isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())) &&
+	 * 			|			((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()-1)))
+	 */
+	private boolean unitCanSpawnAt(Vector position){
+		if (!isInsideWorld(position))
+			return false;
+		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))
+			return false;
+		return (position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()-1));
+	}
+
+	/**
+	 * Add a position to the List of positions where a Unit can spawn.
+	 * @param position
+	 * 			The position to be added to the list of spawnable positions.
+	 * @pre		The cube below the Unit is either the lowest level or solid ground.
+	 * 			| (position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))
+	 * @post	The given position has been added to the list of spawnable positions.
+	 * 			| this.getSpawnablePositions().contains(position)
+	 */
+	private void addSpawnablePosition(Vector position){
+		assert (unitCanSpawnAt(position));
+		this.spawnablePositions.add(position);
+	}
+
+	/**
+	 * A List containing all positions in this game World where a Unit can stand.
+	 */
+	private List<Vector> spawnablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
+	
+	/**
+	 * Return a list containing all positions in this game World where a Unit can stand.
+	 */
+	List<Vector> getStandablePositions(){
+		return this.standablePositions;
 	}
 
 	/**
@@ -666,59 +782,6 @@ public class World {
 	 */
 	boolean unitCanStandAt(int x, int y, int z){
 		return unitCanStandAt(new Vector(x,y,z));
-	}
-
-	/**
-	 * Return a set containing all cubes directly adjacent to the given position
-	 * that are not outside the gameworld.
-	 */
-	public Set<Vector> getDirectlyAdjacentPositions(Vector position){
-		Set<Vector> result = new HashSet<>();
-		for (int x = -1; x <= 1; x++){
-			for (int y = -1; y <= 1; y++){
-				for(int z = -1; z <= 1; z++){
-					if(Math.abs(x)+Math.abs(y)+Math.abs(z) == 1){
-						Vector vector = position.add(new Vector(x,y,z));
-						if(isInsideWorld(vector))
-							result.add(vector);
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Return a list containing all positions in this game World where a Unit can spawn.
-	 */
-	List<Vector> getSpawnablePositions(){
-		return this.spawnablePositions;
-	}
-
-	/**
-	 * Add a position to the List of positions where a Unit can spawn.
-	 * @param position
-	 * 			The position to be added to the list of spawnable positions.
-	 * @pre		The cube below the Unit is either the lowest level or solid ground.
-	 * 			| (position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))
-	 * @post	The given position has been added to the list of spawnable positions.
-	 * 			| this.getSpawnablePositions().contains(position)
-	 */
-	private void addSpawnablePosition(Vector position){
-		assert ((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())));
-		this.spawnablePositions.add(position);
-	}
-
-	/**
-	 * A List containing all positions in this game World where a Unit can stand.
-	 */
-	private List<Vector> spawnablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
-	
-	/**
-	 * Return a list containing all positions in this game World where a Unit can stand.
-	 */
-	List<Vector> getStandablePositions(){
-		return this.standablePositions;
 	}
 
 	/**

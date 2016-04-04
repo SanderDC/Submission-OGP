@@ -50,7 +50,7 @@ public class Node implements Comparable<Node> {
 	 * 			| this.setFCost()
 	 */
 	public Node(Vector position){
-		this(position,Integer.MAX_VALUE,Integer.MAX_VALUE);
+		this(position,0,Integer.MAX_VALUE);
 	}
 
 	/**

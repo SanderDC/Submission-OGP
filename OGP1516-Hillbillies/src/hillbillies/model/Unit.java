@@ -1840,10 +1840,11 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-		if ((this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)&&!(containsGameObject(x, y, z)&&!hasGameObject()))
+		if ((this.getPosition().getCubeX()==x)&&(this.getPosition().getCubeY()==y)&&(this.getPosition().getCubeZ()==z)&&!containsGameObject(x, y, z)&&!hasGameObject())
 			throw new IllegalArgumentException("no GameObjects Found");
-		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)&&!world.isSolidGround(x, y, z)) {
-			throw new IllegalArgumentException("no Solid Ground");
+		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)
+				&&!world.isSolidGround(x, y, z)&&!containsGameObject(x, y, z)) {
+			throw new IllegalArgumentException("No work can be done here");
 		}
 		if (this.hasRestedEnough()){
 			setWorkposition(x, y, z);
@@ -2319,10 +2320,15 @@ public class Unit {
 			this.setDistantTarget(target);
 			return;
 		}
-		this.findPath(cubeX, cubeY, cubeZ);
-		this.setStatus(Status.MOVINGDISTANT);
-		this.setDistantTarget(target);
-		this.moveToNextCube();
+		try {
+			this.setDistantTarget(target);
+			this.findPath(cubeX, cubeY, cubeZ);
+			this.setStatus(Status.MOVINGDISTANT);
+			this.moveToNextCube();
+		} catch (PathfindingException e) {
+			this.setDistantTarget(null);
+			throw e;
+		}
 	}
 
 	/**
@@ -2645,20 +2651,16 @@ public class Unit {
 							try {
 								setSprinting(true);
 							} catch (IllegalStateException e){
-//								this.setSprinting(false);
+
 							}
 						}
-//						else{
-//							setSprinting(false);
-//
-//						}
 						return;
 					} catch (PathfindingException e) {
-						
+
 					}
 				}
-				}
-				
+			}
+
 			if (randomnumber==1){
 				if (hasGameObject()) {
 					WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
@@ -2673,27 +2675,33 @@ public class Unit {
 							}
 							Collections.shuffle(newlist);
 							for (Vector vector : newlist) {
-								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
-							}}
-							else {
-								WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+								try {
+									WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+								} catch (IllegalArgumentException e){
+									continue;
+								}
 							}
 						}
-				else {
-					List<Vector> newlist=new ArrayList<>();
-					for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
-						newlist.add(vector);
+						else {
+							WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
+						}
 					}
-					Collections.shuffle(newlist);
-					for (Vector vector : newlist) {try {
-						WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
-					} catch (IllegalArgumentException e) {
-						// TODO: handle exception
-					}
-						
+					else {
+						List<Vector> newlist=new ArrayList<>();
+						for (Vector vector : world.getDirectlyAdjacentPositions(position)) {
+							newlist.add(vector);
+						}
+						Collections.shuffle(newlist);
+						for (Vector vector : newlist){
+							try {
+								WorkAt(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+							} catch (IllegalArgumentException e) {
+								continue;
+							}
+
+						}
 					}
 				}
-					}
 			}
 			if (randomnumber==2){
 				this.resting();}

@@ -2942,20 +2942,11 @@ public class Unit {
 	 */
 	private boolean Fallcheck() {
 
-		for(int x=1;x>=-1;x--) {
-			for(int y=1;y>=-1;y--){
-				for(int z=1;z>=-1;z--){
-					if ((x==0)&&(y==0)&&(z==0)) {
-
-					}
-
-					else if (world.isSolidGround(x, y, z))
-						return false;
-				}
-
-			}
-
+		if (this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
+			return false;
 		}
+						
+				
 
 		return true;
 	}

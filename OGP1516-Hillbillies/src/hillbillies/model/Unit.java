@@ -1586,7 +1586,7 @@ public class Unit {
 		if (this.isFalling()) {
 			throw new IllegalStateException();
 		}
-		if (!isAdjacentPosition(this.enemy.getPosition())) {
+		if (!isAdjacentPosition(this.enemy.getPosition())&&this.getEnemy().isTerminated) {
 			setActivityTime(0);
 			setEnemy(null);
 			setStatus(Status.IDLE);
@@ -2993,8 +2993,8 @@ public class Unit {
 				this.setFallPosition(0);
 			}
 			else{
-				terminate();
-			}
+				setHitpoints(0);			
+				}
 		}
 
 		else{

@@ -1205,14 +1205,19 @@ public class Unit {
 	 * @pre    	The given hitpoints must be valid hitpoints for this
 	 *         	Unit.
 	 *       	| isValidHitpoints(hitpoints)
-	 * @post   	The hitpoints of this Unit are equal to the given
-	 *         	hitpoints.
-	 *       	| new.getHitpoints() == hitpoints
+	 * @post   	If the given hitpoints are greater than zero, 
+	 * 			the hitpoints of this Unit are equal to the given hitpoints.
+	 * 			Otherwise, the Unit is terminated.
+	 * 			| if (hitpoints > 0)
+	 *       	| then new.getHitpoints() == hitpoints
+	 *       	| else new.isTerminated()
 	 */
 	@Raw
 	private void setHitpoints(int hitpoints) {
 		assert isValidHitpoints(hitpoints, this.getmaxHitpoints());
 		this.hitpoints = hitpoints;
+		if (hitpoints == 0)
+			this.terminate();
 	}
 
 	/**
@@ -1653,7 +1658,7 @@ public class Unit {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
 			}
 			else {
-				terminate();
+				this.setHitpoints(0);
 			}
 			attacker.setExp(attacker.getExp()+20);
 		}

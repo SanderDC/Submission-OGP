@@ -3463,13 +3463,17 @@ public class Unit {
 	 * @pre    The given path must be a valid path for any
 	 *         Unit.
 	 *       | isValidPath(path)
-	 * @post   The path of this Unit is equal to the given
-	 *         path.
-	 *       | new.getPath() == path
+	 * @post   If the Unit is currently at the center of a cube, the path of this Unit is equal to the given
+	 *         path. Otherwise, the Unit's current cube is added at the first position in the list.
+	 *         	| if (this.getPosition().equals(this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))))
+	 *         	| then new.getPath() == path
+	 *         	| else new.getPath().get(0) == this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))
 	 */
 	@Raw
 	private void setPath(List<Vector> path) {
 		assert isValidPath(path);
+		if (!this.getPosition().equals(this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))))
+			path.add(0, this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2)));
 		this.path = path;
 	}
 

@@ -8,6 +8,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Vector;
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbillies.util.ConnectedToBorder;
 
 /**
  * A class defining a game World for Units to exist in
@@ -34,9 +35,9 @@ public class World {
 	 * @post   This new World has no GameObjects yet.
 	 */
 	public World(int[][][] Coordinates, TerrainChangeListener modelListener){
-
 		this.modelListener = modelListener;
 		this.Coordinates=Coordinates;
+		this.connectedToBorder = new ConnectedToBorder(nbCoordinateX(), nbCoordinateY(), nbCoordinateZ());
 		for (int x=0;x<nbCoordinateX();x++){
 			for (int y=0;y<nbCoordinateY();y++){
 				for (int z=0;z<nbCoordinateZ();z++){
@@ -48,88 +49,16 @@ public class World {
 						if ((z==0)||(isSolidGround(x, y, z-1)))
 							this.addSpawnablePosition(new Vector(x,y,z));
 					}
-				}
-			}
-		}
-		for (int x=0;x<nbCoordinateX();x++){
-			for (int y=0;y<nbCoordinateY();y++){
-				for (int z=0;z<nbCoordinateZ();z++){
-					if (isSolidGround(x, y, z)) {
-						if (partOfCaveIn.contains(new Vector(x, y, z))) {
-							
-						}
-						else {
-							if (NotpartOfCaveIn.contains(new Vector(x, y, z))) {
-								
-							}
-							else {
-								if(!isConnectedToBorderStartup(x, y, z)){
-									for (Vector vector : allVisited) {
-										partOfCaveIn.add(vector);
-									}
-									
-								}
-								else {
-									for (Vector vector : allVisited) {
-										NotpartOfCaveIn.add(vector);
-									}
-									
-								}
-								allVisited.clear();
-							}
-						}
-							
-						}
-						
+					if (getCubeType(x, y, z) == 0 || getCubeType(x, y, z) == 3){
+						this.connectedToBorder.changeSolidToPassable(x, y, z);
 					}
 				}
 			}
-		
-		for (Vector vector : partOfCaveIn) {
-			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 		}
 	}
 	
-	public boolean isConnectedToBorderStartup(int x, int y, int z){
-		if (!isSolidGround(x, y, z)) {
-			return false;
-		}
-		boolean returnvalue;
-		prevPos.add(new Vector(x, y, z));
-		returnvalue=backtrackstartup(x, y, z);
-		prevPos.clear();
-		return returnvalue;
-	}
-	public boolean backtrackstartup(int x, int y, int z){			
-		allVisited.add(new Vector(x, y, z));
-		Set <Vector>  positionsToRemove = new HashSet<>() ;
-		if (isBorder(x, y, z)) {
-			return true;
-		}
-		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
-		for (Vector vector : Positions) {
-			for(Vector vector2: prevPos) {
-				if (vector.equals(vector2)){
-					positionsToRemove.add(vector);
+	private ConnectedToBorder connectedToBorder;
 
-				}
-			}
-		}
-		for (Vector vector : positionsToRemove) {
-			Positions.remove(vector);
-		}
-		for (Vector vector: Positions) {
-			prevPos.add(vector);
-			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){
-				return true;
-			}
-			prevPos.remove(vector);
-		}
-		return false;
-	}
-	private Set<Vector>NotpartOfCaveIn=new HashSet<>();
-	private Set<Vector>partOfCaveIn=new HashSet<>();
-	private Set<Vector>allVisited=new HashSet<>();
 	private TerrainChangeListener modelListener;
 	/**
 	 * 
@@ -736,6 +665,7 @@ public class World {
 	public void caveIn(int x, int y, int z) {
 		int value = this.getCubeType(x, y, z);
 		setCubeType(x, y, z, 0);
+		this.connectedToBorder.changeSolidToPassable(x, y, z);
 		Vector position = new Vector(x,y,z);
 		for (Vector vector:this.getAdjacentPositions(position)){
 			if (this.getSpawnablePositions().contains(vector)){
@@ -925,50 +855,6 @@ public class World {
 	 */
 	private List<Vector> standablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
 
-	public boolean isConnectedToBorder(int x, int y, int z){
-		if (!isSolidGround(x, y, z)) {
-			return false;
-		}
-		boolean returnvalue;
-		prevPos.add(new Vector(x, y, z));	
-		returnvalue=backtrack(x, y, z);
-		prevPos.clear();
-		return returnvalue;
-	}
-
-
-
-	private boolean backtrack(int x, int y, int z){			
-
-		Set <Vector>  positionsToRemove = new HashSet<>() ;
-		if (isBorder(x, y, z)) {
-			return true;
-		}
-		Set <Vector> Positions=CheckadjacentValidPositions(x,y,z);
-		for (Vector vector : Positions) {
-			for(Vector vector2: prevPos) {
-				if (vector.equals(vector2)){
-					positionsToRemove.add(vector);
-
-				}
-			}
-		}
-		for (Vector vector : positionsToRemove) {
-			Positions.remove(vector);
-		}
-		for (Vector vector: Positions) {
-			prevPos.add(vector);
-			if(backtrack(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ())){
-				return true;
-			}
-			prevPos.remove(vector);
-
-		}
-
-		return false;
-	}
-
-
 	public Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
 		Set <Vector>  validpositions = new HashSet<>() ;
 		for(int x=-1; x<=1;x++){
@@ -1008,17 +894,6 @@ public class World {
 		}
 		return validpositions;
 	}
-
-	private boolean isBorder(int x,int y,int z){
-		if ((x==0||x==maxCoordinates()[0]||y==0||y==maxCoordinates()[1]||z==0||z==maxCoordinates()[2])&&(isSolidGround(x, y, z))) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	private Set<Vector> prevPos=new HashSet<>();
 	
 	public List<Vector> getSolidPositions(){
 		List<Vector>Solidgrounds=new ArrayList<>();
@@ -1032,6 +907,10 @@ public class World {
 				}
 			}
 		return Solidgrounds;
+	}
+
+	public boolean isSolidConnectedToBorder(Vector vector) {
+		return this.connectedToBorder.isSolidConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 	}
 
 

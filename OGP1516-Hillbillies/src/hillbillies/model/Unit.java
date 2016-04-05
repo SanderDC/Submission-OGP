@@ -1205,14 +1205,19 @@ public class Unit {
 	 * @pre    	The given hitpoints must be valid hitpoints for this
 	 *         	Unit.
 	 *       	| isValidHitpoints(hitpoints)
-	 * @post   	The hitpoints of this Unit are equal to the given
-	 *         	hitpoints.
-	 *       	| new.getHitpoints() == hitpoints
+	 * @post   	If the given hitpoints are greater than zero, 
+	 * 			the hitpoints of this Unit are equal to the given hitpoints.
+	 * 			Otherwise, the Unit is terminated.
+	 * 			| if (hitpoints > 0)
+	 *       	| then new.getHitpoints() == hitpoints
+	 *       	| else new.isTerminated()
 	 */
 	@Raw
 	private void setHitpoints(int hitpoints) {
 		assert isValidHitpoints(hitpoints, this.getmaxHitpoints());
 		this.hitpoints = hitpoints;
+		if (hitpoints == 0)
+			this.terminate();
 	}
 
 	/**
@@ -1653,7 +1658,7 @@ public class Unit {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
 			}
 			else {
-				terminate();
+				this.setHitpoints(0);
 			}
 			attacker.setExp(attacker.getExp()+20);
 		}
@@ -3454,13 +3459,17 @@ public class Unit {
 	 * @pre    The given path must be a valid path for any
 	 *         Unit.
 	 *       | isValidPath(path)
-	 * @post   The path of this Unit is equal to the given
-	 *         path.
-	 *       | new.getPath() == path
+	 * @post   If the Unit is currently at the center of a cube, the path of this Unit is equal to the given
+	 *         path. Otherwise, the Unit's current cube is added at the first position in the list.
+	 *         	| if (this.getPosition().equals(this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))))
+	 *         	| then new.getPath() == path
+	 *         	| else new.getPath().get(0) == this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))
 	 */
 	@Raw
 	private void setPath(List<Vector> path) {
 		assert isValidPath(path);
+		if (!this.getPosition().equals(this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2))))
+			path.add(0, this.getPosition().getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2)));
 		this.path = path;
 	}
 

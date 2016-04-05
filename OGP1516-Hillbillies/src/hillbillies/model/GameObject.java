@@ -201,22 +201,45 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Terminate this GameObject.
+	 * 
+	 * Terminate this Unit
+	 * @post	This Unit has been terminated
+	 * 			| new.isTerminated() == true
+	 * @post	This Gameobject has been removed from its World
+	 * 			| (new this).getWorld() == null
+	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
+	 
 	 */
+	 
 	void terminate(){
 		this.isTerminated=true;
 		World oldWorld= this.world;
 		this.world=null;
 		oldWorld.removeGameObject(this);
-		this.setPosition(null);
 	}
+	/**
+	 * the speed this Gameobject will fall
+	 */
 	private final Vector fallspeed=new Vector(0, 0, -3);
 	
 	/**
 	 * Variable registering whether this GameObject has been terminated.
 	 */
 	private boolean isTerminated;
-	
+	/**
+	 * advancing the Gameobjects time
+	 * @param time
+	 * 		The time to advance the gametime with.
+	 * @effect if this Gameobject has no solidground underneath it, it will fall
+	 * 		if!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))
+	 * 		then setStatus(Status.FALLING)&&this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
+										this.getPosition().getCubeY()+World.CUBELENGTH/2,
+										this.getPosition().getZ()))
+	 * 
+	 * *@throws IllegalArgumentException
+	 * 			The given time is an illegal time.
+	 * 			| (time < 0) || (time > 0.2)
+	 */
 	public void advanceTime(double time){
 		
 		if (!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))) {
@@ -230,6 +253,15 @@ public abstract class GameObject {
 		fall(time);
 	}
 	}
+	/**
+	 * Update the GameObject's position as it is falling
+	 * @param time
+	 * 			The time used to calculate the new position for this GameObject.
+	 * @post	If the GameObject is not arriving at or surpassing a valid position,
+	 * 			its speed times the given time is added to its position
+	 * @post	If the GameObject is arriving at or surpassing a valid position,
+	 * 			its position is set to the valid position, and its status will be set to IDLE
+	 */
 	private void fall(double time){
 		Vector displacement = fallspeed.scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
@@ -247,6 +279,16 @@ public abstract class GameObject {
 			}
 		
 	}
+	/**
+	 * 
+	 *
+	 * @post	This Gameobject has been removed from its World
+	 * 			| (new this).getWorld() == null
+	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
+	 * @post	This Gameobject's position has been set to null
+	 * 			this.getnewPosition==null
+	 *
+	 */
 	public void pickedUp(Unit unit) {
 		World oldWorld= this.world;
 		setWorld(null);
@@ -254,6 +296,15 @@ public abstract class GameObject {
 		this.setPosition(null);
 		
 	}
+	/**
+	 * @post	This Gameobject's position has been set to null
+	 * 			this.getnewPosition==unit.getPosition()
+	 * @post	This Gameobject has been added to a World
+	 * 			| (new this).getWorld() == unit.getWorld
+	 *			| (new this.getWorld()).hasAsGameobject(this) == true
+	 *@post		This gameobject is no longer being carried by a unit
+	 *			unit.getnewGameobject==null
+	 */
 	public void dropped(Unit unit) {
 		this.world=unit.getWorld();
 		setPosition(unit.getPosition());

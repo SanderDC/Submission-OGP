@@ -1373,7 +1373,7 @@ public class Unit {
 	 */
 	private static boolean isValidStatus(Status status) {
 		return (status == Status.WORKING) || (status == Status.RESTING) || (status == Status.MOVINGADJACENT)
-				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING);
+				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING)||(status==Status.FALLING);
 	}
 
 	/**
@@ -1625,7 +1625,11 @@ public class Unit {
 	 * 		|new.gethipoints()==this.getHitpoints()-attacker.getStrength()/10
 	 * 		|if(attacker.getStrength()/10==0)
 	 * 		|then new.gethipoints()==this.getHitpoints()-1
-
+	 *@effect if the unit dodges or parries it will get 20 exp thus 2 levelups
+	 *		|this.Setexp(this.getexp+20)
+	 *		|this.getnewexp==0
+	 *		|this.getOldStrength+this.getOldtoughnes+this.getOldAgility+this.getnewStrength+2
+	 *		|>=this.getnewtoughnes+this.getnewAgility>=this.getOldStrength+this.getOldtoughnes+this.getOldAgility
 	 * 		
 	 */
 	private void defend(Unit attacker){
@@ -1954,6 +1958,21 @@ public class Unit {
 	 *		|then new.getActivityTime=0, new.getStatus==Status.IDLE
 	 *		|else
 	 *		|then new.getActivityTime=This.getActivityTime-time
+	 *@effect
+	 *		|if (workorder==1)
+	 *		|then this.dropobject()
+	 *@effect
+	 *		|if (workorder==2)
+	 *		|then setToughness(this.getToughness()+1)
+	 *		|	setWeight(this.getWeight()+1)
+	 *		|	terminateBoulderAndLog()
+	 *@effect
+	 *		|if (workorder==3)
+	 *		|then world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()))
+
+	 *@effect
+	 *		|if (workorder==4)
+	 *		|then pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ())
 	 */
 	private void advanceWork(double time){
 		if (!validWorkorder(this.workorder)) {
@@ -1983,7 +2002,8 @@ public class Unit {
 	private Set<GameObject> upgradematerial;
 
 	/**
-	 * vernietigt materialen na upgrade
+	 * @post destroys the upgradematerials
+	 * 		upgradematerial(0)==isterminated&&upgradematerial(1)==isterminated
 	 */
 	private void terminateBoulderAndLog() {	
 		for (GameObject object : world.getGameObjects()) {
@@ -2023,6 +2043,9 @@ public class Unit {
 	 * bekijkt of de workorder nog altijd valid is
 	 * @param workorder
 	 * @return 
+	 * result==(workorder==0||(workorder==1&&!isValidPosition(workposition))||(workorder==2&&!containsLogandBoulder(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ()))
+	 * 		||(workorder==3&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=1)&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=2))
+	 * 		||(workorder==4&&(!isValidPosition(workposition)||!containsGameObject(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())))
 	 */
 	private boolean validWorkorder(int workorder){
 		if (workorder==0)
@@ -2069,7 +2092,11 @@ public class Unit {
 	 * @param x
 	 * @param y
 	 * @param z
-	 * pakt een object op
+	 * @effect picks up a gameobject, first checking for possible boulders, then for possible logs
+	 * 		|if(cube(x,y,z)contains boulder)
+	 * 		|	SetGameObject(boulderobject)
+	 * 		|else
+	 * 		|	SetGameObject(LogObject)
 	 */
 	private void pickUpObject(int x,int y,int z){
 		for (GameObject object : world.getGameObjects()) {
@@ -2100,7 +2127,10 @@ public class Unit {
 		}
 	}
 	/**
-	 * laat het object vallen
+	 * @effect drops the object the unit is carrying in the Units world
+	 * 		|this.setGameObject(null)
+	 * 		|this.oldObject.addToWorld(getWorld())
+	 * 		|oldObject.setPosition(position)
 	 */
 	private void dropObject() {
 		GameObject oldObject = this.getGameObject();
@@ -2109,22 +2139,34 @@ public class Unit {
 		oldObject.setPosition(position);
 	}
 
-
+	/**
+	 *
+	 * variable for the kind of work the Unit will perform
+	 */
 	private int workorder;
+	/**
+	 *
+	 * variable for the position where workat will take place
+	 */
 	private Vector workposition;
 	/**
-	 * positie waar de actie zich voldoet(niet position van waar unit zal staan)
-	 * @return
+	 *
+	 * @return  position where workat will take place
 	 */
 	public Vector getWorkposition() {
 		return workposition;
 	}
+	
 	public void setWorkposition(int x, int y, int z) {
 		this.workposition = new Vector(x, y, z);
 	}
-
+	/**
+	 * 
+	 * @return	returns what kind of workorder this unit has
+	 * 		result==this.workorder
+	 */
 	public int getWorkorder() {
-		return workorder;
+		return this.workorder;
 	}
 	/**
 	 * 
@@ -2134,6 +2176,11 @@ public class Unit {
 	 * workorder=2:improve equipment
 	 * workorder=3:remove solidGround
 	 * workorder=4:pick up gameObject
+	 * 
+	 * @post
+	 * 		|this.getnewworkorder=workorder
+	 * @throw IllegalArgumentException
+	 * 		(workorder<0||workorder>4)
 	 */
 	public void setWorkorder(int workorder)throws IllegalArgumentException {
 		if (workorder<0||workorder>4) {
@@ -2367,6 +2414,8 @@ public class Unit {
 	 * Advances the gametime for this Unit by the given time
 	 * @param time
 	 * 			The time to advance the gametime with.
+	 * @effect	if the Unit is not falling and is in a position where it should start to fall, it will start to fall
+	 * @effect 	if the Unit is falling, its position is updated
 	 * @effect	The time until the Unit's next obligatory rest is reduced by the given time.
 	 * @effect	If the Unit is currently idle and its default behavior is enabled,
 	 * 			it chooses a random activity to conduct.
@@ -2636,10 +2685,17 @@ public class Unit {
 
 	/**
 	 * if a Unit is idle and it has defaultbehavior enabled, it will choose an activity at random
-	 * @post	With a chance of one in three, movement to a random cube in the gameworld is initiated.
+	 * @post	if no attackableUnits are in range then
+	 * 			With a chance of one in three, movement to a random cube in the gameworld is initiated.
 	 * 			With a chance of one in two, sprinting will be enabled.
-	 * @post	With a chance of one in three, the Unit starts working.
-	 * @post	With a chance of one in three, the Unit starts resting.
+	 * 			With a chance of one in three, the Unit starts working.
+	 * 			With a chance of one in three, the Unit starts resting.
+	 * @post 	if an attackable Unit is in range then
+	 * 			With a chance of one in four, movement to a random cube in the gameworld is initiated.
+	 * 			With a chance of one in two, sprinting will be enabled.
+	 * 			With a chance of one in four, the Unit starts working.
+	 * 			With a chance of one in four, the Unit starts resting.
+	 * 			With a chance of one in four, the Unit starts attacking.
 	 */
 	private void defaultbehavior(){
 		if(this.getStatus()==Status.IDLE){
@@ -2652,6 +2708,11 @@ public class Unit {
 	}
 		
 	}
+	/**
+	 * 
+	 * @return checks whether there is a adjacentUnit that is possible to attack
+	 * 		result==(canhaveasenemy(any Unit from (this.getWorld.getUnits)))
+	 */
 	private boolean possibleattack() {
 		for (Unit unit : this.getWorld().getUnits()) {
 			
@@ -2662,7 +2723,14 @@ public class Unit {
 		return false;
 	}
 	
-	
+	/**
+	 * will choose an activity at random
+	 * @post	
+	 * 			With a chance of one in three, movement to a random cube in the gameworld is initiated.
+	 * 			With a chance of one in two, sprinting will be enabled.
+	 * 			With a chance of one in three, the Unit starts working.
+	 * 			With a chance of one in three, the Unit starts resting.
+	 */
 	private void defaultNoAttack(){
 		Random randomgenerator= new Random();
 		int randomnumber=randomgenerator.nextInt(3);
@@ -2731,7 +2799,16 @@ public class Unit {
 	
 	
 	
-	
+
+	/**
+	 * will choose an activity at random
+	 * @post 	
+	 * 			With a chance of one in four, movement to a random cube in the gameworld is initiated.
+	 * 			With a chance of one in two, sprinting will be enabled.
+	 * 			With a chance of one in four, the Unit starts working.
+	 * 			With a chance of one in four, the Unit starts resting.
+	 * 			With a chance of one in four, the Unit starts attacking.
+	 */
 	private void defaultWithAttack(){
 		Random randomgenerator= new Random();
 		int randomnumber=randomgenerator.nextInt(4);
@@ -2858,7 +2935,11 @@ public class Unit {
 
 
 
-
+	/**
+	 * 
+	 * @return returns true if the unit is in a position where one has to fall
+	 * 		result==(nosolidground(x-1..x+1,y-1..y+1,z-1...z+1)
+	 */
 	private boolean Fallcheck() {
 
 		for(int x=1;x>=-1;x--) {
@@ -2869,29 +2950,50 @@ public class Unit {
 					}
 
 					else if (world.isSolidGround(x, y, z))
-						return true;
+						return false;
 				}
 
 			}
 
 		}
 
-		return false;
+		return true;
 	}
-
+	/**
+	 * 
+	 * @return the position from where the unit started to fall
+	 */
 	private double  getFallPosition() {
 		return this.fallPosition;
 	}
-
+	/**
+	 * Set the fallPosition of this Unit to the given fallPosition.
+	 * 
+	 * @param  	fallPosition
+	 *         	The new fallPosition for this Unit.
+	 * @pre    	The given fallPosition must be valid fallPosition for this
+	 *         	Unit.
+	 *       	| (fallPosition>0)
+	 * @post   	The fallPosition of this Unit are equal to the given
+	 *         	fallPosition.
+	 *       	| new.getFallPosition() == fallPosition
+	 */
 	private void setFallPosition(double fallPosition)throws IllegalArgumentException {
-		if (this.fallPosition<0) {
+		if (fallPosition<0) {
 			throw new IllegalArgumentException();
 		}
 
 		this.fallPosition = fallPosition;
 	}
-
+	/**
+	 * variable registering the position from where a unit started falling
+	 */
 	private double fallPosition;
+	/**
+	 * 
+	 * @return true if the status of this unit is the falling status
+	 * 		| result==(this.getstatus==Status.FALLING)
+	 */
 	private boolean isFalling(){
 		if (this.getStatus()==Status.FALLING){
 			return true;
@@ -2902,7 +3004,19 @@ public class Unit {
 	}
 
 
+	/**
+	 * method to initiate falling
+	 * @post	If the Unit is not yet falling, the Unit's falling
+	 * 			is set to Status.Falling 			
+	 * 			| new.getStatus() == Status.Resting
+	 * @effect	units speed is set to the vector(0,0,-3)
+	 * 			| this.setSpeed(new Vector(0,0,-3))
+	 * @effect	the Unit is standing in the middle of the cube
+	 * 			|this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 
+	 * @post	Sets the Fallposition the cube it is in			
+	 * 			| then new.getFallposition=this.getPosition().getcubeZ()
+	 */
 	private void UnitFalls() {
 		this.setStatus(Status.FALLING);
 		this.setSpeed(new Vector(0, 0, -3));
@@ -2910,6 +3024,18 @@ public class Unit {
 		this.setFallPosition(this.getPosition().getCubeZ());
 
 	}
+	/**
+	 * Update the Unit's position as it is falling
+	 * @param time
+	 * 			The time used to calculate the new position for this Unit.
+	 * @post	If the Unit is not arriving at or surpassing a valid position,
+	 * 			its speed times the given time is added to its position
+	 * @post	If the Unit is arriving at or surpassing a valid position,
+	 * 			its position is set to the valid position, its Fallposition is set to 0
+	 * 			and its status is set to idle.
+	 * @post	If the Unit would lose enough health to die, it will be terminated.
+	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
+	 */
 	private void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
@@ -2932,7 +3058,8 @@ public class Unit {
 
 	}
 	/**
-	 * @return the exp
+	 * @return the experience points of this unit
+	 * 		
 	 */
 	public int getExp() {
 		return this.exp;
@@ -2940,6 +3067,9 @@ public class Unit {
 
 	/**
 	 * @param exp the exp to set
+	 * @post
+	 * 		|this.getnewExp<=10
+	 * 
 	 */
 	private void setExp(int exp) {
 		if (isValidExp(exp)) {
@@ -2951,6 +3081,12 @@ public class Unit {
 		}
 		this.levelUp();
 	}
+	/**
+	 * 
+	 * @param exp
+	 * @return returns true if the exp is non-negative
+	 * 		result==(exp>0)
+	 */
 	private static boolean isValidExp(int exp) {
 		if (exp<0) {
 			return false;
@@ -2967,7 +3103,7 @@ public class Unit {
 	private int exp;
 	
 	/**
-	 * @post	the exp of this unit will be lower than 10
+	 * @post the exp of this unit will be lower than 10
 	 * 		|this.getnexexp<10
 	 * @post the units attributes will be the same or higher than they were before the method
 	 * 		|this.getnewStrength>=this.getoldStrength
@@ -3005,6 +3141,11 @@ public class Unit {
 	 * @post	This Unit has been removed from its faction
 	 * 			| (new this).getFaction() == null
 	 * 			| (new this.getFaction()).hasAsUnit(this) == false
+	 * @post	This Unit has been removed from its World
+	 * 			| (new this).getWorld() == null
+	 * 			| (new this.getWorld()).hasAsUnit(this) == false
+	 * @effect	if this Unit was carrying a gameObject, it will be dropped.
+	 * 			|this.dropobject()
 	 */
 	private void terminate(){
 		assert (this.getHitpoints() == 0);
@@ -3181,7 +3322,11 @@ public class Unit {
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject=null;
-
+	/**
+	 * 
+	 * @return the gameobject this unit is carrying, if any
+	 * 		
+	 */
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}

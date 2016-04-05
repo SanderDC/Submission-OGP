@@ -131,22 +131,45 @@ public class World {
 	private Set<Vector>partOfCaveIn=new HashSet<>();
 	private Set<Vector>allVisited=new HashSet<>();
 	private TerrainChangeListener modelListener;
+	/**
+	 * 
+	 * @return
+	 * 		result==this.Coordinates
+	 */
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
-
+	/**
+	 * 
+	 * @return return the number of zcubes
+	 * 		result==getCoordinates().length
+	 */
 	public int nbCoordinateX() {
 		return getCoordinates().length;
 	}
-
+	/**
+	 * 
+	 * @return return the number of zcubes
+	 * 		result==getCoordinates()[0].length
+	 */
 	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
 	}
-
+/**
+ * 
+ * @return return the number of zcubes
+ * 		result==getCoordinates()[0][0].length
+ */
 	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
 	}
-
+	/**
+	 * 
+	 * @return returns array of the maxCoordinateCubes
+	 * 		result[0]==nbCoordinateX()-1
+	 * 		result[1]==nbCoordinateY()-1
+	 * 		result[2]==nbCoordinateZ()-1
+	 */
 	public int [] maxCoordinates(){
 		int [] maxcoordinates= new int [3];
 		maxcoordinates[0]=nbCoordinateX()-1;
@@ -170,9 +193,22 @@ public class World {
 		}
 		return true;
 	}
-
+	/**
+	 * variable keeping track of the values of the cubetypes
+	 */
 	private int [][][] Coordinates;
-
+	/**
+	 * Advances the gametime for this World by the given time
+	 * @param time
+	 * 			The time to advance the gametime with.
+	 * @effect
+	 * 		advancetime(for(Unit unit: this.getunits)
+	 * 		advancetime(for(GameObject gObject: this.getGameObjects)
+	 * 
+	 * *@throws IllegalArgumentException
+	 * 			The given time is an illegal time.
+	 * 			| (time < 0) || (time > 0.2)
+	 */
 	public void advanceTime(double time)throws IllegalArgumentException {
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
@@ -183,16 +219,37 @@ public class World {
 			gObject.advanceTime(time);
 		}
 	}
-
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return the value of the cube
+	 * 		result==getCoordinates()[x][y][z]
+	 */
 	public  int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
 
 	}
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param value
+	 * @post	change the value of the cubetype to the given value
+	 * 		|this.getnewCoordinates==value
+	 */
 	public void setCubeType(int x,int y, int z, int value) {
 		this.getCoordinates()[x][y][z]=value;
 	}
-
-	public boolean isValidMaterial(int i) {
+	/**
+	 * 
+	 * @param i
+	 * @return whether the material is a valid value in this World
+	 * 		result==(i>0&&i<3)
+	 */
+	private boolean isValidMaterial(int i) {
 
 
 		if (i>=0&&i<=3) {
@@ -562,7 +619,11 @@ public class World {
 	 */
 
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
-
+	/**
+	 * 
+	 * @return returns all the logs in this World
+	 * 		result==Set<Log>(alllogs)
+	 */
 	public Set<Log> GetAllLogs() {
 		Set<Log> Logs= new HashSet<>();
 		for (GameObject log : gameObjects) {
@@ -572,6 +633,11 @@ public class World {
 		}
 		return Logs;
 	}
+	/**
+	 * 
+	 * @return returns all the Boulders in this World
+	 * 		result==Set<Log>(allBoulders)
+	 */
 	public Set<Boulder> GetAllBoulders() {
 		Set<Boulder> Boulders= new HashSet<>();
 		for (GameObject bObject : gameObjects) {
@@ -581,12 +647,21 @@ public class World {
 		}
 		return Boulders;
 	}
-
+	/**
+	 * 
+	 * @return all gameobjects in this world
+	 * 		result== this.gameobjects
+	 */
 	public Set<GameObject> getGameObjects(){
 		return this.gameObjects;
 	}
 
-
+	/**
+	 * 
+	 * @param i
+	 * @return returns whether this material is solid or not
+	 * 		result==(i==1||i==2)
+	 */
 	public boolean IsSolidMaterial(int i){
 		if(i==1||i==2)
 			return true;
@@ -594,6 +669,14 @@ public class World {
 			return false;
 		}
 	}
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return	returns whether this cube is made of solid material
+	 * 		result==IsSolidMaterial(getCubeType(x,y,z))
+	 */
 	public boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
 	}
@@ -672,6 +755,7 @@ public class World {
 	 * Return a Set containing all cubes adjacent to the given position
 	 * @param position
 	 *			The position for which to get the adjacent positions.
+	 *
 	 */
 	public Set<Vector> getAdjacentPositions(Vector position){
 		Set<Vector> result = new HashSet<>();

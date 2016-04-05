@@ -2896,7 +2896,7 @@ public class Unit {
 	 */
 	private boolean Fallcheck() {
 
-		if (this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
+		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
 			return false;
 		}
 						

@@ -976,7 +976,7 @@ public class World {
 
 			}
 			else {
-				if (isSolidGround(x+X, Y, Z)) {
+				if (isInsideWorld(new Vector(x+X, Y, Z))&&isSolidGround(x+X, Y, Z)) {
 					validpositions.add(new Vector(x+X, Y, Z));
 				}
 			}
@@ -988,7 +988,7 @@ public class World {
 
 			}
 			else {
-				if (isSolidGround(X, Y+y, Z)) {
+				if (isInsideWorld(new Vector(X, Y+y, Z))&&isSolidGround(X, Y+y, Z)) {
 					validpositions.add(new Vector(X, Y+y, Z));
 				}
 
@@ -1000,7 +1000,7 @@ public class World {
 
 			}
 			else {
-				if (isSolidGround(X, Y, Z+z)) {
+				if (isInsideWorld(new Vector(X, Y, Z+z))&&isSolidGround(X, Y, Z+z)) {
 					validpositions.add(new Vector(X, Y, Z+z));
 				}
 

@@ -398,8 +398,12 @@ public class Unit {
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
 	private boolean canHaveAsEnemy(Unit enemy) {
+		
 		if (enemy==null) {
 			return true;
+		}
+		if (enemy.isTerminated) {
+			return false;
 		}
 		if( enemy.faction==this.faction)
 			return false;
@@ -1017,7 +1021,7 @@ public class Unit {
 	 * 			| result == Math.ceil(this.getAgility()/2.0 + this.getStrength()/2.0)
 	 */
 	@Basic
-	private int getMinWeight() {
+	public int getMinWeight() {
 		double temp = this.getAgility() / 2.0 + this.getStrength() / 2.0;
 		return (int) Math.ceil(temp);
 	}
@@ -1582,29 +1586,30 @@ public class Unit {
 	 *			|this.setStatus(Status.IDLE)
 	 *			|this.setEnemy(null)
 	 */
-	private void attack(Unit other, double time) throws IllegalStateException{
-		if (this.isFalling()) {
-			throw new IllegalStateException();
-		}
-		if (!isAdjacentPosition(this.enemy.getPosition())&&this.getEnemy().isTerminated) {
-			setActivityTime(0);
-			setEnemy(null);
-			setStatus(Status.IDLE);
-		}
-		this.updatePosition(other);
-		this.setActivityTime(this.getActivityTime()+time);
-		if (this.getActivityTime()>=1){
-
-
-			other.defend(this);
-			other.updatePosition(this);
-			this.setStatus(Status.IDLE);
-			if (this.getDistantTarget() != null){
-				Vector target = this.getDistantTarget();
-				this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+	private void attack(Unit other, double time) {
+		
+			if (!canHaveAsEnemy(other)) {
+				setActivityTime(0);
+				setEnemy(null);
+				setStatus(Status.IDLE);
+				return;
 			}
-			this.setEnemy(null);
-		}
+			this.updatePosition(other);
+			this.setActivityTime(this.getActivityTime()+time);
+			if (this.getActivityTime()>=1){
+
+
+				other.defend(this);
+				other.updatePosition(this);
+				this.setStatus(Status.IDLE);
+				if (this.getDistantTarget() != null){
+					Vector target = this.getDistantTarget();
+					this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+				}
+				this.setEnemy(null);
+			}
+		
+		
 	}
 
 	/**
@@ -2384,32 +2389,35 @@ public class Unit {
 	 * 			| (time < 0) || (time > 0.2)
 	 */
 	public void advanceTime(double time) throws IllegalArgumentException{
-		if (time<0||time>0.2)
-			throw new IllegalArgumentException();
-		if (this.getTimeUntilRest() - time <= 0)
-			this.setTimeUntilRest(0);
-		else
-			this.setTimeUntilRest(this.getTimeUntilRest()-time);
-		if (this.Fallcheck()&&!isFalling()) {
-			this.UnitFalls();
+		if (!isTerminated) {
+			if (time<0||time>0.2)
+				throw new IllegalArgumentException();
+			if (this.getTimeUntilRest() - time <= 0)
+				this.setTimeUntilRest(0);
+			else
+				this.setTimeUntilRest(this.getTimeUntilRest()-time);
+			if (this.Fallcheck()&&!isFalling()) {
+				this.UnitFalls();
+			}
+			this.hasToRest();
+			Status status = this.getStatus();
+			if (status==Status.FALLING) {
+				this.falling(time);
+			}
+			if (status == Status.IDLE){
+				if (getdefaultbehaviorboolean())
+					defaultbehavior();
+			}
+			if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
+				this.move(time);
+			if (status == Status.RESTING)
+				this.restoreHPST(time);
+			if (status == Status.WORKING)
+				this.advanceWork(time);
+			if (status == Status.ATTACKING)
+				this.attack(getEnemy(), time);
 		}
-		this.hasToRest();
-		Status status = this.getStatus();
-		if (status==Status.FALLING) {
-			this.falling(time);
-		}
-		if (status == Status.IDLE){
-			if (getdefaultbehaviorboolean())
-				defaultbehavior();
-		}
-		if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
-			this.move(time);
-		if (status == Status.RESTING)
-			this.restoreHPST(time);
-		if (status == Status.WORKING)
-			this.advanceWork(time);
-		if (status == Status.ATTACKING)
-			this.attack(getEnemy(), time);
+		
 	}
 
 	/**
@@ -3099,7 +3107,8 @@ public class Unit {
 			dropObjectAt(this.getPosition());
 		}
 		this.removeFromFaction();
-		this.removeFromWorld();
+		world.AddToTerminatedUnits(this);
+		
 
 	}
 
@@ -3246,7 +3255,7 @@ public class Unit {
 	 * 			| (new this).getWorld() == null
 	 * 			| !(new faction).hasAsUnit(this)
 	 */
-	private void removeFromWorld(){
+	void removeFromWorld(){
 		assert (this.isTerminated());
 		World oldWorld = this.getWorld();
 		this.world = null;

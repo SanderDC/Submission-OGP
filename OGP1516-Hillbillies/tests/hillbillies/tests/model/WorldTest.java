@@ -42,7 +42,7 @@ public class WorldTest {
 		coordinates[2][1][2]=1;
 		coordinates[0][1][0]=1;
 		
-		world3= new World(coordinates,TerrainChangeListener);
+		world3= new World(coordinates);
 	}
 
 	@After

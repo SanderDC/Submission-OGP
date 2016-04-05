@@ -56,7 +56,27 @@ public class World {
 			}
 		}
 	}
-	
+	public World(int[][][] Coordinates){
+		this.Coordinates=Coordinates;
+		this.connectedToBorder = new ConnectedToBorder(nbCoordinateX(), nbCoordinateY(), nbCoordinateZ());
+		for (int x=0;x<nbCoordinateX();x++){
+			for (int y=0;y<nbCoordinateY();y++){
+				for (int z=0;z<nbCoordinateZ();z++){
+					if(!isValidMaterial(Coordinates[x][y][z])){
+						Coordinates[x][y][z]=0;
+					}
+					if (unitCanStandAt(x, y, z)){
+						this.addStandablePosition(new Vector(x,y,z));
+						if ((z==0)||(isSolidGround(x, y, z-1)))
+							this.addSpawnablePosition(new Vector(x,y,z));
+					}
+					if (getCubeType(x, y, z) == 0 || getCubeType(x, y, z) == 3){
+						this.connectedToBorder.changeSolidToPassable(x, y, z);
+					}
+				}
+			}
+		}
+	}
 	private ConnectedToBorder connectedToBorder;
 
 	private TerrainChangeListener modelListener;
@@ -114,7 +134,7 @@ public class World {
 	 * @return true if all coordinates of the given Vector lie between
 	 * 			this gameworld's minimum and maximum coordinate in that direction.
 	 */
-	boolean isInsideWorld(Vector position){
+	public boolean isInsideWorld(Vector position){
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
 			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i] + 1))
@@ -126,6 +146,16 @@ public class World {
 	 * variable keeping track of the values of the cubetypes
 	 */
 	private int [][][] Coordinates;
+	
+	
+	
+	private Set<Unit> TerminatedUnits=new HashSet<>();
+	
+	void AddToTerminatedUnits(Unit unit){
+		assert (unit.isTerminated());
+		TerminatedUnits.add(unit);
+	}
+	
 	/**
 	 * Advances the gametime for this World by the given time
 	 * @param time
@@ -143,6 +173,9 @@ public class World {
 			throw new IllegalArgumentException();
 		for (Unit unit:this.getUnits()){
 			unit.advanceTime(time);
+		}
+		for (Unit unit : TerminatedUnits) {
+			unit.removeFromWorld();
 		}
 		for (GameObject gObject:this.getGameObjects()){
 			gObject.advanceTime(time);

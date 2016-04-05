@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
+import hillbillies.model.World;
 
 public class UnitTest {
 	
@@ -16,10 +17,7 @@ public class UnitTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		movingDistantUnit = new Unit(new Vector(1.5,1.5,1.5), 50, 50, 50,"Billy",50, false);
-		movingDistantUnit.moveTo(5, 5, 5);
-		movingAdjacentUnit = new Unit(new Vector(1.5,1.5,1.5), 50, 50, 50, "John", 50, false);
-		movingAdjacentUnit.moveToAdjacent(1, 1, 1);
+		
 	}
 
 	@AfterClass
@@ -352,7 +350,7 @@ public class UnitTest {
 	}
 	@Test
 	public void defaultbehaviorsettings_legalcase(){
-		idleUnit.setDefaultBehaviorBoolean(true);;
+		idleUnit.setDefaultBehaviorBoolean(true);
 		assertTrue(idleUnit.getdefaultbehaviorboolean());
 	}
 	@Test(expected = IllegalStateException.class)

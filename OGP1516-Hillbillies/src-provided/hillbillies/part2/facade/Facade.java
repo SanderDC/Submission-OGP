@@ -319,8 +319,11 @@ public class Facade implements IFacade{
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		unit.WorkAt(x, y, z);
-		
+		try {
+			unit.WorkAt(x, y, z);
+		} catch (IllegalStateException | IllegalArgumentException e) {
+			throw new ModelException(e);
+		}
 	}
 
 	@Override

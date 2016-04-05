@@ -86,7 +86,7 @@ public class World {
 			}
 		
 		for (Vector vector : partOfCaveIn) {
-			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), getCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ()));
+			caveIn(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 		}
 	}
 	
@@ -227,10 +227,15 @@ public class World {
 	 * @return the value of the cube
 	 * 		result==getCoordinates()[x][y][z]
 	 */
-	public  int getCubeType(int x,int y, int z) {
+	public int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
 
 	}
+	
+	public int getCubeType(Vector position){
+		return this.getCubeType(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	}
+	
 	/**
 	 * 
 	 * @param x
@@ -557,6 +562,27 @@ public class World {
 		}
 		return true;
 	}
+	
+	/**
+	 * Return a Set containing all GameObjects at a given position in this World.
+	 * @param position
+	 * 			The position of the GameObjects to return
+	 * @throws IllegalArgumentException
+	 * 			The given position is outside of the World
+	 * 			| isInsideWorld(position)
+	 */
+	Set<GameObject> getGameObjectsAt(Vector position) throws IllegalArgumentException{
+		if (!isInsideWorld(position))
+			throw new IllegalArgumentException();
+		position = position.getCubePosition();
+		Set<GameObject> result = new HashSet<>();
+		for (GameObject object: this.getGameObjects()){
+			if (object.getPosition().getCubePosition().equals(position)){
+				result.add(object);
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Return the number of GameObjects associated with this World.
@@ -677,8 +703,19 @@ public class World {
 	 * @return	returns whether this cube is made of solid material
 	 * 		result==IsSolidMaterial(getCubeType(x,y,z))
 	 */
-	public boolean isSolidGround(int x, int y, int z) {
+	boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
+	}
+	
+	/**
+	 * Check whether the cube at the given position is solid material
+	 * @param position
+	 * 			The position to check for solid material
+	 * @return true if and only if the material at the given position is either Wood or Rock
+	 * 			| this.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	 */
+	boolean isSolidGround(Vector position) {
+		return this.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 	}
 
 	/**
@@ -696,7 +733,8 @@ public class World {
 		return ((this.getCubeType(x, y, z) == 0) || (this.getCubeType(x, y, z) == 3));
 	}
 
-	public void caveIn(int x, int y, int z, int value) {
+	public void caveIn(int x, int y, int z) {
+		int value = this.getCubeType(x, y, z);
 		setCubeType(x, y, z, 0);
 		Vector position = new Vector(x,y,z);
 		for (Vector vector:this.getAdjacentPositions(position)){
@@ -724,7 +762,7 @@ public class World {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}
-			else {
+			else if (value == 2){
 				new Log(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
 			}
 		}

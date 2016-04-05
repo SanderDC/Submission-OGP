@@ -487,7 +487,8 @@ public class Unit {
 	private boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
-
+		if (!this.getWorld().isInsideWorld(position))
+			return false;
 		double[] arrayposition =  position.toArray();
 		for(int i=0;i<3;i++){
 			if (arrayposition[i]>=this.getWorld().maxCoordinates()[i]+1) {
@@ -1546,9 +1547,6 @@ public class Unit {
 			if (this.getSprinting())
 				this.setSprinting(false);
 		}
-		if (isWorking()) {
-			setWorkorder(0);
-		}
 		if (!this.isAttacking()) {
 			this.setActivityTime(0);
 		}
@@ -1844,36 +1842,20 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-		if ((this.getPosition().getCubeX()==x)&&(this.getPosition().getCubeY()==y)&&(this.getPosition().getCubeZ()==z)&&!containsGameObject(x, y, z)&&!hasGameObject())
-			throw new IllegalArgumentException("no GameObjects Found");
-		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)
-				&&!world.isSolidGround(x, y, z)&&!containsGameObject(x, y, z)) {
-			throw new IllegalArgumentException("No work can be done here");
-		}
+//		if ((this.getPosition().getCubeX()==x)&&(this.getPosition().getCubeY()==y)&&(this.getPosition().getCubeZ()==z)&&!containsGameObject(x, y, z)&&!hasGameObject())
+//			throw new IllegalArgumentException("no GameObjects Found");
+//		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)
+//				&&!world.isSolidGround(x, y, z)&&!containsGameObject(x, y, z)) {
+//			throw new IllegalArgumentException("No work can be done here");
+//		}
 		if (this.hasRestedEnough()){
-			setWorkposition(x, y, z);
-			this.settingInitialResttimeOk();
-			if (this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z) {
-				if (hasGameObject()&&!(world.getCubeType(x, y, z)==1||world.getCubeType(x, y, z)==2)){
-					setWorkorder(1);}
-					else{
-					if (world.getCubeType(x, y, z)==3&&containsLogandBoulder(x, y, z)) {						
-						setWorkorder(2);
-					}
-					else {
-						setWorkorder(4);
-
-					}
-					}
-				}
-			
-			
-			else  {
-				setWorkorder(3);				
+			if (this.hasGameObject() || this.containsGameObject(x, y, z) || world.isSolidGround(x, y, z)){
+				this.settingInitialResttimeOk();
+				this.setWorkposition(x, y, z);
+				this.setToWork();
+			} else {
+				throw new IllegalArgumentException("No work to be done here");
 			}
-
-			
-			setToWork();
 		}
 		else {
 			throw new IllegalStateException("Unit has to rest a little bit");
@@ -1926,6 +1908,18 @@ public class Unit {
 			return false;
 		}
 	}
+	
+	/**
+	 * Check whether the cube of a certain position contains both a Boulder and a Log
+	 * @param position
+	 * 			The position to check for Boulders and Logs
+	 * @return	true if and only if at least one Boulder and at least one log are present
+	 * 			| result == this.containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	 */
+	private boolean containsLogAndBoulder(Vector position){
+		return containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	}
+	
 	/**
 	 * bekijkt of een cube een gameobject bevat
 	 */
@@ -1941,15 +1935,23 @@ public class Unit {
 		}
 		return false;
 	}
+	
+	/**
+	 * Check whether the cube of the given position contains a GameObject
+	 * @param position
+	 * 			The position to check for GameObjects.
+	 * @return	true if and only if at least one GameObject is present at the given position
+	 * 			| result == this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	 */
+	private boolean containsGameObject(Vector position){
+		return this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	}
 
 	public void setToWork(){
 		this.setStatus(Status.WORKING);
 		this.setActivityTime(calculatingWorkTime());
-		if (getWorkorder()==3) {
+		if (!this.getPosition().getCubePosition().equals(this.getWorkposition().getCubePosition()))
 			this.orientation=Math.atan2(this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getX());
-		}
-
-
 	}
 	/**
 	 * updates the time the unit has to spend working
@@ -1975,30 +1977,49 @@ public class Unit {
 	 *		|then pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ())
 	 */
 	private void advanceWork(double time){
-		if (!validWorkorder(this.workorder)) {
-			setStatus(Status.IDLE);
-		}
-		else{if (this.getActivityTime() - time <= 0){
+		if (this.getActivityTime() - time <= 0){
 			this.setActivityTime(0);
 			this.setStatus(Status.IDLE);
-			this.setExp(this.getExp()+10);
-			if (workorder==1) {
-				dropObject();			
+			if (this.hasGameObject()){
+				this.dropObjectAt(this.getWorkposition());
+				this.setExp(this.getExp()+10);
+				return;
 			}
-			if (workorder==2){
-				setToughness(this.getToughness()+1);
-				setWeight(this.getWeight()+1);
-				terminateBoulderAndLog();				
+			if (this.getWorld().getCubeType(this.getWorkposition()) == 3
+					&& containsLogAndBoulder(this.getWorkposition())){
+				this.setWeight(this.getWeight() + 1);
+				this.setToughness(this.getToughness() + 1);
+				boolean foundBoulder = false;
+				boolean foundLog = false;
+				Set<GameObject> objects = this.getWorld().getGameObjectsAt(this.getWorkposition());
+				for (GameObject object:objects){
+					if (object instanceof Boulder && !foundBoulder){
+						object.terminate();
+						foundBoulder = true;
+					} else if (object instanceof Log && !foundLog){
+						object.terminate();
+						foundLog = true;
+					}
+					if (foundLog && foundBoulder){
+						this.setExp(this.getExp()+10);
+						return;
+					}
+				}
 			}
-			if (workorder==3)
-				world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()));
-			if (workorder==4) {
-				pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ());
+			if (this.getWorld().getGameObjectsAt(this.getWorkposition()).size() != 0){
+				this.pickUpObject(this.getWorkposition());
+				this.setExp(this.getExp()+10);
+				return;
 			}
-			setWorkorder(0);
+			if (this.getWorld().isSolidGround(this.getWorkposition())){
+				this.getWorld().caveIn(this.getWorkposition().getCubeX(), this.getWorkposition().getCubeY(), this.getWorkposition().getCubeZ());
+				this.setExp(this.getExp()+10);
+				return;
+			}
 		} else
-			this.setActivityTime(this.getActivityTime()-time);}
+			this.setActivityTime(this.getActivityTime()-time);
 	}
+	
 	private Set<GameObject> upgradematerial;
 
 	/**
@@ -2037,53 +2058,6 @@ public class Unit {
 			gameObject.terminate();
 		}
 		upgradematerial.clear();
-	}
-
-	/**
-	 * bekijkt of de workorder nog altijd valid is
-	 * @param workorder
-	 * @return 
-	 * result==(workorder==0||(workorder==1&&!isValidPosition(workposition))||(workorder==2&&!containsLogandBoulder(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ()))
-	 * 		||(workorder==3&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=1)&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=2))
-	 * 		||(workorder==4&&(!isValidPosition(workposition)||!containsGameObject(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())))
-	 */
-	private boolean validWorkorder(int workorder){
-		if (workorder==0)
-			return true;
-
-		if (workorder==1) {
-			if (!isValidPosition(workposition)) {
-				return false;
-			}
-		}
-		if (workorder==2) {
-			if (!containsLogandBoulder(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
-				return false;
-			}
-		}
-		if (workorder==3) {
-			if ((world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=1)&&(world.getCubeType(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())!=2)) {
-				return false;
-			}
-		}
-		if (workorder==4) {
-			if (!isValidPosition(workposition)||!containsGameObject(workposition.getCubeX(), workposition.getCubeY(), workposition.getCubeZ())) {
-				return false;
-			}
-		}
-
-
-
-		return true;
-	}
-
-	private boolean hasActualWorkOrder(){
-		if (workorder>0) {
-			return true;
-		}
-		else {
-			return false;
-		}
 	}
 
 
@@ -2126,24 +2100,33 @@ public class Unit {
 			}
 		}
 	}
+	
+	/**
+	 * Pick up an object at the given position. The Unit always picks up a Boulder when one is present,
+	 * otherwise it picks up a Log
+	 * @param position
+	 * 			The position from which to pick up a GameObject.
+	 * @effect	The Unit picks up a GameObject at the given position
+	 * 			| this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	 */
+	private void pickUpObject(Vector position){
+		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	}
+	
 	/**
 	 * @effect drops the object the unit is carrying in the Units world
 	 * 		|this.setGameObject(null)
 	 * 		|this.oldObject.addToWorld(getWorld())
 	 * 		|oldObject.setPosition(position)
 	 */
-	private void dropObject() {
+	private void dropObjectAt(Vector position) {
+		position = position.getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2));
 		GameObject oldObject = this.getGameObject();
 		this.setGameObject(null);
 		oldObject.addToWorld(getWorld());
 		oldObject.setPosition(position);
 	}
-
-	/**
-	 *
-	 * variable for the kind of work the Unit will perform
-	 */
-	private int workorder;
+	
 	/**
 	 *
 	 * variable for the position where workat will take place
@@ -2159,34 +2142,6 @@ public class Unit {
 	
 	public void setWorkposition(int x, int y, int z) {
 		this.workposition = new Vector(x, y, z);
-	}
-	/**
-	 * 
-	 * @return	returns what kind of workorder this unit has
-	 * 		result==this.workorder
-	 */
-	public int getWorkorder() {
-		return this.workorder;
-	}
-	/**
-	 * 
-	 * @param workorder
-	 * workorder=0:no workorder
-	 * workorder=1:drop gameobject
-	 * workorder=2:improve equipment
-	 * workorder=3:remove solidGround
-	 * workorder=4:pick up gameObject
-	 * 
-	 * @post
-	 * 		|this.getnewworkorder=workorder
-	 * @throw IllegalArgumentException
-	 * 		(workorder<0||workorder>4)
-	 */
-	public void setWorkorder(int workorder)throws IllegalArgumentException {
-		if (workorder<0||workorder>4) {
-			throw new IllegalArgumentException();
-		}
-		this.workorder = workorder;
 	}
 
 	/**
@@ -2233,9 +2188,6 @@ public class Unit {
 				throw new IllegalStateException("The Unit needs to rest more before moving");
 			else
 				this.settingInitialResttimeOk();
-		}			
-		if (isWorking()) {
-			setWorkorder(0);
 		}
 		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
 				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
@@ -2356,9 +2308,6 @@ public class Unit {
 		}
 		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
 			return; //TODO: documentatie updaten
-		if (isWorking()) {
-			setWorkorder(0);
-		}
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
 		if (! this.getWorld().unitCanStandAt(target))
 			throw new IllegalArgumentException();
@@ -3151,7 +3100,7 @@ public class Unit {
 		assert (this.getHitpoints() == 0);
 		this.isTerminated=true;
 		if (hasGameObject()) {
-			dropObject();
+			dropObjectAt(this.getPosition());
 		}
 		this.removeFromFaction();
 		this.removeFromWorld();

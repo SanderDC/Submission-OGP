@@ -1601,7 +1601,12 @@ public class Unit {
 			this.setStatus(Status.IDLE);
 			if (this.getDistantTarget() != null){
 				Vector target = this.getDistantTarget();
-				this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+				try {
+					this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+				} catch (IllegalArgumentException | PathfindingException e) {
+					this.setDistantTarget(null);
+					this.setStatus(Status.IDLE);
+				}
 			}
 			this.setEnemy(null);
 		}
@@ -1668,7 +1673,12 @@ public class Unit {
 
 		if (this.getDistantTarget() != null){
 			Vector target = this.getDistantTarget();
-			this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+			try {
+				this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+			} catch (IllegalArgumentException | PathfindingException e) {
+				this.setDistantTarget(null);
+				this.setStatus(Status.IDLE);
+			}
 		}			
 	}
 	/**
@@ -2984,7 +2994,7 @@ public class Unit {
 	private void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
-		if (world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)|| (this.getPosition().getCubeZ()==0)){
+		if ((this.getPosition().getCubeZ()==0) || world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)){
 
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
 				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));

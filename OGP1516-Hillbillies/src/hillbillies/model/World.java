@@ -20,6 +20,9 @@ import hillbillies.util.ConnectedToBorder;
  *        | hasProperFactions()
  * @invar   Each World must have proper GameObjects.
  *        | hasProperGameObjects()
+ * @invar  The collapseTime of each World must be a valid collapseTime for any
+ *         World.
+ *       | isValidCollapseTime(getCollapseTime())
  *
  */
 public class World {
@@ -27,14 +30,17 @@ public class World {
 	public static final double CUBELENGTH = 1;
 
 	/**
-	 * Initialize a new World with given coordinates and without any Units, Factions or GameObjects.
+	 * Initialize a new World with given coordinates and without any Units, Factions or GameObjects
+	 * and with a collapse time of 0
 	 * @param Coordinates
 	 * 			The given coordinates for this new World
 	 * @post   This new World has no Units yet.
 	 * @post   This new World has no Factions yet.
 	 * @post   This new World has no GameObjects yet.
+	 * @post   The collapseTime of this new World is 0.
 	 */
 	public World(int[][][] Coordinates, TerrainChangeListener modelListener){
+		this.setCollapseTime(0);
 		this.modelListener = modelListener;
 		this.Coordinates=Coordinates;
 		this.connectedToBorder = new ConnectedToBorder(nbCoordinateX(), nbCoordinateY(), nbCoordinateZ());
@@ -56,7 +62,7 @@ public class World {
 			}
 		}
 	}
-	
+
 	private ConnectedToBorder connectedToBorder;
 
 	private TerrainChangeListener modelListener;
@@ -84,11 +90,11 @@ public class World {
 	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
 	}
-/**
- * 
- * @return return the number of zcubes
- * 		result==getCoordinates()[0][0].length
- */
+	/**
+	 * 
+	 * @return return the number of zcubes
+	 * 		result==getCoordinates()[0][0].length
+	 */
 	public int nbCoordinateZ() {
 		return getCoordinates()[0][0].length;
 	}
@@ -139,15 +145,78 @@ public class World {
 	 * 			| (time < 0) || (time > 0.2)
 	 */
 	public void advanceTime(double time)throws IllegalArgumentException {
+		if (this.getCollapseTime() + time < 5){
+			this.setCollapseTime(this.getCollapseTime() + time);
+		} else {
+			this.setCollapseTime(this.getCollapseTime() + time - 5);
+			for (Vector vector:toBeCollapsed){
+				int oldCubeType = this.getCubeType(vector);
+				this.setCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), 0);
+				if (Math.random() <= 0.25){
+					if (oldCubeType == 1)
+						new Boulder(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
+					else if (oldCubeType == 2)
+						new Log(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
+				}
+			}
+			toBeCollapsed.clear();
+		}
 		if (time<0||time>0.2)
 			throw new IllegalArgumentException();
-		for (Unit unit:this.getUnits()){
+		Set<Unit> units = new HashSet<>();
+		units.addAll(this.getUnits());
+		for (Unit unit:units){
 			unit.advanceTime(time);
 		}
 		for (GameObject gObject:this.getGameObjects()){
 			gObject.advanceTime(time);
 		}
 	}
+
+	/**
+	 * Return the collapseTime of this World.
+	 */
+	@Basic @Raw
+	public double getCollapseTime() {
+		return this.collapseTime;
+	}
+
+	/**
+	 * Check whether the given collapseTime is a valid collapseTime for
+	 * any World.
+	 *  
+	 * @param  collapseTime
+	 *         The collapseTime to check.
+	 * @return 
+	 *       | result == (collapseTime >= 0) && (collapseTime < 5)
+	 */
+	public static boolean isValidCollapseTime(double collapseTime) {
+		return (collapseTime >= 0) && (collapseTime < 5);
+	}
+
+	/**
+	 * Set the collapseTime of this World to the given collapseTime.
+	 * 
+	 * @param  collapseTime
+	 *         The new collapseTime for this World.
+	 * @pre    The given collapseTime must be a valid collapseTime for any
+	 *         World.
+	 *       | isValidCollapseTime(collapseTime)
+	 * @post   The collapseTime of this World is equal to the given
+	 *         collapseTime.
+	 *       | new.getCollapseTime() == collapseTime
+	 */
+	@Raw
+	public void setCollapseTime(double collapseTime) {
+		assert isValidCollapseTime(collapseTime);
+		this.collapseTime = collapseTime;
+	}
+
+	/**
+	 * Variable registering the collapseTime of this World.
+	 */
+	private double collapseTime;
+
 	/**
 	 * 
 	 * @param x
@@ -160,11 +229,11 @@ public class World {
 		return getCoordinates()[x][y][z];
 
 	}
-	
+
 	public int getCubeType(Vector position){
 		return this.getCubeType(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 	}
-	
+
 	/**
 	 * 
 	 * @param x
@@ -176,6 +245,7 @@ public class World {
 	 */
 	public void setCubeType(int x,int y, int z, int value) {
 		this.getCoordinates()[x][y][z]=value;
+		this.modelListener.notifyTerrainChanged(x, y, z);
 	}
 	/**
 	 * 
@@ -491,7 +561,7 @@ public class World {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Return a Set containing all GameObjects at a given position in this World.
 	 * @param position
@@ -635,7 +705,7 @@ public class World {
 	boolean isSolidGround(int x, int y, int z) {
 		return IsSolidMaterial(getCubeType(x,y,z));
 	}
-	
+
 	/**
 	 * Check whether the cube at the given position is solid material
 	 * @param position
@@ -665,7 +735,10 @@ public class World {
 	public void caveIn(int x, int y, int z) {
 		int value = this.getCubeType(x, y, z);
 		setCubeType(x, y, z, 0);
-		this.connectedToBorder.changeSolidToPassable(x, y, z);
+		List<int[]> collapsing = this.connectedToBorder.changeSolidToPassable(x, y, z);
+		for (int[] cube:collapsing){
+			toBeCollapsed.add(new Vector(cube[0],cube[1],cube[2]));
+		}
 		Vector position = new Vector(x,y,z);
 		for (Vector vector:this.getAdjacentPositions(position)){
 			if (this.getSpawnablePositions().contains(vector)){
@@ -687,7 +760,6 @@ public class World {
 			this.addStandablePosition(position);
 		if (unitCanSpawnAt(position))
 			this.addSpawnablePosition(position);
-		this.modelListener.notifyTerrainChanged(x, y, z);
 		if (Math.random()<=0.25) {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);
@@ -697,6 +769,11 @@ public class World {
 			}
 		}
 	}
+
+	/**
+	 * Variable registering the cubes that need to be collapsed within at most 5 seconds of gametime.
+	 */
+	private Set<Vector> toBeCollapsed = new HashSet<>();
 
 	/**
 	 * Return a set containing all cubes directly adjacent to the given position
@@ -718,7 +795,7 @@ public class World {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return a Set containing all cubes adjacent to the given position
 	 * @param position
@@ -748,7 +825,7 @@ public class World {
 	List<Vector> getSpawnablePositions(){
 		return this.spawnablePositions;
 	}
-	
+
 	/**
 	 * Check whether a Unit can spawn at the given position
 	 * @param position
@@ -786,7 +863,7 @@ public class World {
 	 * A List containing all positions in this game World where a Unit can stand.
 	 */
 	private List<Vector> spawnablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
-	
+
 	/**
 	 * Return a list containing all positions in this game World where a Unit can stand.
 	 */
@@ -894,18 +971,18 @@ public class World {
 		}
 		return validpositions;
 	}
-	
+
 	public List<Vector> getSolidPositions(){
 		List<Vector>Solidgrounds=new ArrayList<>();
 		for (int x=0;x<nbCoordinateX();x++){
 			for (int y=0;y<nbCoordinateY();y++){
 				for (int z=0;z<nbCoordinateZ();z++){
 					if (isSolidGround(x, y, z)) {
-								Solidgrounds.add(new Vector(x, y, z));			
+						Solidgrounds.add(new Vector(x, y, z));			
 					}
 				}
-				}
 			}
+		}
 		return Solidgrounds;
 	}
 

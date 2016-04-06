@@ -1861,12 +1861,8 @@ public class Unit {
 		}
 		if (this.ismoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
-//		if ((this.getPosition().getCubeX()==x)&&(this.getPosition().getCubeY()==y)&&(this.getPosition().getCubeZ()==z)&&!containsGameObject(x, y, z)&&!hasGameObject())
-//			throw new IllegalArgumentException("no GameObjects Found");
-//		if (!(this.getPosition().getCubeX()==x&&this.getPosition().getCubeY()==y&&this.getPosition().getCubeZ()==z)
-//				&&!world.isSolidGround(x, y, z)&&!containsGameObject(x, y, z)) {
-//			throw new IllegalArgumentException("No work can be done here");
-//		}
+		if (this.hasGameObject() && this.getWorld().isSolidGround(x, y, z))
+			throw new IllegalArgumentException("A Unit cannot put down an object at a solid cube");
 		if (this.hasRestedEnough()){
 			if (this.hasGameObject() || this.containsGameObject(x, y, z) || world.isSolidGround(x, y, z)){
 				this.settingInitialResttimeOk();
@@ -2587,8 +2583,13 @@ public class Unit {
 			if (hasRestedEnough()) {
 				this.setStatus(Status.IDLE);
 				if (this.getDistantTarget() != null){
-					Vector target = this.getDistantTarget();
-					this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+					try {
+						Vector target = this.getDistantTarget();
+						this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+					} catch (IllegalArgumentException | PathfindingException e) {
+						this.setDistantTarget(null);
+						this.setStatus(Status.IDLE);
+					}
 				}
 				this.setTimeUntilRest(RESTING_INTERVAL);
 			}
@@ -2720,8 +2721,8 @@ public class Unit {
 						}
 					}
 					return;
-				} catch (PathfindingException e) {
-
+				} catch (PathfindingException | IllegalArgumentException e) {
+					continue;
 				}
 			}
 		}
@@ -2798,8 +2799,8 @@ public class Unit {
 						}
 					}
 					return;
-				} catch (PathfindingException e) {
-
+				} catch (PathfindingException | IllegalArgumentException e) {
+					continue;
 				}
 			}
 		}

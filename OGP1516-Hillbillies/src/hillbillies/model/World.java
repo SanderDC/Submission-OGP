@@ -201,6 +201,7 @@ public class World {
 		for (Unit unit : TerminatedUnits) {
 			unit.removeFromWorld();
 		}
+		TerminatedUnits.clear();
 		for (GameObject gObject:this.getGameObjects()){
 			gObject.advanceTime(time);
 		}

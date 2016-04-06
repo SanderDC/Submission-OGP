@@ -1599,17 +1599,21 @@ public class Unit {
 			if (this.getActivityTime()>=1){
 
 
-				other.defend(this);
-				other.updatePosition(this);
-				this.setStatus(Status.IDLE);
-				if (this.getDistantTarget() != null){
-					Vector target = this.getDistantTarget();
+
+			other.defend(this);
+			other.updatePosition(this);
+			this.setStatus(Status.IDLE);
+			if (this.getDistantTarget() != null){
+				Vector target = this.getDistantTarget();
+				try {
 					this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+				} catch (IllegalArgumentException | PathfindingException e) {
+					this.setDistantTarget(null);
+					this.setStatus(Status.IDLE);
 				}
-				this.setEnemy(null);
 			}
-		
-		
+			this.setEnemy(null);
+		}
 	}
 
 	/**
@@ -1673,7 +1677,12 @@ public class Unit {
 
 		if (this.getDistantTarget() != null){
 			Vector target = this.getDistantTarget();
-			this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+			try {
+				this.moveTo((int)Math.floor(target.getX()) , (int)Math.floor(target.getY()), (int)Math.floor(target.getZ()));
+			} catch (IllegalArgumentException | PathfindingException e) {
+				this.setDistantTarget(null);
+				this.setStatus(Status.IDLE);
+			}
 		}			
 	}
 	/**

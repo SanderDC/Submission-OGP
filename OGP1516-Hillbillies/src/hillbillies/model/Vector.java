@@ -370,4 +370,19 @@ public class Vector {
 			return new Vector(0,0,0);
 		return new Vector(this.getX()/this.norm(), this.getY()/this.norm(), this.getZ()/this.norm());
 	}
+	
+	/**
+	 * Return the distance between this Vector and a given vector.
+	 * @param other
+	 * 			The Vector for which to return the distance from this Vector.
+	 * @return The distance between this Vector and the given Vector
+	 * 			| result == Math.sqrt(Math.pow(this.getX()-other.getX(), 2) +
+	 *			|		 			  Math.pow(this.getY() - other.getY(), 2) +
+	 *			|		 			  Math.pow(this.getZ() - other.getZ(), 2))
+	 */
+	public double getDistanceTo(Vector other){
+		return Math.sqrt(Math.pow(this.getX() - other.getX(), 2) +
+						 Math.pow(this.getY() - other.getY(), 2) +
+						 Math.pow(this.getZ() - other.getZ(), 2));
+	}
 }

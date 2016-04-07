@@ -23,7 +23,8 @@ public class PathfindingException extends RuntimeException {
 	 * 			the given end point.
 	 * 			new.getEnd() == end
 	 */
-	public PathfindingException(Vector start, Vector end){
+	public PathfindingException(Vector start, Vector end, String arg0){
+		super(arg0);
 		this.start = start;
 		this.end = end;
 	}

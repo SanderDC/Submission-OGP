@@ -51,7 +51,7 @@ public class WorldTest {
 	
 	@Test
 	public void isConnectedtoBorderWorld3(){
-		assertFalse(world3.isConnectedToBorder(3, 1, 2));
+		assertFalse(world3.isSolidConnectedToBorder(new Vector(3, 1, 2)));
 	}
 
 }

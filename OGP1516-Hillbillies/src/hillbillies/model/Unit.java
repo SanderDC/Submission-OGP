@@ -2710,19 +2710,21 @@ public class Unit {
 			List <Vector>newlist= this.getWorld().getStandablePositions();
 			Collections.shuffle(newlist);
 			for (Vector vector : newlist) {
-				try {
-					this.moveTo(vector);
-					int randomnumber1=randomgenerator.nextInt(2);
-					if (randomnumber1==1) {
-						try {
-							setSprinting(true);
-						} catch (IllegalStateException e){
+				if (this.getPosition().getDistanceTo(vector) < 20){
+					try {
+						this.moveTo(vector);
+						int randomnumber1=randomgenerator.nextInt(2);
+						if (randomnumber1==1) {
+							try {
+								setSprinting(true);
+							} catch (IllegalStateException e){
 
+							}
 						}
+						return;
+					} catch (PathfindingException | IllegalArgumentException e) {
+						continue;
 					}
-					return;
-				} catch (PathfindingException | IllegalArgumentException e) {
-					continue;
 				}
 			}
 		}
@@ -2788,19 +2790,21 @@ public class Unit {
 			List <Vector>newlist= this.getWorld().getStandablePositions();
 			Collections.shuffle(newlist);
 			for (Vector vector : newlist) {
-				try {
-					this.moveTo(vector);
-					int randomnumber1=randomgenerator.nextInt(2);
-					if (randomnumber1==1) {
-						try {
-							setSprinting(true);
-						} catch (IllegalStateException e){
+				if (this.getPosition().getDistanceTo(vector) < 20){
+					try {
+						this.moveTo(vector);
+						int randomnumber1=randomgenerator.nextInt(2);
+						if (randomnumber1==1) {
+							try {
+								setSprinting(true);
+							} catch (IllegalStateException e){
 
+							}
 						}
+						return;
+					} catch (PathfindingException | IllegalArgumentException e) {
+						continue;
 					}
-					return;
-				} catch (PathfindingException | IllegalArgumentException e) {
-					continue;
 				}
 			}
 		}
@@ -3423,7 +3427,8 @@ public class Unit {
 				}
 			}
 			if (open.size() == 0) //No path could be found
-				throw new PathfindingException(this.getPosition(), new Vector(x,y,z));
+				throw new PathfindingException(this.getPosition(), new Vector(x,y,z),
+												"There is no path from this Unit's position to the given position");
 		}
 	}
 

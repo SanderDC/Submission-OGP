@@ -142,6 +142,10 @@ public class World {
 		}
 	}
 	
+	public boolean isSolidConnectedToBorder(Vector vector) {
+		return this.connectedToBorder.isSolidConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
+	}
+	
 	/**
 	 * Variable registering the ConnectedToBorder instance for this World
 	 */
@@ -380,7 +384,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	public boolean hasAsUnit(@Raw Unit Unit) {
+	boolean hasAsUnit(@Raw Unit Unit) {
 		return Units.contains(Unit);
 	}
 
@@ -397,7 +401,7 @@ public class World {
 	 *       |   Unit.canHaveAsWorld(this)
 	 */
 	@Raw
-	public boolean canHaveAsUnit(Unit Unit) {
+	private boolean canHaveAsUnit(Unit Unit) {
 		return (Unit != null) && (Unit.canHaveAsWorld(this));
 	}
 
@@ -437,7 +441,7 @@ public class World {
 	 *        | result ==
 	 *        |   card({Unit:Unit | hasAsUnit({Unit)})
 	 */
-	public int getNbUnits() {
+	private int getNbUnits() {
 		return Units.size();
 	}
 
@@ -506,7 +510,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	public boolean hasAsFaction(@Raw Faction Faction) {
+	private boolean hasAsFaction(@Raw Faction Faction) {
 		return Factions.contains(Faction);
 	}
 
@@ -523,7 +527,7 @@ public class World {
 	 *       |   Faction.isValidWorld(this)
 	 */
 	@Raw
-	public boolean canHaveAsFaction(Faction Faction) {
+	private boolean canHaveAsFaction(Faction Faction) {
 		return (Faction != null) && (Faction.canHaveAsWorld(this));
 	}
 
@@ -603,7 +607,7 @@ public class World {
 	 *       | ! new.hasAsFaction(Faction)
 	 */
 	@Raw
-	public void removeFaction(Faction Faction) {
+	void removeFaction(Faction Faction) {
 		assert this.hasAsFaction(Faction) && (Faction.getWorld() == null);
 		Factions.remove(Faction);
 	}
@@ -631,7 +635,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	public boolean hasAsGameObject(@Raw GameObject gameObject) {
+	private boolean hasAsGameObject(@Raw GameObject gameObject) {
 		return gameObjects.contains(gameObject);
 	}
 
@@ -693,6 +697,44 @@ public class World {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @return returns all the logs in this World
+	 * 		result==Set<Log>(alllogs)
+	 */
+	public Set<Log> GetAllLogs() {
+		Set<Log> Logs= new HashSet<>();
+		for (GameObject log : gameObjects) {
+			if (log instanceof Log) {
+				Logs.add((Log)log);
+			}
+		}
+		return Logs;
+	}
+	
+	/**
+	 * 
+	 * @return returns all the Boulders in this World
+	 * 		result==Set<Log>(allBoulders)
+	 */
+	public Set<Boulder> GetAllBoulders() {
+		Set<Boulder> Boulders= new HashSet<>();
+		for (GameObject bObject : gameObjects) {
+			if (bObject instanceof Boulder) {
+				Boulders.add((Boulder)bObject);
+			}
+		}
+		return Boulders;
+	}
+	/**
+	 * 
+	 * @return all gameobjects in this world
+	 * 		result== this.gameobjects
+	 */
+	public Set<GameObject> getGameObjects(){
+		return this.gameObjects;
 	}
 	
 	/**
@@ -759,7 +801,7 @@ public class World {
 	 * @post   This World has the given GameObject as one of its GameObjects.
 	 *       | new.hasAsGameObject(gameObject)
 	 */
-	public void addGameObject(@Raw GameObject gameObject) {
+	void addGameObject(@Raw GameObject gameObject) {
 		assert (gameObject != null) && (gameObject.getWorld() == this);
 		gameObjects.add(gameObject);
 	}
@@ -779,7 +821,7 @@ public class World {
 	 *       | ! new.hasAsGameObject(gameObject)
 	 */
 	@Raw
-	public void removeGameObject(GameObject gameObject) {
+	void removeGameObject(GameObject gameObject) {
 		assert this.hasAsGameObject(gameObject) && (gameObject.getWorld() == null);
 		gameObjects.remove(gameObject);
 	}
@@ -798,42 +840,7 @@ public class World {
 	 */
 
 	private final Set<GameObject> gameObjects = new HashSet<GameObject>();
-	/**
-	 * 
-	 * @return returns all the logs in this World
-	 * 		result==Set<Log>(alllogs)
-	 */
-	public Set<Log> GetAllLogs() {
-		Set<Log> Logs= new HashSet<>();
-		for (GameObject log : gameObjects) {
-			if (log instanceof Log) {
-				Logs.add((Log)log);
-			}
-		}
-		return Logs;
-	}
-	/**
-	 * 
-	 * @return returns all the Boulders in this World
-	 * 		result==Set<Log>(allBoulders)
-	 */
-	public Set<Boulder> GetAllBoulders() {
-		Set<Boulder> Boulders= new HashSet<>();
-		for (GameObject bObject : gameObjects) {
-			if (bObject instanceof Boulder) {
-				Boulders.add((Boulder)bObject);
-			}
-		}
-		return Boulders;
-	}
-	/**
-	 * 
-	 * @return all gameobjects in this world
-	 * 		result== this.gameobjects
-	 */
-	public Set<GameObject> getGameObjects(){
-		return this.gameObjects;
-	}
+
 
 	/**
 	 * 
@@ -841,7 +848,7 @@ public class World {
 	 * @return returns whether this material is solid or not
 	 * 		result==(i==1||i==2)
 	 */
-	public boolean IsSolidMaterial(int i){
+	private boolean IsSolidMaterial(int i){
 		if(i==1||i==2)
 			return true;
 		else {
@@ -886,7 +893,7 @@ public class World {
 		return ((this.getCubeType(x, y, z) == 0) || (this.getCubeType(x, y, z) == 3));
 	}
 
-	public void caveIn(int x, int y, int z) {
+	void caveIn(int x, int y, int z) {
 		int value = this.getCubeType(x, y, z);
 		setCubeType(x, y, z, 0);
 		List<int[]> collapsing = this.connectedToBorder.changeSolidToPassable(x, y, z);
@@ -933,7 +940,7 @@ public class World {
 	 * Return a set containing all cubes directly adjacent to the given position
 	 * that are not outside the gameworld.
 	 */
-	public Set<Vector> getDirectlyAdjacentPositions(Vector position){
+	Set<Vector> getDirectlyAdjacentPositions(Vector position){
 		Set<Vector> result = new HashSet<>();
 		position = position.getCubePosition();
 		for (int x = -1; x <= 1; x++){
@@ -956,7 +963,7 @@ public class World {
 	 *			The position for which to get the adjacent positions.
 	 *
 	 */
-	public Set<Vector> getAdjacentPositions(Vector position){
+	Set<Vector> getAdjacentPositions(Vector position){
 		Set<Vector> result = new HashSet<>();
 		position = position.getCubePosition();
 		for (int x = -1; x <= 1; x++){
@@ -1016,7 +1023,7 @@ public class World {
 	/**
 	 * A List containing all positions in this game World where a Unit can stand.
 	 */
-	private List<Vector> spawnablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
+	private List<Vector> spawnablePositions = new ArrayList<>();
 
 	/**
 	 * Return a list containing all positions in this game World where a Unit can stand.
@@ -1084,9 +1091,19 @@ public class World {
 	/**
 	 * A List containing all positions in this game World where a Unit can stand.
 	 */
-	private List<Vector> standablePositions = new ArrayList<>();//TODO: posities toevoegen/verwijderen wanneer World verandert
-
-	public Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
+	private List<Vector> standablePositions = new ArrayList<>();
+	
+	/**
+	 * Return the cubes that are directly adjacent to the given cube and are solid
+	 * @param X
+	 * 			The x-position of the cube to be checked
+	 * @param Y
+	 * 			The y-position of the cube to be checked
+	 * @param Z
+	 * 			The z-position of the cube to be checked
+	 * @return A Set of Vectors containing all directly adjacent solid cubes
+	 */
+	Set <Vector>  CheckadjacentValidPositions(int X, int Y, int Z) {
 		Set <Vector>  validpositions = new HashSet<>() ;
 		for(int x=-1; x<=1;x++){
 			if (x==0) {
@@ -1124,23 +1141,5 @@ public class World {
 			}
 		}
 		return validpositions;
-	}
-
-	public List<Vector> getSolidPositions(){
-		List<Vector>Solidgrounds=new ArrayList<>();
-		for (int x=0;x<nbCoordinateX();x++){
-			for (int y=0;y<nbCoordinateY();y++){
-				for (int z=0;z<nbCoordinateZ();z++){
-					if (isSolidGround(x, y, z)) {
-						Solidgrounds.add(new Vector(x, y, z));			
-					}
-				}
-			}
-		}
-		return Solidgrounds;
-	}
-
-	public boolean isSolidConnectedToBorder(Vector vector) {
-		return this.connectedToBorder.isSolidConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 	}
 }

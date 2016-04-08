@@ -391,7 +391,7 @@ public class Unit {
 	 */
 	@Raw
 	private boolean canHaveAsEnemy(Unit enemy) {
-		
+
 		if (enemy==null) {
 			return true;
 		}
@@ -1856,55 +1856,55 @@ public class Unit {
 	 * 			|				(Boulder.getPosition().getCubeY() == y) &&
 	 * 			|				(Boulder.getPosition().getCubeZ() == z))
 	 */
-//	private boolean containsLogAndBoulder(int x, int y, int z) {
-//		boolean containsLog=false;
-//		boolean containsBoulder=false;
-//		for (GameObject object : world.getGameObjects()) {
-//			if (object instanceof Boulder){
-//				if (object.getPosition().getCubeX()==x){
-//					if (object.getPosition().getCubeY()==y){
-//						if (object.getPosition().getCubeZ()==z){
-//							containsBoulder=true;
-//						}
-//					}
-//				}
-//			}
-//		}
-//		if (containsBoulder==false) {
-//			return false;
-//		}
-//		for (GameObject object : world.getGameObjects()) {
-//
-//			if (object instanceof Log){
-//				if (object.getPosition().getCubeX()==x){
-//					if (object.getPosition().getCubeY()==y){
-//						if (object.getPosition().getCubeZ()==z){
-//							containsLog=true;						
-//						}
-//					}
-//				}
-//			}
-//		}
-//		if (containsBoulder&&containsLog) {
-//			return true;
-//		}
-//		else {
-//
-//			return false;
-//		}
-//	}
-//	
-//	/**
-//	 * Check whether the cube of a certain position contains both a Boulder and a Log
-//	 * @param position
-//	 * 			The position to check for Boulders and Logs
-//	 * @return	true if and only if at least one Boulder and at least one log are present
-//	 * 			| result == this.containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ())
-//	 */
-//	private boolean containsLogAndBoulder(Vector position){
-//		return containsLogAndBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-//	}
-	
+	//	private boolean containsLogAndBoulder(int x, int y, int z) {
+	//		boolean containsLog=false;
+	//		boolean containsBoulder=false;
+	//		for (GameObject object : world.getGameObjects()) {
+	//			if (object instanceof Boulder){
+	//				if (object.getPosition().getCubeX()==x){
+	//					if (object.getPosition().getCubeY()==y){
+	//						if (object.getPosition().getCubeZ()==z){
+	//							containsBoulder=true;
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		if (containsBoulder==false) {
+	//			return false;
+	//		}
+	//		for (GameObject object : world.getGameObjects()) {
+	//
+	//			if (object instanceof Log){
+	//				if (object.getPosition().getCubeX()==x){
+	//					if (object.getPosition().getCubeY()==y){
+	//						if (object.getPosition().getCubeZ()==z){
+	//							containsLog=true;						
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		if (containsBoulder&&containsLog) {
+	//			return true;
+	//		}
+	//		else {
+	//
+	//			return false;
+	//		}
+	//	}
+	//	
+	//	/**
+	//	 * Check whether the cube of a certain position contains both a Boulder and a Log
+	//	 * @param position
+	//	 * 			The position to check for Boulders and Logs
+	//	 * @return	true if and only if at least one Boulder and at least one log are present
+	//	 * 			| result == this.containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	//	 */
+	//	private boolean containsLogAndBoulder(Vector position){
+	//		return containsLogAndBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	//	}
+
 	/**
 	 * Check whether the given cube contains at least one GameObject
 	 * @param x
@@ -1919,29 +1919,29 @@ public class Unit {
 	 * 			|				(Object.getPosition().getCubeY() == y) &&
 	 * 			|				(Object.getPosition().getCubeZ() == z)) &&
 	 */
-//	private boolean containsGameObject(int x, int y, int z) {
-//		for (GameObject object : world.getGameObjects()) {
-//			if (object.getPosition().getCubeX()==x){
-//				if (object.getPosition().getCubeY()==y){
-//					if (object.getPosition().getCubeZ()==z){
-//						return true;
-//					}
-//				}
-//			}
-//		}
-//		return false;
-//	}
-	
-//	/**
-//	 * Check whether the cube of the given position contains a GameObject
-//	 * @param position
-//	 * 			The position to check for GameObjects.
-//	 * @return	true if and only if at least one GameObject is present at the given position
-//	 * 			| result == this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
-//	 */
-//	private boolean containsGameObject(Vector position){
-//		return this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-//	}
+	//	private boolean containsGameObject(int x, int y, int z) {
+	//		for (GameObject object : world.getGameObjects()) {
+	//			if (object.getPosition().getCubeX()==x){
+	//				if (object.getPosition().getCubeY()==y){
+	//					if (object.getPosition().getCubeZ()==z){
+	//						return true;
+	//					}
+	//				}
+	//			}
+	//		}
+	//		return false;
+	//	}
+
+	//	/**
+	//	 * Check whether the cube of the given position contains a GameObject
+	//	 * @param position
+	//	 * 			The position to check for GameObjects.
+	//	 * @return	true if and only if at least one GameObject is present at the given position
+	//	 * 			| result == this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	//	 */
+	//	private boolean containsGameObject(Vector position){
+	//		return this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	//	}
 
 	public void setToWork(){
 		this.setStatus(Status.WORKING);
@@ -2032,46 +2032,46 @@ public class Unit {
 		} else
 			this.setActivityTime(this.getActivityTime()-time);
 	}
-	
-//	private Set<GameObject> upgradematerial;
-//
-//	/**
-//	 * @post destroys the upgradematerials
-//	 * 		upgradematerial(0)==isterminated&&upgradematerial(1)==isterminated
-//	 */
-//	private void terminateBoulderAndLog() {	
-//		for (GameObject object : world.getGameObjects()) {
-//			if (object instanceof Boulder){
-//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-//
-//							if (upgradematerial.size()==0) {
-//								upgradematerial.add(object);
-//							}					
-//						}
-//					}
-//				}
-//			}
-//		}
-//		for (GameObject object : world.getGameObjects()) {			
-//			if (object instanceof Log){
-//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-//							if (upgradematerial.size()==1) {
-//								upgradematerial.add(object);
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//		for (GameObject gameObject : upgradematerial) {
-//			gameObject.terminate();
-//		}
-//		upgradematerial.clear();
-//	}
+
+	//	private Set<GameObject> upgradematerial;
+	//
+	//	/**
+	//	 * @post destroys the upgradematerials
+	//	 * 		upgradematerial(0)==isterminated&&upgradematerial(1)==isterminated
+	//	 */
+	//	private void terminateBoulderAndLog() {	
+	//		for (GameObject object : world.getGameObjects()) {
+	//			if (object instanceof Boulder){
+	//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+	//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+	//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+	//
+	//							if (upgradematerial.size()==0) {
+	//								upgradematerial.add(object);
+	//							}					
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		for (GameObject object : world.getGameObjects()) {			
+	//			if (object instanceof Log){
+	//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+	//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+	//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+	//							if (upgradematerial.size()==1) {
+	//								upgradematerial.add(object);
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		for (GameObject gameObject : upgradematerial) {
+	//			gameObject.terminate();
+	//		}
+	//		upgradematerial.clear();
+	//	}
 
 
 	/**
@@ -2099,7 +2099,7 @@ public class Unit {
 			}
 		}
 	}
-	
+
 	/**
 	 * Pick up an object at the given position. The Unit always picks up a Boulder when one is present,
 	 * otherwise it picks up a Log
@@ -2108,10 +2108,10 @@ public class Unit {
 	 * @effect	The Unit picks up a GameObject at the given position
 	 * 			| this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
 	 */
-//	private void pickUpObject(Vector position){
-//		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-//	}
-	
+	//	private void pickUpObject(Vector position){
+	//		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	//	}
+
 	/**
 	 * Make the Unit drop its object at the given position
 	 * @effect drops the object the unit is carrying in the Units world
@@ -2126,7 +2126,7 @@ public class Unit {
 		oldObject.addToWorld(getWorld());
 		oldObject.setPosition(position);
 	}
-	
+
 	/**
 	 *
 	 * variable for the position where workat will take place
@@ -2140,7 +2140,7 @@ public class Unit {
 	public Vector getWorkposition() {
 		return this.workposition;
 	}
-	
+
 	/**
 	 * Set the Unit's Workposition to the given position
 	 * @param x
@@ -2314,7 +2314,7 @@ public class Unit {
 		if (! this.getWorld().unitCanStandAt(target))
 			throw new IllegalArgumentException();		
 		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
-			return; //TODO: documentatie updaten
+			return;
 		if (this.isResting())
 			this.settingInitialResttimeOk();
 		if (this.isMoving()){
@@ -2354,8 +2354,8 @@ public class Unit {
 	/**
 	 * Make the Unit move to the next cube on its path to its distantTarget
 	 * @effect	Movement to the adjacent cube nearest to the distantTarget is initiated
-	 * 			| this.moveToAdjacent((int) Math.signum(cubeX - this.getPosition().getCubeX()), (int) Math.signum(cubeY - this.getPosition().getCubeY()),
-	 * 			|	(int) Math.signum(cubeZ - this.getPosition().getCubeZ()))
+	 * 			| this.setNearTarget(this.getPath().remove(0))
+	 * 			| this.setupSpeed()
 	 */
 	private void moveToNextCube(){
 		this.setNearTarget(this.getPath().remove(0));
@@ -2419,7 +2419,7 @@ public class Unit {
 			if (status == Status.ATTACKING)
 				this.attack(getEnemy(), time);
 		}
-		
+
 	}
 
 	/**
@@ -2500,18 +2500,15 @@ public class Unit {
 	 * 			| then new.getProgress=0, new.getActivityTime=0
 	 * @throws 	IllegalStateException
 	 * 			The Unit is currently conducting an activity that cannot be interrupted by resting
-	 * 			| (isAttacking) || (this.getStatus() == Status.MOVINGADJACENT)
+	 * 			| (!this.canBeInterruptedBy(Status.RESTING))
 	 */
 	public void resting()throws IllegalStateException{
-		if (isAttacking()) {
-			throw new IllegalStateException("unit is fighting");
-		}
-		if (isFalling()) {
-			throw new IllegalStateException("unit is falling");
-		}
+		if (! this.canBeInterruptedBy(Status.RESTING))
+			throw new IllegalStateException("This Unit cannot start resting at this moment");
 		if (this.getStatus() == Status.MOVINGADJACENT)
 			throw new IllegalStateException("Movement to a neighbouring cube cannot be interrupted");
 		if (this.getStatus() == Status.MOVINGDISTANT){
+			this.setPath(new ArrayList<Vector>());
 			this.setSpeed(new Vector(0,0,0));
 			if (this.getSprinting())
 				this.setSprinting(false);
@@ -2674,24 +2671,25 @@ public class Unit {
 			else{
 				defaultWithAttack();
 			}
+		}
 	}
-		
-	}
+
 	/**
 	 * 
 	 * @return checks whether there is a adjacentUnit that is possible to attack
-	 * 		result==(canhaveasenemy(any Unit from (this.getWorld.getUnits)))
+	 * 			| result== for some Unit in this.getWorld().getUnits():
+	 * 			| 				(this.canHaveAsEnemy(Unit))
 	 */
 	private boolean possibleattack() {
 		for (Unit unit : this.getWorld().getUnits()) {
-			
+
 			if (canHaveAsEnemy(unit)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * will choose an activity at random
 	 * @post	
@@ -2767,9 +2765,9 @@ public class Unit {
 		if (randomnumber==2){
 			this.resting();}
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * will choose an activity at random
@@ -2846,7 +2844,7 @@ public class Unit {
 		}
 		if (randomnumber==2){
 			this.resting();}
-	
+
 		if (randomnumber==3) {
 			List <Unit>newlist= new ArrayList<Unit>();
 			newlist.addAll(this.getWorld().getUnits());
@@ -2857,12 +2855,12 @@ public class Unit {
 					unittoattack=unit;
 				}
 			}
-		this.startAttack(unittoattack);
+			this.startAttack(unittoattack);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Enable the Unit's default behavior
 	 */
@@ -2911,25 +2909,25 @@ public class Unit {
 	/**
 	 * 
 	 * @return returns true if the unit is in a position where one has to fall
-	 * 		result==(nosolidground(x-1..x+1,y-1..y+1,z-1...z+1)
+	 * 			| result == (for each position in this.getWorld().getDirectlyAdjacentPositions(this.getPosition()):
+	 * 			|				! isSolidGround(position)) &&
+	 * 			|			this.getPosition().getCubeZ() != 0
 	 */
 	private boolean Fallcheck() {
 
 		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
 			return false;
 		}
-						
-				
-
 		return true;
 	}
 	/**
 	 * 
 	 * @return the position from where the unit started to fall
 	 */
-	private double  getFallPosition() {
+	private double getFallPosition() {
 		return this.fallPosition;
 	}
+
 	/**
 	 * Set the fallPosition of this Unit to the given fallPosition.
 	 * 
@@ -2943,16 +2941,14 @@ public class Unit {
 	 *       	| new.getFallPosition() == fallPosition
 	 */
 	private void setFallPosition(double fallPosition)throws IllegalArgumentException {
-		if (fallPosition<0) {
-			throw new IllegalArgumentException();
-		}
-
+		assert (fallPosition > 0);
 		this.fallPosition = fallPosition;
 	}
 	/**
 	 * variable registering the position from where a unit started falling
 	 */
 	private double fallPosition;
+
 	/**
 	 * 
 	 * @return true if the status of this unit is the falling status
@@ -3008,12 +3004,13 @@ public class Unit {
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
 				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
 				this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+				this.setSpeed(new Vector(0,0,0));
 				this.setStatus(Status.IDLE);
 				this.setFallPosition(0);
 			}
 			else{
 				setHitpoints(0);			
-				}
+			}
 		}
 
 		else{
@@ -3028,11 +3025,14 @@ public class Unit {
 	public int getExp() {
 		return this.exp;
 	}
-
 	/**
-	 * @param exp the exp to set
-	 * @post
-	 * 		|this.getnewExp<=10
+	 * Set this Unit's amount of exp to the given amount of exp
+	 * @param exp 
+	 * 		the exp to set
+	 * @post This Unit's of exp equals the given amount of exp modulo 10
+	 * 		| new.getExp() == exp % 10
+	 * @effect	This Unit levels up if it needs to
+	 * 		| this.levelUp()
 	 * 
 	 */
 	private void setExp(int exp) {
@@ -3045,34 +3045,14 @@ public class Unit {
 		}
 		this.levelUp();
 	}
+
 	/**
-	 * 
-	 * @param exp
-	 * @return returns true if the exp is non-negative
-	 * 		result==(exp>0)
-	 */
-	private static boolean isValidExp(int exp) {
-		if (exp<0) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	
-	 
-	/**
-	 * variable registering the experience points this unit has
-	 */
-	private int exp;
-	
-	/**
-	 * @post the exp of this unit will be lower than 10
-	 * 		|this.getnexexp<10
+	 * @post the exp of this unit is be lower than 10
+	 * 		|new.getExp() < 10
 	 * @post the units attributes will be the same or higher than they were before the method
-	 * 		|this.getnewStrength>=this.getoldStrength
-	 * 		|this.getnewAgility>=this.getoldAgility
-	 * 		|this.getnewToughness>=this.getToughness
+	 * 		|new.getStrength() >= this.getStrength()
+	 * 		|new.getAgility() >= this.getAgility()
+	 * 		|new.getToughness >= this.getToughness()
 	 */
 	private void levelUp() {
 		while (this.getExp()>=10) {
@@ -3087,6 +3067,27 @@ public class Unit {
 			this.setExp(this.getExp()-10);
 		}
 	}
+
+	/**
+	 * Check whether the given amount of exp is a valid amount of exp for any Unit
+	 * @param exp
+	 * 			The amount of exp to be checked
+	 * @return returns true if the exp is non-negative
+	 * 			| result == (exp>0)
+	 */
+	private static boolean isValidExp(int exp) {
+		if (exp<0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	/**
+	 * variable registering the experience points this unit has
+	 */
+	private int exp;
 
 	/**
 	 * Return a boolean reflecting whether the Unit has been terminated
@@ -3105,11 +3106,10 @@ public class Unit {
 	 * @post	This Unit has been removed from its faction
 	 * 			| (new this).getFaction() == null
 	 * 			| (new this.getFaction()).hasAsUnit(this) == false
-	 * @post	This Unit has been removed from its World
-	 * 			| (new this).getWorld() == null
-	 * 			| (new this.getWorld()).hasAsUnit(this) == false
-	 * @effect	if this Unit was carrying a gameObject, it will be dropped.
-	 * 			|this.dropobject()
+	 * @effect	This Unit is added to the list of Units to be terminated
+	 * 			| this.getWorld().AddToTerminatedUnits(this)
+	 * @effect	if this Unit was carrying a gameObject, it will be dropped at this Unit's current position.
+	 * 			| this.dropObjectAt(this.getPosition())
 	 */
 	private void terminate(){
 		assert (this.getHitpoints() == 0);
@@ -3119,8 +3119,6 @@ public class Unit {
 		}
 		this.removeFromFaction();
 		world.AddToTerminatedUnits(this);
-		
-
 	}
 
 	/**
@@ -3158,16 +3156,20 @@ public class Unit {
 	 * Add this Unit to the given faction
 	 * @param faction
 	 * 			The faction to add this Unit to
-	 * @post	This Unit has been added to the given faction
-	 * 			| (new this).getFaction() == faction
-	 * 			| (new faction).hasAsUnit(this)
+	 * @post	If the given Faction has less than 50 Units,
+	 * 			this Unit has been added to the given faction
+	 * 			| if (faction.getNbUnits() < 50)
+	 * 			| then 	(new this).getFaction() == faction &&
+	 * 			| 		(new faction).hasAsUnit(this)
 	 * @throws IllegalArgumentException
 	 * 			The given faction is not a valid faction
-	 * 			| ! isValidFaction(faction)
+	 * 			| ! canHaveAsFaction(faction)
 	 */
 	private void addToFaction(Faction faction) throws IllegalArgumentException{
 		if (! canHaveAsFaction(faction))
 			throw new IllegalArgumentException("This is an invalid faction");
+		if (faction.getNbUnits() >= 50)
+			return;
 		this.faction = faction;
 		faction.addUnit(this);
 	}
@@ -3222,6 +3224,8 @@ public class Unit {
 	 * 			The World to add this Unit to.
 	 * @pre		The given World is effective and already has this Unit as one of its Units.
 	 * 			| (world != null) && (world.hasAsUnit(this))
+	 * @pre		This Unit can have the given World as its World
+	 * 			| canHaveAsWorld(world)
 	 * @post	This Unit occupies a position it can stand on in the given World
 	 * 			| (new this).canStandAt((new this).getPosition())
 	 * @post	This Unit has been added to the given World
@@ -3234,8 +3238,9 @@ public class Unit {
 	 * 			The Unit is already part of a World
 	 * 			| this.getWorld() != null
 	 */
+	@Raw
 	public void addToWorld(@Raw World world) throws IllegalStateException{
-		assert (world != null) && (world.hasAsUnit(this));
+		assert (world != null) && (world.hasAsUnit(this)) && this.canHaveAsWorld(world);
 		this.world = world;
 		int index = new Random().nextInt(world.getSpawnablePositions().size());
 		Vector startPos = world.getSpawnablePositions().get(index);
@@ -3261,8 +3266,8 @@ public class Unit {
 	/**
 	 * Remove this Unit from its current World
 	 * @pre		This Unit has died and must be terminated
-	 * 			| (this.isTerminated() == 0)
-	 * @post	This Unit has been removed from its faction
+	 * 			| (this.isTerminated())
+	 * @post	This Unit has been removed from its world
 	 * 			| (new this).getWorld() == null
 	 * 			| !(new faction).hasAsUnit(this)
 	 */
@@ -3287,14 +3292,17 @@ public class Unit {
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject=null;
+	
 	/**
 	 * 
 	 * @return the gameobject this unit is carrying, if any
 	 * 		
 	 */
+	@Basic @Raw
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
+	
 	/**
 	 * Set the Gameobject of the Unit to the given Gameobject
 	 * 
@@ -3310,6 +3318,7 @@ public class Unit {
 	 *       	| gObject.pickedUp(this)
 	 * 
 	 */
+	@Raw
 	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
@@ -3318,27 +3327,25 @@ public class Unit {
 		if (hasGameObject()&&gObject==null) {
 			this.gameObject=null;
 		}
-
-
 	}
 	/**
-	 * 
+	 * Returns the weight of the GameObject currently being carried by this Unit.
 	 * @return the weight of the gameobject the unit is carrying, if not carrying any object, returns 0
-	 * 	if (this.getgameobject==null)
-	 * 		result==0
-	 * 	else
-	 * 		result==this.getgameobject.getWeight
+	 * 			| if (! this.hasGameObject())
+	 * 			| then result==0
+	 * 			| else
+	 * 			| result==this.getgameobject.getWeight
 	 */
 	private int weightGameObject() {
-		if (this.gameObject==null)
+		if (! this.hasGameObject())
 			return 0;
 		else {
 			return this.gameObject.getWeight();
 		}
 	}
-	
+
 	/**
-	 * 
+	 * Check whether this Unit is currently carrying a GameObject.
 	 * @return true if the gameobject of the unit is not null
 	 * 		result==(this.getgameObect!=null)
 	 */
@@ -3346,33 +3353,22 @@ public class Unit {
 		return (this.getGameObject() != null);
 	}
 	/**
-	 * 
+	 * Check whether this Unit is currently carrying a Boulder
 	 * @return true if the gameobject of the unit is a Boulder
-	 * 		result==(this.getgameObect instanceof Boulder)
+	 * 			| result==(this.getgameObect instanceof Boulder)
 	 */
 	public boolean isCarryingBoulder() {
-		if (this.gameObject instanceof Boulder) {
-			return true;
-
-		}
-		else {
-			return false;
-		}
+		return this.getGameObject() instanceof Boulder;
 	}
 	/**
-	 * 
+	 * Check whether this Unit is currently carrying a Log
 	 * @return true if the gameobject of the unit is a Log
-	 * 		result==(this.getgameObect instanceof Log)
+	 * 			| result==(this.getgameObect instanceof Log)
 	 */
 	public boolean isCarryingLog() {
-		if (this.gameObject instanceof Log) {
-			return true;
-
-		}
-		else {
-			return false;
-		}
+		return this.getGameObject() instanceof Log;
 	}
+	
 	/**
 	 * Find a path to a given cube in the gameworld
 	 * @param x
@@ -3381,6 +3377,8 @@ public class Unit {
 	 * 			The y-coordinate of the target cube
 	 * @param z
 	 * 			The z-coordinate of the target cube
+	 * @post	This Unit's Path has been set to a non-empty and valid path
+	 * 			| new.getPath().size != 0 && isValidPath(new.getPath())
 	 * @throws IllegalArgumentException
 	 * 			The given cube is not a position where a Unit can stand
 	 * 			or the Unit is already at the given cube
@@ -3425,7 +3423,7 @@ public class Unit {
 			}
 			if (open.size() == 0) //No path could be found
 				throw new PathfindingException(this.getPosition(), new Vector(x,y,z),
-												"There is no path from this Unit's position to the given position");
+						"There is no path from this Unit's position to the given position");
 		}
 	}
 
@@ -3447,19 +3445,20 @@ public class Unit {
 	 *  
 	 * @param  path
 	 *         The path to check.
-	 * @return 
-	 *       | result == (path == null) ||
-	 *       |				for each vector in path: this.getWorld.unitCanStandAt(vector)
+	 * @return true if the given path is empty or when it is possible for a Unit to stand at
+	 * 		   every position in the path and the last position of the path equals the Unit's DistantTarget
+	 *       | result == (path.size() == 0) ||
+	 *       |				((for each vector in path: this.getWorld.unitCanStandAt(vector)) && 
+	 *       |				path.get(path.size()-1).equals(this.getDistantTarget()))
 	 */
 	private boolean isValidPath(List<Vector> path) {
-		if (path == null)
+		if (path.size() == 0)
 			return true;
 		for (Vector vector:path){
 			if(!this.getWorld().unitCanStandAt(vector))
 				return false;
 		}
-		boolean result = (path.get(path.size()-1).equals(this.getDistantTarget()));
-		return result;
+		return path.get(path.size()-1).equals(this.getDistantTarget());
 	}
 
 	private void setPath(List<Node> closed, Node start, Node end) {
@@ -3499,18 +3498,28 @@ public class Unit {
 	 */
 	private List<Vector> path = new ArrayList<>();
 
-
+	/**
+	 * Check whether this Unit can be interrupted by an activity represented by the given Status
+	 * @param status
+	 * 			The Status representing the potential interrupting activity
+	 * @return 
+	 * 			| if (this.getStatus() == Status.FALLING)
+	 * 			| then result == false
+	 * 			| if (this.getStatus() == Status.ATTACKING)
+	 * 			| then result == (status == Status.FALLING)
+	 * 			| if (this.getStatus() == Status.RESTING)
+	 * 			| then result == (this.hasRestedEnough() || status == Status.ATTACKING || status == Status.FALLING)
+	 * 			| if (this.getStatus() == Status.WORKING || this.getStatus() == Status.IDLE)
+	 * 			| then result == true
+	 * 			| if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
+	 * 			| then result == (status == Status.FALLING || status == Status.ATTACKING)
+	 */
 	private boolean canBeInterruptedBy(Status status) {
 		if (this.status==Status.FALLING) {
 			return false;
 		}
 		if (this.status==Status.ATTACKING) {
-			if (status==Status.FALLING) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			return status == Status.FALLING;
 		}
 		if (this.status==Status.RESTING) {
 			if (hasRestedEnough()) {
@@ -3530,23 +3539,16 @@ public class Unit {
 			return true;
 		}
 		if (this.status==Status.MOVINGADJACENT) {
-			if (status==Status.FALLING) {
+			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
 			}
 		}
 
 		if (this.status==Status.MOVINGDISTANT) {
-			if (status==Status.FALLING) {
+			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
 			}
 		}
-
-
-
 		return true;
 	}
-
-
-
-
 }

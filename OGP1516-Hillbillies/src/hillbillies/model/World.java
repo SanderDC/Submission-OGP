@@ -621,6 +621,48 @@ public class World {
 		}
 		return result;
 	}
+	
+	/**
+	 * Check whether the cube of the given position contains at least one GameObject.
+	 * @param position
+	 * 			The position whose cube needs to be checked for GameObjects.
+	 * @return true if there is at least one GameObject occupying the cube of the given position.
+	 */
+	boolean containsGameObject(Vector position){
+		return this.getGameObjectsAt(position).size() > 0;
+	}
+	
+	/**
+	 * Check whether the given cube contains at least one GameObject.
+	 * @param x
+	 * 			The x-coordinate of the cube to be checked.
+	 * @param y
+	 * 			The y-coordinate of the cube to be checked.
+	 * @param z
+	 * 			The z-coordinate of the cube to be checked.
+	 * @return true if there is at least one GameObject occupying the cube of the given position.
+	 */
+	boolean containsGameObject(int x, int y, int z){
+		return this.containsGameObject(new Vector(x,y,z));
+	}
+	
+	/**
+	 * Check whether the cube of the given position contains at least one Log and at least one Boulder.
+	 * @param position
+	 * 			The cube in which this position lies needs to be checked
+	 * @return true if at least one Log and one Boulder occupy the cube of the given position.
+	 */
+	boolean containsLogAndBoulder(Vector position){
+		boolean boulder = false;
+		boolean log = false;
+		for (GameObject object:getGameObjectsAt(position)){
+			if (object instanceof Log)
+				log = true;
+			if (object instanceof Boulder)
+				boulder = true;
+		}
+		return (boulder && log);
+	}
 
 	/**
 	 * Return the number of GameObjects associated with this World.
@@ -1028,6 +1070,4 @@ public class World {
 	public boolean isSolidConnectedToBorder(Vector vector) {
 		return this.connectedToBorder.isSolidConnectedToBorder(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ());
 	}
-
-
 }

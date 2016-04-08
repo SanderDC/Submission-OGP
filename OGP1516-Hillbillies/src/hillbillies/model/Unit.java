@@ -1,10 +1,6 @@
 package hillbillies.model;
+
 import java.util.*;
-
-import org.hamcrest.core.IsInstanceOf;
-import org.junit.experimental.theories.Theories;
-import org.omg.CORBA.PRIVATE_MEMBER;
-
 import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.Util;
 
@@ -1739,10 +1735,10 @@ public class Unit {
 	/**
 	 * Return the base speed of this Unit, depending on its stats. 
 	 * @return	The Unit's base speed
-	 * 			| 1.5*(this.getStrength() + this.getAgility())/(200.0*this.getWeight()/100.0)
+	 * 			| result == 1.5*(this.getStrength() + this.getAgility())/(200.0*this.getTotalWeight()/100.0)
 	 */
 	private double calculateBaseSpeed() {
-		double baseSpeed = 1.5 * (this.getStrength() + this.getAgility()) / (200 * this.getWeight() / 100);
+		double baseSpeed = 1.5 * (this.getStrength() + this.getAgility()) / (200 * this.getTotalWeight() / 100);
 		return baseSpeed;
 	}
 
@@ -1820,121 +1816,132 @@ public class Unit {
 	 * 		|this.setStatus(Status.WORKING)
 	 * 		|this.setActivityTime(calculatingWorkTime())
 	 * @throw IllegalStateException
-	 * 		| (isAttacking()) || (ismoving())||(!this.hasRestedEnough())
+	 * 		The Unit is currently conducting an activity that cannot be interrupted by a work order.
+	 * 		| ! this.canBeInterruptedBy(Status.WORKING)
 	 * 
 	 */
 	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
+		if (! this.canBeInterruptedBy(Status.WORKING))
+			throw new IllegalStateException("This Unit cannot start working at this time");
 		if (!isAdjacentPosition(new Vector(x, y, z))) {
 			throw new IllegalArgumentException("out of reach");
 		}
-		if (isAttacking()) {
-			throw new IllegalStateException("Unit is fighting");
-		}
-		if (isFalling()) {
-			throw new IllegalStateException("Unit is falling");
-		}
-		if (this.isMoving())
-			throw new IllegalStateException("A Unit cannot start working when it is moving");
 		if (this.hasGameObject() && this.getWorld().isSolidGround(x, y, z))
 			throw new IllegalArgumentException("A Unit cannot put down an object at a solid cube");
-		if (this.hasRestedEnough()){
-			if (this.hasGameObject() || this.containsGameObject(x, y, z) || world.isSolidGround(x, y, z)){
-				this.settingInitialResttimeOk();
-				this.setWorkposition(x, y, z);
-				this.setToWork();
-			} else {
-				throw new IllegalArgumentException("No work to be done here");
-			}
+		if (this.hasGameObject() || this.getWorld().containsGameObject(x, y, z) || world.isSolidGround(x, y, z)){
+			this.settingInitialResttimeOk();
+			this.setWorkposition(x, y, z);
+			this.setToWork();
+		} else {
+			throw new IllegalArgumentException("No work to be done here");
 		}
-		else {
-			throw new IllegalStateException("Unit has to rest a little bit");
-		}
-
 
 	}
 
 	/**
-	 * bekijkt of een cube zowel een builder als een Log bevat
+	 * Check whether the given cube contains both a Log and a Boulder
 	 * @param x
+	 * 			The x-coordinate of the cube to be checked
 	 * @param y
+	 * 			The y-coordinate of the cube to be checked
 	 * @param z
-	 * @return
+	 * 			The z-coordinate of the cube to be checked
+	 * @return true if and only if there is at least one Log and at least one Boulder occupying this cube.
+	 * 			| result == (for some Log in this.getWorld().getGameObjects():
+	 * 			|				(Log.getPosition().getCubeX() == x) &&
+	 * 			|				(Log.getPosition().getCubeY() == y) &&
+	 * 			|				(Log.getPosition().getCubeZ() == z)) &&
+	 * 			|			(for some Boulder in this.getWorld().getGameObjects():
+	 * 			|				(Boulder.getPosition().getCubeX() == x) &&
+	 * 			|				(Boulder.getPosition().getCubeY() == y) &&
+	 * 			|				(Boulder.getPosition().getCubeZ() == z))
 	 */
-	private boolean containsLogandBoulder(int x, int y, int z) {
-		boolean containsLog=false;
-		boolean containsBoulder=false;
-		for (GameObject object : world.getGameObjects()) {
-			if (object instanceof Boulder){
-				if (object.getPosition().getCubeX()==x){
-					if (object.getPosition().getCubeY()==y){
-						if (object.getPosition().getCubeZ()==z){
-							containsBoulder=true;
-						}
-					}
-				}
-			}
-		}
-		if (containsBoulder==false) {
-			return false;
-		}
-		for (GameObject object : world.getGameObjects()) {
-
-			if (object instanceof Log){
-				if (object.getPosition().getCubeX()==x){
-					if (object.getPosition().getCubeY()==y){
-						if (object.getPosition().getCubeZ()==z){
-							containsLog=true;						
-						}
-					}
-				}
-			}
-		}
-		if (containsBoulder&&containsLog) {
-			return true;
-		}
-		else {
-
-			return false;
-		}
-	}
+//	private boolean containsLogAndBoulder(int x, int y, int z) {
+//		boolean containsLog=false;
+//		boolean containsBoulder=false;
+//		for (GameObject object : world.getGameObjects()) {
+//			if (object instanceof Boulder){
+//				if (object.getPosition().getCubeX()==x){
+//					if (object.getPosition().getCubeY()==y){
+//						if (object.getPosition().getCubeZ()==z){
+//							containsBoulder=true;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		if (containsBoulder==false) {
+//			return false;
+//		}
+//		for (GameObject object : world.getGameObjects()) {
+//
+//			if (object instanceof Log){
+//				if (object.getPosition().getCubeX()==x){
+//					if (object.getPosition().getCubeY()==y){
+//						if (object.getPosition().getCubeZ()==z){
+//							containsLog=true;						
+//						}
+//					}
+//				}
+//			}
+//		}
+//		if (containsBoulder&&containsLog) {
+//			return true;
+//		}
+//		else {
+//
+//			return false;
+//		}
+//	}
+//	
+//	/**
+//	 * Check whether the cube of a certain position contains both a Boulder and a Log
+//	 * @param position
+//	 * 			The position to check for Boulders and Logs
+//	 * @return	true if and only if at least one Boulder and at least one log are present
+//	 * 			| result == this.containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+//	 */
+//	private boolean containsLogAndBoulder(Vector position){
+//		return containsLogAndBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+//	}
 	
 	/**
-	 * Check whether the cube of a certain position contains both a Boulder and a Log
-	 * @param position
-	 * 			The position to check for Boulders and Logs
-	 * @return	true if and only if at least one Boulder and at least one log are present
-	 * 			| result == this.containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+	 * Check whether the given cube contains at least one GameObject
+	 * @param x
+	 * 			The x-coordinate of the cube to be checked.
+	 * @param y
+	 * 			The y-coordinate of the cube to be checked.
+	 * @param z
+	 * 			The z-coordinate of the cube to be checked.
+	 * @return true if there is at least one GameObject occupying the given position.
+	 * 			| result == (for some Object in this.getWorld().getGameObjects():
+	 * 			|				(Object.getPosition().getCubeX() == x) &&
+	 * 			|				(Object.getPosition().getCubeY() == y) &&
+	 * 			|				(Object.getPosition().getCubeZ() == z)) &&
 	 */
-	private boolean containsLogAndBoulder(Vector position){
-		return containsLogandBoulder(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-	}
+//	private boolean containsGameObject(int x, int y, int z) {
+//		for (GameObject object : world.getGameObjects()) {
+//			if (object.getPosition().getCubeX()==x){
+//				if (object.getPosition().getCubeY()==y){
+//					if (object.getPosition().getCubeZ()==z){
+//						return true;
+//					}
+//				}
+//			}
+//		}
+//		return false;
+//	}
 	
-	/**
-	 * bekijkt of een cube een gameobject bevat
-	 */
-	private boolean containsGameObject(int x, int y, int z) {
-		for (GameObject object : world.getGameObjects()) {
-			if (object.getPosition().getCubeX()==x){
-				if (object.getPosition().getCubeY()==y){
-					if (object.getPosition().getCubeZ()==z){
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Check whether the cube of the given position contains a GameObject
-	 * @param position
-	 * 			The position to check for GameObjects.
-	 * @return	true if and only if at least one GameObject is present at the given position
-	 * 			| result == this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
-	 */
-	private boolean containsGameObject(Vector position){
-		return this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-	}
+//	/**
+//	 * Check whether the cube of the given position contains a GameObject
+//	 * @param position
+//	 * 			The position to check for GameObjects.
+//	 * @return	true if and only if at least one GameObject is present at the given position
+//	 * 			| result == this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
+//	 */
+//	private boolean containsGameObject(Vector position){
+//		return this.containsGameObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+//	}
 
 	public void setToWork(){
 		this.setStatus(Status.WORKING);
@@ -1946,24 +1953,41 @@ public class Unit {
 	 * updates the time the unit has to spend working
 	 * @post
 	 *		| if (this.getActivityTime() - time <= 0)
-	 *		|then new.getActivityTime=0, new.getStatus==Status.IDLE
-	 *		|else
-	 *		|then new.getActivityTime=This.getActivityTime-time
-	 *@effect
-	 *		|if (workorder==1)
-	 *		|then this.dropobject()
-	 *@effect
-	 *		|if (workorder==2)
-	 *		|then setToughness(this.getToughness()+1)
-	 *		|	setWeight(this.getWeight()+1)
-	 *		|	terminateBoulderAndLog()
-	 *@effect
-	 *		|if (workorder==3)
-	 *		|then world.caveIn(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ(),world.getCubeType(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ()))
-
-	 *@effect
-	 *		|if (workorder==4)
-	 *		|then pickUpObject(workposition.getCubeX(),workposition.getCubeY(),workposition.getCubeZ())
+	 *		|then new.getActivityTime() == 0, new.getStatus() == Status.IDLE
+	 *		|else  new.getActivityTime() == this.getActivityTime()-time
+	 * @effect If this Unit's work is completed and 
+	 * 		   this Unit was carrying a GameObject, that object is dropped at the Unit's Workposition
+	 * 		   and the Unit gains 10 experience points.
+	 * 			| if (this.getActivityTime() - time <= 0 && this.hasGameObject())
+	 * 			| then this.setActivityTime(0) && this.setStatus(Status.IDLE) &&
+	 * 			|		this.dopObjectAt(this.getWorkposition()) &&
+	 * 			| 		this.setExp(this.getExp() + 10)
+	 * @effect If this Unit's work is completed and
+	 * 		   the Unit's Workposition is a Workshop and both a Log and a Boulder are present at that position,
+	 * 		   this Unit gains one point of Toughness and one point of weight and a Boulder and a Log at the Unit's
+	 * 		   Workposition are terminated and the Unit gains 10 experience points.
+	 *			| if (this.getActivityTime() - time <= 0 && this.getWorld().getCubeType(this.getWorkposition()) == 3
+	 *			|			&& this.getWorld().containsLogAndBoulder(this.getWorkposition()))
+	 *			| then this.setActivityTime(0) && this.setStatus(Status.IDLE) &&
+	 *			|		this.setWeight(this.getWeight() + 1) &&
+	 *			|		this.setToughness(this.getToughness + 1) &&
+	 *			|		for some Log in this.getWorld.getGameObjectsAt(this.getWorkposition()):
+	 *			|					Log.terminate() && 
+	 *			|		for some Boulder in this.getWorld.getGameObjectsAt(this.getWorkposition()):
+	 *			|					Boulder.terminate() &&
+	 *			| 		this.setExp(this.getExp() + 10)
+	 * @effect If this Unit's work is completed and a GameObject is present at the Unit's Workposition,
+	 *		   the Unit picks up that GameObject and gains 10 experience points.
+	 *			| if (this.getActivityTime() - time <= 0 && this.getWorld().containsGameObject(this.getWorkposition()))
+	 *			| then this.setActivityTime(0) && this.setStatus(Status.IDLE) &&
+	 *			|		this.pickUpObject(this.getWorkposition()) &&
+	 *			|		this.setExp(this.getExp()+10)
+	 * @effect If this Unit's work is completed and its Workposition is a solid cube, that cube collapses
+	 *		   and the Unit gains 10 experience points.
+	 *			| if (this.getActivityTime() - time <= 0 && this.getWorld().isSolidGround(this.getWorkposition()))
+	 *			| then this.setActivityTime(0) && this.setStatus(Status.IDLE) &&
+	 *			|		this.getWorld().caveIn(this.getWorkposition().getCubeX(), this.getWorkposition().getCubeY(), this.getWorkposition().getCubeZ())
+	 *			|		&& this.setExp(this.getExp() + 10)
 	 */
 	private void advanceWork(double time){
 		if (this.getActivityTime() - time <= 0){
@@ -1975,7 +1999,7 @@ public class Unit {
 				return;
 			}
 			if (this.getWorld().getCubeType(this.getWorkposition()) == 3
-					&& containsLogAndBoulder(this.getWorkposition())){
+					&& this.getWorld().containsLogAndBoulder(this.getWorkposition())){
 				this.setWeight(this.getWeight() + 1);
 				this.setToughness(this.getToughness() + 1);
 				boolean foundBoulder = false;
@@ -1995,7 +2019,7 @@ public class Unit {
 					}
 				}
 			}
-			if (this.getWorld().getGameObjectsAt(this.getWorkposition()).size() != 0){
+			if (this.getWorld().containsGameObject(this.getWorkposition())){
 				this.pickUpObject(this.getWorkposition());
 				this.setExp(this.getExp()+10);
 				return;
@@ -2009,83 +2033,69 @@ public class Unit {
 			this.setActivityTime(this.getActivityTime()-time);
 	}
 	
-	private Set<GameObject> upgradematerial;
+//	private Set<GameObject> upgradematerial;
+//
+//	/**
+//	 * @post destroys the upgradematerials
+//	 * 		upgradematerial(0)==isterminated&&upgradematerial(1)==isterminated
+//	 */
+//	private void terminateBoulderAndLog() {	
+//		for (GameObject object : world.getGameObjects()) {
+//			if (object instanceof Boulder){
+//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+//
+//							if (upgradematerial.size()==0) {
+//								upgradematerial.add(object);
+//							}					
+//						}
+//					}
+//				}
+//			}
+//		}
+//		for (GameObject object : world.getGameObjects()) {			
+//			if (object instanceof Log){
+//				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
+//					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
+//						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
+//							if (upgradematerial.size()==1) {
+//								upgradematerial.add(object);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		for (GameObject gameObject : upgradematerial) {
+//			gameObject.terminate();
+//		}
+//		upgradematerial.clear();
+//	}
+
 
 	/**
-	 * @post destroys the upgradematerials
-	 * 		upgradematerial(0)==isterminated&&upgradematerial(1)==isterminated
-	 */
-	private void terminateBoulderAndLog() {	
-		for (GameObject object : world.getGameObjects()) {
-			if (object instanceof Boulder){
-				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-
-							if (upgradematerial.size()==0) {
-								upgradematerial.add(object);
-							}					
-						}
-					}
-				}
-			}
-		}
-		for (GameObject object : world.getGameObjects()) {			
-			if (object instanceof Log){
-				if (object.getPosition().getCubeX()==this.getPosition().getCubeX()){
-					if (object.getPosition().getCubeY()==this.getPosition().getCubeY()){
-						if (object.getPosition().getCubeZ()==this.getPosition().getCubeZ()){
-							if (upgradematerial.size()==1) {
-								upgradematerial.add(object);
-							}
-						}
-					}
-				}
-			}
-		}
-		for (GameObject gameObject : upgradematerial) {
-			gameObject.terminate();
-		}
-		upgradematerial.clear();
-	}
-
-
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Pick up an object at the given position. The Unit always picks up a Boulder when one is present,
+	 * otherwise it picks up a Log.
+	 * @param position
+	 * 			The position from which to pick up an object.
 	 * @effect picks up a gameobject, first checking for possible boulders, then for possible logs
 	 * 		|if(cube(x,y,z)contains boulder)
 	 * 		|	SetGameObject(boulderobject)
 	 * 		|else
 	 * 		|	SetGameObject(LogObject)
 	 */
-	private void pickUpObject(int x,int y,int z){
-		for (GameObject object : world.getGameObjects()) {
-
+	private void pickUpObject(Vector position){
+		for (GameObject object : world.getGameObjectsAt(position)) {
 			if (object instanceof Boulder){
-				if (object.getPosition().getCubeX()==x){
-					if (object.getPosition().getCubeY()==y){
-						if (object.getPosition().getCubeZ()==z){
-							setGameObject(object);
-							return;
-						}
-					}
-				}
+				setGameObject(object);
+				return;
 			}
 		}
 		for (GameObject object : world.getGameObjects()) {
-
 			if (object instanceof Log){
-				if (object.getPosition().getCubeX()==x){
-					if (object.getPosition().getCubeY()==y){
-						if (object.getPosition().getCubeZ()==z){
-							setGameObject(object);
-							return;
-						}
-					}
-				}
+				setGameObject(object);
+				return;
 			}
 		}
 	}
@@ -2098,9 +2108,9 @@ public class Unit {
 	 * @effect	The Unit picks up a GameObject at the given position
 	 * 			| this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
 	 */
-	private void pickUpObject(Vector position){
-		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-	}
+//	private void pickUpObject(Vector position){
+//		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+//	}
 	
 	/**
 	 * @effect drops the object the unit is carrying in the Units world
@@ -2125,10 +2135,18 @@ public class Unit {
 	 *
 	 * @return  position where workat will take place
 	 */
+	@Basic @Raw
 	public Vector getWorkposition() {
 		return workposition;
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	@Raw
 	public void setWorkposition(int x, int y, int z) {
 		this.workposition = new Vector(x, y, z);
 	}
@@ -2708,7 +2726,7 @@ public class Unit {
 				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
 			}
 			else {
-				if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
+				if (this.getWorld().containsGameObject(this.getPosition())) {	
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
@@ -2788,7 +2806,7 @@ public class Unit {
 				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
 			}
 			else {
-				if (containsGameObject(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ())) {	
+				if (this.getWorld().containsGameObject(this.getPosition())) {	
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
@@ -3477,7 +3495,7 @@ public class Unit {
 	private List<Vector> path = new ArrayList<>();
 
 
-	private boolean canbeInterruptedBy(Status status) {
+	private boolean canBeInterruptedBy(Status status) {
 		if (this.status==Status.FALLING) {
 			return false;
 		}

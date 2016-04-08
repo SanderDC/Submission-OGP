@@ -62,7 +62,18 @@ public class World {
 			}
 		}
 	}
+	
+	/**
+	 * Construct a World without TerrainChangeListener for testing purposes.
+	 * @param Coordinates
+	 * 			The coordinates matrix for this new World
+	 * @post   This new World has no Units yet.
+	 * @post   This new World has no Factions yet.
+	 * @post   This new World has no GameObjects yet.
+	 * @post   The collapseTime of this new World is 0.
+	 */
 	public World(int[][][] Coordinates){
+		this.setCollapseTime(0);
 		this.Coordinates=Coordinates;
 		this.connectedToBorder = new ConnectedToBorder(nbCoordinateX(), nbCoordinateY(), nbCoordinateZ());
 		for (int x=0;x<nbCoordinateX();x++){
@@ -83,33 +94,88 @@ public class World {
 			}
 		}
 	}
+	
+	/**
+	 * Advances the gametime for this World by the given time
+	 * @param time
+	 * 			The time to advance the gametime with.
+	 * @effect	The gametime is advanced for every Unit that is not being terminated
+	 * 			and every GameObject in this World
+	 * @effect	If the sum of this World's collapsetime and the time to advance the gametime with
+	 * 			is larger than or equal to 5, all cubes that are disconnected from the borders collapse
+	 * @effect	All Units that need to be terminated are removed from this World
+	 * @throws IllegalArgumentException
+	 * 			The given time is an illegal time.
+	 * 			| (time < 0) || (time > 0.2)
+	 */
+	public void advanceTime(double time)throws IllegalArgumentException {
+		if (time<0||time>0.2)
+			throw new IllegalArgumentException();
+		if (this.getCollapseTime() + time < 5){
+			this.setCollapseTime(this.getCollapseTime() + time);
+		} else {
+			this.setCollapseTime(this.getCollapseTime() + time - 5);
+			for (Vector vector:toBeCollapsed){
+				int oldCubeType = this.getCubeType(vector);
+				this.setCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), 0);
+				if (Math.random() <= 0.25){
+					if (oldCubeType == 1)
+						new Boulder(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
+					else if (oldCubeType == 2)
+						new Log(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
+				}
+			}
+			toBeCollapsed.clear();
+		}
+//		for (Unit unit : TerminatedUnits) {
+//			unit.removeFromWorld();
+//		}
+//		TerminatedUnits.clear();
+		
+		Set<Unit> units = new HashSet<>();
+		units.addAll(this.getUnits());
+		for (Unit unit:units){
+			unit.advanceTime(time);
+		}
+		for (GameObject gObject:this.getGameObjects()){
+			gObject.advanceTime(time);
+		}
+	}
+	
+	/**
+	 * Variable registering the ConnectedToBorder instance for this World
+	 */
 	private ConnectedToBorder connectedToBorder;
-
+	
+	/**
+	 * Variable registering the TerrainChangeListener for this World
+	 */
 	private TerrainChangeListener modelListener;
 	/**
-	 * 
-	 * @return
-	 * 		result==this.Coordinates
+	 * Return the coordinates matrix for this World
 	 */
 	private int[][][]getCoordinates () {
 		return this.Coordinates;
 	}
+	
 	/**
 	 * 
-	 * @return return the number of zcubes
+	 * @return return the number of cubes in the z-direction
 	 * 		result==getCoordinates().length
 	 */
 	public int nbCoordinateX() {
 		return getCoordinates().length;
 	}
+	
 	/**
 	 * 
-	 * @return return the number of zcubes
+	 * @return return the number of cubes in the y-direction
 	 * 		result==getCoordinates()[0].length
 	 */
 	public int nbCoordinateY(){
 		return getCoordinates()[0].length;
 	}
+	
 	/**
 	 * 
 	 * @return return the number of zcubes
@@ -140,7 +206,7 @@ public class World {
 	 * @return true if all coordinates of the given Vector lie between
 	 * 			this gameworld's minimum and maximum coordinate in that direction.
 	 */
-	public boolean isInsideWorld(Vector position){
+	boolean isInsideWorld(Vector position){
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
 			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i] + 1))
@@ -148,70 +214,38 @@ public class World {
 		}
 		return true;
 	}
+	
 	/**
 	 * variable keeping track of the values of the cubetypes
 	 */
 	private int [][][] Coordinates;
 	
-	
-	
-	private Set<Unit> TerminatedUnits=new HashSet<>();
-	
-	void AddToTerminatedUnits(Unit unit){
-		assert (unit.isTerminated());
-		TerminatedUnits.add(unit);
-	}
+	/**
+	 * Variable registering the Units that are being terminated
+	 */
+//	private Set<Unit> TerminatedUnits=new HashSet<>();
 	
 	/**
-	 * Advances the gametime for this World by the given time
-	 * @param time
-	 * 			The time to advance the gametime with.
-	 * @effect
-	 * 		advancetime(for(Unit unit: this.getunits)
-	 * 		advancetime(for(GameObject gObject: this.getGameObjects)
-	 * 
-	 * *@throws IllegalArgumentException
-	 * 			The given time is an illegal time.
-	 * 			| (time < 0) || (time > 0.2)
+	 * Add the given Unit to the Set of Units that are being terminated
+	 * @param unit
+	 * 			The Unit to be added to the Set of Units that are being terminated
+	 * @post	The Set of Units that are being terminated contains the given Unit
+	 * @throws IllegalArgumentException
+	 * 			The given Unit is the null reference or does not need to be terminated
 	 */
-	public void advanceTime(double time)throws IllegalArgumentException {
-		if (this.getCollapseTime() + time < 5){
-			this.setCollapseTime(this.getCollapseTime() + time);
-		} else {
-			this.setCollapseTime(this.getCollapseTime() + time - 5);
-			for (Vector vector:toBeCollapsed){
-				int oldCubeType = this.getCubeType(vector);
-				this.setCubeType(vector.getCubeX(), vector.getCubeY(), vector.getCubeZ(), 0);
-				if (Math.random() <= 0.25){
-					if (oldCubeType == 1)
-						new Boulder(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
-					else if (oldCubeType == 2)
-						new Log(vector.add(new Vector(CUBELENGTH/2,CUBELENGTH/2, CUBELENGTH/2)), this);
-				}
-			}
-			toBeCollapsed.clear();
-		}
-		if (time<0||time>0.2)
-			throw new IllegalArgumentException();
-		Set<Unit> units = new HashSet<>();
-		units.addAll(this.getUnits());
-		for (Unit unit:units){
-			unit.advanceTime(time);
-		}
-		for (Unit unit : TerminatedUnits) {
-			unit.removeFromWorld();
-		}
-		TerminatedUnits.clear();
-		for (GameObject gObject:this.getGameObjects()){
-			gObject.advanceTime(time);
-		}
-	}
+//	void AddToTerminatedUnits(Unit unit) throws IllegalArgumentException{
+//		if (unit == null || !unit.isTerminated())
+//			throw new IllegalArgumentException();
+//		TerminatedUnits.add(unit);
+//	}
+	
+
 
 	/**
 	 * Return the collapseTime of this World.
 	 */
 	@Basic @Raw
-	public double getCollapseTime() {
+	private double getCollapseTime() {
 		return this.collapseTime;
 	}
 
@@ -224,7 +258,7 @@ public class World {
 	 * @return 
 	 *       | result == (collapseTime >= 0) && (collapseTime < 5)
 	 */
-	public static boolean isValidCollapseTime(double collapseTime) {
+	private static boolean isValidCollapseTime(double collapseTime) {
 		return (collapseTime >= 0) && (collapseTime < 5);
 	}
 
@@ -241,7 +275,7 @@ public class World {
 	 *       | new.getCollapseTime() == collapseTime
 	 */
 	@Raw
-	public void setCollapseTime(double collapseTime) {
+	private void setCollapseTime(double collapseTime) {
 		assert isValidCollapseTime(collapseTime);
 		this.collapseTime = collapseTime;
 	}
@@ -252,44 +286,82 @@ public class World {
 	private double collapseTime;
 
 	/**
-	 * 
+	 * Return the type of the cube at the given position in this World
 	 * @param x
+	 * 			The x-coordinate of the give cube
 	 * @param y
+	 * 			The y-coordinate of the give cube
 	 * @param z
-	 * @return the value of the cube
-	 * 		result==getCoordinates()[x][y][z]
+	 * 			The z-coordinate of the give cube
+	 * @return the type of cube at the given position
 	 */
 	public int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
 
 	}
-
-	public int getCubeType(Vector position){
+	
+	/**
+	 * Return the type of material of the cube in which the given position lies
+	 * @param position
+	 * 			The position whose cube to get the type of material of.
+	 * @return the type of material of the cube containing the given material
+	 */
+	int getCubeType(Vector position){
 		return this.getCubeType(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 	}
 
 	/**
-	 * 
+	 * Set the type of the cube at the given position to the given value
 	 * @param x
+	 * 			The x-coordinate of the cube for which to set a new type
 	 * @param y
+	 * 			The y-coordinate of the cube for which to set a new type
 	 * @param z
+	 * 			The z-coordinate of the cube for which to set a new type
 	 * @param value
-	 * @post	change the value of the cubetype to the given value
-	 * 		|this.getnewCoordinates==value
+	 * 			The type to set the given cube to
+	 * @post	The type of the given cube equals the given type
+	 * @effect If the given cube is changing to passable material,
+	 * 		   the positions where Units can stand and can spawn are updated accordingly
+	 * @throws IllegalArgumentException
+	 * 			The given type is not a valid cube type
 	 */
-	public void setCubeType(int x,int y, int z, int value) {
+	public void setCubeType(int x,int y, int z, int value) throws IllegalArgumentException {
+		if (!isValidMaterial(value))
+			throw new IllegalArgumentException();
 		this.getCoordinates()[x][y][z]=value;
 		this.modelListener.notifyTerrainChanged(x, y, z);
+		if (value == 0 || value == 3){
+			Vector position = new Vector(x,y,z);
+			for (Vector vector:this.getAdjacentPositions(position)){
+				if (this.getSpawnablePositions().contains(vector)){
+					if (!unitCanSpawnAt(vector))
+						this.getSpawnablePositions().remove(vector);
+				} else {
+					if (unitCanSpawnAt(vector))
+						this.addSpawnablePosition(vector);
+				}
+				if (this.getStandablePositions().contains(vector)){
+					if (!unitCanStandAt(vector))
+						this.getStandablePositions().remove(vector);
+				} else {
+					if (unitCanStandAt(vector))
+						this.addStandablePosition(vector);
+				}
+			}
+			if (unitCanStandAt(position))
+				this.addStandablePosition(position);
+			if (unitCanSpawnAt(position))
+				this.addSpawnablePosition(position);
+		}
 	}
 	/**
-	 * 
+	 * Check whether the given value is a valid material type
 	 * @param i
-	 * @return whether the material is a valid value in this World
-	 * 		result==(i>0&&i<3)
+	 * 			The type to check
+	 * @return true if the given type is an integer from 0 to 3
 	 */
 	private boolean isValidMaterial(int i) {
-
-
 		if (i>=0&&i<=3) {
 			return true;
 		}
@@ -302,9 +374,9 @@ public class World {
 	/**
 	 * Check whether this World has the given Unit as one of its
 	 * Units.
-	 * 
 	 * @param  Unit
 	 *         The Unit to check.
+	 * @return true if this World has the given Unit as one of its Units
 	 */
 	@Basic
 	@Raw
@@ -322,7 +394,7 @@ public class World {
 	 *         and that Unit is a valid Unit for a World.
 	 *       | result ==
 	 *       |   (Unit != null) &&
-	 *       |   Unit.isValidWorld(this)
+	 *       |   Unit.canHaveAsWorld(this)
 	 */
 	@Raw
 	public boolean canHaveAsUnit(Unit Unit) {
@@ -374,14 +446,15 @@ public class World {
 	 * 
 	 * @param  Unit
 	 *         The Unit to be added.
-	 * @pre    The given Unit is effective and already references
-	 *         this World.
-	 *       | (Unit != null) && (Unit.getWorld() == this)
-	 * @post   This World has the given Unit as one of its Units.
-	 *       | new.hasAsUnit(Unit)
+	 * @post   If this World has fewer than 100 Units, this World has the given Unit as one of its Units.
+	 * 		 | if (this.getNbUnits() < 100)
+	 *       | then new.hasAsUnit(Unit) && (new Unit).getWorld() == this
+	 * @throws IllegalArgumentException
+	 * 			The given Unit is the null reference or cannot have this World as its World
 	 */
-	public void addUnit(Unit Unit) {
-//		assert (Unit != null) && (Unit.getWorld() == this);
+	public void addUnit(Unit Unit) throws IllegalArgumentException{
+		if (Unit == null || !Unit.canHaveAsWorld(this))
+			throw new IllegalArgumentException();
 		if (this.getNbUnits() >= 100)
 			return;
 		else {
@@ -405,7 +478,7 @@ public class World {
 	 *       | ! new.hasAsUnit(Unit)
 	 */
 	@Raw
-	public void removeUnit(Unit Unit) {
+	void removeUnit(Unit Unit) {
 		assert this.hasAsUnit(Unit) && (Unit.getWorld() == null);
 		Units.remove(Unit);
 	}
@@ -820,27 +893,27 @@ public class World {
 		for (int[] cube:collapsing){
 			toBeCollapsed.add(new Vector(cube[0],cube[1],cube[2]));
 		}
-		Vector position = new Vector(x,y,z);
-		for (Vector vector:this.getAdjacentPositions(position)){
-			if (this.getSpawnablePositions().contains(vector)){
-				if (!unitCanSpawnAt(vector))
-					this.getSpawnablePositions().remove(vector);
-			} else {
-				if (unitCanSpawnAt(vector))
-					this.addSpawnablePosition(vector);
-			}
-			if (this.getStandablePositions().contains(vector)){
-				if (!unitCanStandAt(vector))
-					this.getStandablePositions().remove(vector);
-			} else {
-				if (unitCanStandAt(vector))
-					this.addStandablePosition(vector);
-			}
-		}
-		if (unitCanStandAt(position))
-			this.addStandablePosition(position);
-		if (unitCanSpawnAt(position))
-			this.addSpawnablePosition(position);
+//		Vector position = new Vector(x,y,z);
+//		for (Vector vector:this.getAdjacentPositions(position)){
+//			if (this.getSpawnablePositions().contains(vector)){
+//				if (!unitCanSpawnAt(vector))
+//					this.getSpawnablePositions().remove(vector);
+//			} else {
+//				if (unitCanSpawnAt(vector))
+//					this.addSpawnablePosition(vector);
+//			}
+//			if (this.getStandablePositions().contains(vector)){
+//				if (!unitCanStandAt(vector))
+//					this.getStandablePositions().remove(vector);
+//			} else {
+//				if (unitCanStandAt(vector))
+//					this.addStandablePosition(vector);
+//			}
+//		}
+//		if (unitCanStandAt(position))
+//			this.addStandablePosition(position);
+//		if (unitCanSpawnAt(position))
+//			this.addSpawnablePosition(position);
 		if (Math.random()<=0.25) {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);

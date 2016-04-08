@@ -2941,7 +2941,7 @@ public class Unit {
 	 *       	| new.getFallPosition() == fallPosition
 	 */
 	private void setFallPosition(double fallPosition)throws IllegalArgumentException {
-		assert (fallPosition > 0);
+		assert (fallPosition >= 0);
 		this.fallPosition = fallPosition;
 	}
 	/**
@@ -3118,7 +3118,8 @@ public class Unit {
 			dropObjectAt(this.getPosition());
 		}
 		this.removeFromFaction();
-		world.AddToTerminatedUnits(this);
+//		world.AddToTerminatedUnits(this);
+		this.removeFromWorld();
 	}
 
 	/**
@@ -3180,7 +3181,7 @@ public class Unit {
 	 * 			| (this.isTerminated() == 0)
 	 * @post	This Unit has been removed from its faction
 	 * 			| (new this).getFaction() == null
-	 * 			| !(new faction).hasAsUnit(this)
+	 * 			| !(new this.getFaction()).hasAsUnit(this)
 	 */
 	private void removeFromFaction(){
 		assert (this.isTerminated());
@@ -3239,7 +3240,7 @@ public class Unit {
 	 * 			| this.getWorld() != null
 	 */
 	@Raw
-	public void addToWorld(@Raw World world) throws IllegalStateException{
+	void addToWorld(@Raw World world) throws IllegalStateException{
 		assert (world != null) && (world.hasAsUnit(this)) && this.canHaveAsWorld(world);
 		this.world = world;
 		int index = new Random().nextInt(world.getSpawnablePositions().size());
@@ -3269,7 +3270,7 @@ public class Unit {
 	 * 			| (this.isTerminated())
 	 * @post	This Unit has been removed from its world
 	 * 			| (new this).getWorld() == null
-	 * 			| !(new faction).hasAsUnit(this)
+	 * 			| !(new this.getWorld()).hasAsUnit(this)
 	 */
 	void removeFromWorld(){
 		assert (this.isTerminated());

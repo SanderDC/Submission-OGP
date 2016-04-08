@@ -2113,10 +2113,11 @@ public class Unit {
 //	}
 	
 	/**
+	 * Make the Unit drop its object at the given position
 	 * @effect drops the object the unit is carrying in the Units world
-	 * 		|this.setGameObject(null)
-	 * 		|this.oldObject.addToWorld(getWorld())
-	 * 		|oldObject.setPosition(position)
+	 * 			| this.setGameObject(null)
+	 * 			| this.oldObject.addToWorld(getWorld())
+	 * 			| oldObject.setPosition(position)
 	 */
 	private void dropObjectAt(Vector position) {
 		position = position.getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2));
@@ -2137,14 +2138,20 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public Vector getWorkposition() {
-		return workposition;
+		return this.workposition;
 	}
 	
 	/**
-	 * 
+	 * Set the Unit's Workposition to the given position
 	 * @param x
+	 * 			The x-coordinate of the Unit's new Workposition
 	 * @param y
+	 * 			The y-coordinate of the Unit's new Workposition
 	 * @param z
+	 * 			The z-coordinate of the Unit's new Workposition
+	 * @post The Unit's Workposition is a Vector with the given coordinates
+	 * 		 as its coordinates
+	 * 			| new.getWorkposition() == new Vector(x,y,z)
 	 */
 	@Raw
 	public void setWorkposition(int x, int y, int z) {
@@ -2184,23 +2191,18 @@ public class Unit {
 	 *			| this.getPosition().getCubeZ() + dz + CUBELENGTH/2)))
 	 * @throws IllegalStateException
 	 * 			The Unit is currently conducting an activity that cannot be interrupted by movement
-	 * 			| (!this.isWorking() && !this.isresting() && this.getStatus() != Status.IDLE) ||
-	 * 			| (this.isresting() && !this.hasRestedEnough())
+	 * 			| (!this.canBeInterruptedBy(Status.MOVINGADJACENT))
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException, IllegalStateException{
-		if (!this.isWorking() && !this.isResting() && !isIdle()&&!isFalling())
-			throw new IllegalStateException("The Unit cannot execute a movement at this time");
-		else if (this.isResting()){
-			if (!this.hasRestedEnough())
-				throw new IllegalStateException("The Unit needs to rest more before moving");
-			else
-				this.settingInitialResttimeOk();
-		}
+		if (! this.canBeInterruptedBy(Status.MOVINGADJACENT))
+			throw new IllegalStateException("The Unit cannot start moving at this time");
 		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
 				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
 				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
 		if ( ! this.canHaveAsNearTarget(target))
 			throw new IllegalArgumentException("The Unit cannot move to this position");
+		if (this.isResting())
+			this.settingInitialResttimeOk();
 		if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
 			return;
 		this.setStatus(Status.MOVINGADJACENT);
@@ -2213,30 +2215,30 @@ public class Unit {
 	 * 
 	 * @post	If the Unit is currently one cubelength above its nearTarget and is not sprinting,
 	 * 			the magnitude of its speed is set to 1.2 times its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() == CUBELENGTH) && (! this.getSprinting())
+	 * 			| if (Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),CUBELENGTH)) && (! this.getSprinting())
 	 * 			| then new.getSpeed().norm() == 1.2*this.calculateBaseSpeed()
 	 * @post	If the Unit is currently one cubelength below its nearTarget and is not sprinting,
 	 * 			the magnitude of its speed is set to 0.5 times its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() == -CUBELENGTH) && (! this.getSprinting())
+	 * 			| if (Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),-CUBELENGTH)) && (! this.getSprinting())
 	 * 			| then new.getSpeed().norm() == 0.5*this.calculateBaseSpeed()
 	 * @post	If the Unit is not one cubelength above or below its nearTarget and is not sprinting,
 	 * 			the magnitude of its speed is set to its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() != CUBELENGTH) &&
-	 * 			|		(this.getPosition.getZ() - this.getNearTarget().getZ() != -CUBELENGTH) &&
+	 * 			| if (!Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),CUBELENGTH)) &&
+	 * 			|		(!Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),-CUBELENGTH)) &&
 	 * 			|		(! this.getSprinting())
 	 * 			| then new.getSpeed().norm() == this.calculateBaseSpeed()
 	 * @post	If the Unit is currently one cubelength above its nearTarget and is sprinting,
 	 * 			the magnitude of its speed is set to 2.4 times its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() == CUBELENGTH) && (this.getSprinting())
+	 * 			| if (Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),CUBELENGTH)) && (this.getSprinting())
 	 * 			| then new.getSpeed().norm() == 2.4*this.calculateBaseSpeed()
 	 * @post	If the Unit is currently one cubelength below its nearTarget and is sprinting,
 	 * 			the magnitude of its speed is set to its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() == -CUBELENGTH) && (this.getSprinting())
+	 * 			| if (Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),-CUBELENGTH)) && (this.getSprinting())
 	 * 			| then new.getSpeed().norm() == this.calculateBaseSpeed()
 	 * @post	If the Unit is not one cubelength above or below its nearTarget and is sprinting,
 	 * 			the magnitude of its speed is set to twice its basespeed
-	 * 			| if (this.getPosition.getZ() - this.getNearTarget().getZ() != CUBELENGTH) &&
-	 * 			|		(this.getPosition.getZ() - this.getNearTarget().getZ() != -CUBELENGTH) &&
+	 * 			| if (!Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),CUBELENGTH)) &&
+	 * 			|		(!Util.fuzzyEquals(this.getPosition.getZ() - this.getNearTarget().getZ(),-CUBELENGTH)) &&
 	 * 			|		(this.getSprinting())
 	 * 			| then new.getSpeed().norm() == 2*this.calculateBaseSpeed()
 	 * @post	The direction of the Unit's speed is set to point in the direction of its nearTarget
@@ -2286,6 +2288,8 @@ public class Unit {
 	 * 			| new.getDistantTarget() == new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2)
 	 * @post	The Unit's status is set to Status.MOVINGDISTANT
 	 * 			| new.getStatus() == Status.MOVINGDISTANT
+	 * @effect	A path to the given cube is calculated and set
+	 * 			| this.findPath(cubeX, cubeY, cubeZ)
 	 * @effect	If the Unit is not moving, movement to the next cube on the path of to its distantTarget is initiated
 	 * 			| if (!this.ismoving())
 	 * 			| then this.moveToNextCube()
@@ -2294,43 +2298,44 @@ public class Unit {
 	 * 			| if (this.isresting() && this.hasRestedEnough())
 	 * 			| then this.settingInitialResttimeOk()
 	 * @throws 	IllegalArgumentException
-	 * 			The target position is outside of the gameworld
-	 * 			| (!isValidPosition(new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2)))
+	 * 			The Unit cannot stand at the given position
+	 * 			| (!this.getWorld().unitCanStandAt(new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2)))
 	 * @throws	IllegalStateException
 	 * 			The Unit is conducting an activity that cannot be interrupted by movement
-	 * 			| (this.isAttacking()) ||
-	 * 			| (this.isresting() && !this.hasRestedEnough())
+	 * 			| (!this.canBeInterruptedBy(Status.MOVINGDISTANT))
+	 * @throws	PathfindingException
+	 * 			There is no path from the Unit's current position to the given position
 	 */
 	public void moveTo(int cubeX, int cubeY, int cubeZ)
-			throws IllegalArgumentException,IllegalStateException,PathfindingException{
-		if (this.isAttacking())
-			throw new IllegalStateException("The Unit cannot execute a movement while fighting");
-		if (this.isFalling())
-			throw new IllegalStateException("The Unit cannot execute a movement while falling");
-		else if (this.isResting()){
-			if (!this.hasRestedEnough())
-				throw new IllegalStateException("The Unit needs to rest more before moving");
-			else
-				this.settingInitialResttimeOk();
-		}
-		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
-			return; //TODO: documentatie updaten
+			throws IllegalArgumentException, IllegalStateException, PathfindingException{
+		if (!this.canBeInterruptedBy(Status.MOVINGDISTANT))
+			throw new IllegalStateException("This Unit cannot start moving at this time");
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
 		if (! this.getWorld().unitCanStandAt(target))
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException();		
+		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
+			return; //TODO: documentatie updaten
+		if (this.isResting())
+			this.settingInitialResttimeOk();
 		if (this.isMoving()){
-			this.setStatus(Status.MOVINGDISTANT);
-			this.setDistantTarget(target);
-			return;
-		}
-		try {
-			this.setDistantTarget(target);
-			this.findPath(cubeX, cubeY, cubeZ);
-			this.setStatus(Status.MOVINGDISTANT);
-			this.moveToNextCube();
-		} catch (PathfindingException e) {
-			this.setDistantTarget(null);
-			throw e;
+			Vector oldDistantTarget = this.getDistantTarget();
+			try{
+				this.setDistantTarget(target);
+				this.findPath(cubeX, cubeY, cubeZ);
+				this.setStatus(Status.MOVINGDISTANT);
+			} catch (PathfindingException e){
+				this.setDistantTarget(oldDistantTarget);
+			}
+		} else {
+			try {
+				this.setDistantTarget(target);
+				this.findPath(cubeX, cubeY, cubeZ);
+				this.setStatus(Status.MOVINGDISTANT);
+				this.moveToNextCube();
+			} catch (PathfindingException e) {
+				this.setDistantTarget(null);
+				throw e;
+			}
 		}
 	}
 

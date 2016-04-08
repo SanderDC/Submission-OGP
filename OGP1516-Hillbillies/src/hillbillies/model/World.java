@@ -380,9 +380,14 @@ public class World {
 	 * @post   This World has the given Unit as one of its Units.
 	 *       | new.hasAsUnit(Unit)
 	 */
-	public void addUnit(@Raw Unit Unit) {
-		assert (Unit != null) && (Unit.getWorld() == this);
-		Units.add(Unit);
+	public void addUnit(Unit Unit) {
+//		assert (Unit != null) && (Unit.getWorld() == this);
+		if (this.getNbUnits() >= 100)
+			return;
+		else {
+			Units.add(Unit);
+			Unit.addToWorld(this);
+		}
 	}
 
 	/**

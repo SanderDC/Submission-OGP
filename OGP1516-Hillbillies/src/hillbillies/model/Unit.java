@@ -254,13 +254,7 @@ public class Unit {
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
-		//		Random random = new Random();
-		//		int agility = random.nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY;
-		//		int strength = random.nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH;
-		//		int toughness = random.nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS;
-		//		int weight = random.nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT;
-		//		String name = " "; //TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
-		//		Vector defaultPosition = new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2);
+		//TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
 				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
 				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
@@ -268,7 +262,7 @@ public class Unit {
 				"John",
 				new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
 				enableDefaultBehavior);
-		this.addToWorld(world);
+		world.addUnit(this);
 	}
 
 	/**
@@ -361,6 +355,7 @@ public class Unit {
 	/**
 	 * returns the Unit this Unit is currently attacking.
 	 */
+	@Basic @Raw
 	public Unit getEnemy(){
 		return this.enemy;
 	}
@@ -372,12 +367,13 @@ public class Unit {
 	 *         	The new enemy for this Unit.
 	 * @post   	The enemy of this new Unit is equal to
 	 *         	the given enemy.
-	 *       	| new.enemy() == enemy
+	 *       	| new.getEnemy() == enemy
 	 * @throws 	IllegalArgumentException
 	 *         	The given enemy is not a valid enemy for any
 	 *         	Unit.
 	 *       	| ! isValidEnemy(getEnemy())
 	 */
+	@Raw
 	private void setEnemy(Unit enemy)throws IllegalArgumentException{
 		if (canHaveAsEnemy(enemy)){
 			this.enemy=enemy;
@@ -397,6 +393,7 @@ public class Unit {
 	 * 			returns true if the enemy is either null or next to the unit, and returns false if the unit refers to himself
 	 *       | result == (enemy == null)|| (this.isAdjacentPosition(enemy.getPosition())(enemy!=this)	
 	 */
+	@Raw
 	private boolean canHaveAsEnemy(Unit enemy) {
 		
 		if (enemy==null) {
@@ -405,7 +402,7 @@ public class Unit {
 		if (enemy.isTerminated) {
 			return false;
 		}
-		if( enemy.faction==this.faction)
+		if( enemy.getFaction()==this.getFaction())
 			return false;
 		if (enemy.isFalling()) {
 			return false;
@@ -426,6 +423,7 @@ public class Unit {
 	/**
 	 * Return whether the unit is sprinting or not
 	 */
+	@Basic @Raw
 	public boolean getSprinting(){
 		return this.sprinting;
 	}
@@ -551,16 +549,6 @@ public class Unit {
 	}
 
 	/**
-	 * Variable registering the maximum coordinate for any Unit.
-	 */
-	public static final int MAX_COORDINATE = 50;
-
-	/**
-	 * Variable registering the minimum coordinate for any Unit.
-	 */
-	public static final int MIN_COORDINATE = 0;
-
-	/**
 	 * Variable registering the length of a cube.
 	 */
 	public static final double CUBELENGTH = 1;
@@ -640,20 +628,20 @@ public class Unit {
 	 *  
 	 * @param  	nearTarget
 	 *         	The nearTarget to check.
-	 * @return 	true if the given nearTarget equals null or if the given nearTarget
-	 * 			lies within the gameworld, lies within a cube adjacent to the Unit's current position
+	 * @return 	true if the given nearTarget equals null or if the given nearTarget is a position where a Unit can stand,
+	 * 			lies within a cube adjacent to the Unit's current position
 	 * 			and is not equal to the Unit's current position
 	 *       	| result == (target == null) ||
 	 *       	|				(! target.equals(this.getPosition())) &&
-	 *       	|				(isValidPosition(target)) &&
+	 *       	|				(this.getWorld.unitCanStandAt(target)) &&
 	 *       	|				(this.isAdjacentPosition(target))
 	 */
-	private boolean isValidNearTarget(Vector target) {
+	private boolean canHaveAsNearTarget(Vector target) {
 		if (target == null)
 			return true;
 		if (target.equals(this.getPosition()))
 			return false;
-		return (isValidPosition(target) &&
+		return (this.getWorld().unitCanStandAt(target) &&
 				this.isAdjacentPosition(target));
 	}
 
@@ -666,14 +654,14 @@ public class Unit {
 	 *         	the given nearTarget.
 	 *       	| new.getNearTarget() == target
 	 * @throws 	IllegalArgumentException
-	 *         	The given nearTarget is not a valid nearTarget for any
+	 *         	The given nearTarget is not a valid nearTarget for this
 	 *         	Unit.
-	 *       	| ! isValidNearTarget(getNearTarget())
+	 *       	| ! canHaveAsNearTarget(getNearTarget())
 	 */
 	@Raw
 	private void setNearTarget(Vector target) 
 			throws IllegalArgumentException {
-		if (! isValidNearTarget(target))
+		if (! canHaveAsNearTarget(target))
 			throw new IllegalArgumentException();
 		this.nearTarget = target;
 	}
@@ -701,13 +689,13 @@ public class Unit {
 	 * 			the given distantTarget lies within the gameworld
 	 * 			and is not equal to the Unit's current position
 	 *       	| result == (target == null) ||
-	 *       	|				((isValidPosition(target)) &&
+	 *       	|				((this.getWorld().unitCanStandAt(target)) &&
 	 *       	|				(!this.getPosition().equals(target)))
 	 */
 	private boolean canHaveAsDistantTarget(Vector target) {
 		if (target == null)
 			return true;
-		return (isValidPosition(target) && !this.getPosition().equals(target));
+		return (this.getWorld().unitCanStandAt(target) && !this.getPosition().equals(target));
 	}
 
 	/**
@@ -719,9 +707,9 @@ public class Unit {
 	 *         the given distantTarget.
 	 *       | new.getDistantTarget() == target
 	 * @throws IllegalArgumentException
-	 *         The given distantTarget is not a valid distantTarget for any
+	 *         The given distantTarget is not a valid distantTarget for this
 	 *         Unit.
-	 *       | ! isValidDistantTarget(getDistantTarget())
+	 *       | ! canHaveAsDistantTarget(getDistantTarget())
 	 */
 	@Raw
 	private void setDistantTarget(Vector target) 
@@ -1391,11 +1379,11 @@ public class Unit {
 	 * 
 	 * @param status
 	 *            The new status for this Unit.
-	 * @post The status of this new Unit is equal to the given status. |
-	 *       new.getStatus() == status
+	 * @post The status of this new Unit is equal to the given status. 
+	 * 		| new.getStatus() == status
 	 * @throws IllegalArgumentException
-	 *             The given status is not a valid status for any Unit. | !
-	 *             isValidStatus(getStatus())
+	 *             The given status is not a valid status for any Unit. 
+	 *             | !isValidStatus(getStatus())
 	 */
 	@Raw
 	private void setStatus(Status status) throws IllegalArgumentException {
@@ -1512,29 +1500,22 @@ public class Unit {
 	 * initiates the unit to attack another Unit
 	 * @param other
 	 * 		The other Unit to be attacked by this Unit.
-	 * @effect	If the other Unit is moving, its speed is set to zero
-	 * 			| if (other.ismoving)
-	 * 			| then other.setSpeed(new Vector(0,0,0))
-	 * @effect	If other Unit is moving and sprinting, its sprinting is disabled
-	 * 			| if (other.ismoving() && other.getSprinting())
-	 * 			| then other.setSprinting(false)
 	 * @effect	If this Unit is moving to a distant target, its speed is set to zero
 	 * 			| if (this.getStatus() == Status.MOVINGDISTANT)
 	 * 			| then this.setSpeed(new Vector(0,0,0))
 	 * @effect	If this Unit is moving to a distant target and sprinting, its sprinting is disabled
 	 * 			| if (this.getStatus() == Status.MOVINGDISTANT && this.getSprinting())
 	 * 			| then this.setSprinting(false)
-	 * @effect
-	 * 		updates the positions of both units, if the unit was not already attacking it will set the activitytime to 0
-	 * 		and if the other unit is not attacking, its status will be set to defending
-	 * 		|this.updatePosition(other)
-	 * 		|other.updatePosition(this)
-	 * 		|this.setStatus(Status.ATTACKING)
-	 * 		|this.setEnemy(other)
-	 * 		|if (!this.isAttacking()) 
-	 * 		|then this.setActivityTime(0)
-	 * 		|if(!other.isAttacking())
-	 * 		|then other.setStatus(Status.DEFENDING)
+	 * @effect  updates the positions of both units, if the unit was not already attacking
+	 * 			it will set the activitytime to 0
+	 * 			|this.updatePosition(other)
+	 * 			|other.updatePosition(this)
+	 * 			|this.setStatus(Status.ATTACKING)
+	 * 			|this.setEnemy(other)
+	 * 			|if (!this.isAttacking()) 
+	 * 			|then this.setActivityTime(0)
+	 * 			|if(!other.isAttacking())
+	 * 			|then other.setStatus(Status.DEFENDING)
 	 * 
 	 * @throws IllegalArgumentException
 	 * 			The other Unit cannot be attacked by this Unit.
@@ -1561,11 +1542,6 @@ public class Unit {
 		}
 		this.setStatus(Status.ATTACKING);
 		this.setEnemy(other);
-
-
-
-
-
 	}
 
 	/**
@@ -1587,19 +1563,17 @@ public class Unit {
 	 *			|this.setEnemy(null)
 	 */
 	private void attack(Unit other, double time) {
-		
-			if (!canHaveAsEnemy(other)) {
-				setActivityTime(0);
-				setEnemy(null);
-				setStatus(Status.IDLE);
-				return;
-			}
-			this.updatePosition(other);
-			this.setActivityTime(this.getActivityTime()+time);
-			if (this.getActivityTime()>=1){
 
+		if (!canHaveAsEnemy(other)) {
+			setActivityTime(0);
+			setEnemy(null);
+			setStatus(Status.IDLE);
+			return;
+		}
 
-
+		this.updatePosition(other);
+		this.setActivityTime(this.getActivityTime()+time);
+		if (this.getActivityTime()>=1){
 			other.defend(this);
 			other.updatePosition(this);
 			this.setStatus(Status.IDLE);
@@ -1631,15 +1605,14 @@ public class Unit {
 	 * 		|if (Math.random() <= 0.20 * this.getAgility() / attacker.getAgility())
 	 * 		|then this.dodge
 	 * @post if the unit parries it takes no damage
-	 * 		|(Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
-	 * 		|then no damage received
+	 * 		| if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
+	 * 		| then new.getHitpoints() == this.getHitpoints()
 	 * @post if the unit fails to parry or dodge it takes damage
 	 * 		|new.gethipoints()==this.getHitpoints()-attacker.getStrength()/10
 	 * 		|if(attacker.getStrength()/10==0)
 	 * 		|then new.gethipoints()==this.getHitpoints()-1
 	 *@effect if the unit dodges or parries it will get 20 exp thus 2 levelups
-	 *		|this.Setexp(this.getexp+20)
-	 *		|this.getnewexp==0
+	 *		|this.setExp(this.getexp+20)
 	 *		|this.getOldStrength+this.getOldtoughnes+this.getOldAgility+this.getnewStrength+2
 	 *		|>=this.getnewtoughnes+this.getnewAgility>=this.getOldStrength+this.getOldtoughnes+this.getOldAgility
 	 * 		
@@ -1654,14 +1627,7 @@ public class Unit {
 		} else {
 			// unit krijgt damage
 			if (attacker.getStrength()/10==0) {
-				if (this.getHitpoints()-1==0) {
-					terminate();
-				}
-				else {
-					setHitpoints(this.getHitpoints()-1);
-				}
-
-
+				this.setHitpoints(this.getHitpoints()-1);
 			}
 			if (this.getHitpoints()-attacker.getStrength()/10>0) {
 				setHitpoints(this.getHitpoints()-attacker.getStrength()/10);
@@ -1695,7 +1661,7 @@ public class Unit {
 
 
 		List<Integer> dataList = new ArrayList<Integer>();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 9; i++) {
 			dataList.add(i);
 		}
 		Collections.shuffle(dataList);
@@ -1720,33 +1686,39 @@ public class Unit {
 	 * @ return
 	 * 		returns the vector of a Cube next to the Unit on the same level of the z-plane
 	 * 		as the unit is currently standing
-	 * 		|if (i==0 up to and including 7)
+	 * 		|if (i==0 up to and including 8)
 	 * 		|result==new Vector.newposition
 	 */
 	private Vector selectDodgePosition(int i)throws IllegalArgumentException{
 		if (i==0){
-			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getY(), this.getPosition().getZ());
 		}
 		if (i==1){
-			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
 		}
 		if (i==2){
-			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+ CUBELENGTH + Math.random(), this.getPosition().getY(), this.getPosition().getZ());
 		}
 		if (i==3){
-			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+CUBELENGTH + Math.random(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
 		}
 		if (i==4){
-			return new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()-CUBELENGTH/2, this.getPosition().getZ());
+			return new Vector(this.getPosition().getX(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
 		}
 		if (i==5){
-			return new Vector(this.getPosition().getCubeX()+1.5*CUBELENGTH, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()+CUBELENGTH + Math.random(), this.getPosition().getCubeY()+CUBELENGTH + Math.random(), this.getPosition().getZ());
 		}
 		if (i==6){
-			return new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getX(), this.getPosition().getCubeY()+CUBELENGTH + Math.random(), this.getPosition().getZ());
 		}
 		if (i==7){
-			return new Vector(this.getPosition().getCubeX()-CUBELENGTH/2, this.getPosition().getCubeY()+1.5*CUBELENGTH, this.getPosition().getZ());
+			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getCubeY()+CUBELENGTH+Math.random(), this.getPosition().getZ());
+		}
+		if (i == 8){
+			Vector result = this.getPosition().getCubePosition().add(new Vector(Math.random(), Math.random(), Math.random()));
+			while (result.equals(this.getPosition()))
+				result = this.getPosition().getCubePosition().add(new Vector(Math.random(), Math.random(), Math.random()));
+			return result;
 		}
 		else {
 			throw new IllegalArgumentException("input is not valid");
@@ -1755,7 +1727,9 @@ public class Unit {
 
 	/**
 	 * the Unit updates his position against the unit he is fighting
-	 * @effect 
+	 * @param other
+	 * 			The Unit to turn this Unit towards.
+	 * @post This Unit's orientation is updated so that it is facing the given Unit 
 	 * 		|new.getorientation==Math.atan2(other.getPosition().getY()-this.getPosition().getY(), other.getPosition().getX()-this.getPosition().getX())
 	 */
 	private void updatePosition(Unit other){
@@ -1775,9 +1749,9 @@ public class Unit {
 	/**
 	 * checks whether the Unit is moving or not
 	 * @return 
-	 *		|result==((this.getStatus()==Status.MOVEADJACENT)||(this.getStatus() == Status.MOVINGDISTANT))
+	 *		|result==((this.getStatus()==Status.MOVINGADJACENT)||(this.getStatus() == Status.MOVINGDISTANT))
 	 */
-	public boolean ismoving(){
+	public boolean isMoving(){
 		if (this.getStatus()==Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT){
 			return true;
 		}
@@ -1790,7 +1764,7 @@ public class Unit {
 	 * @return 
 	 *		|result==(this.getStatus()==Status.IDLE)
 	 */
-	public boolean isidle(){
+	public boolean isIdle(){
 		if (this.getStatus()==Status.IDLE){
 			return true;
 		}
@@ -1803,7 +1777,7 @@ public class Unit {
 	 * @return 
 	 *		|result==(this.getStatus()==Status.RESTING)
 	 */
-	public boolean isresting(){
+	public boolean isResting(){
 		if (this.getStatus()==Status.RESTING){
 			return true;
 		}
@@ -1859,7 +1833,7 @@ public class Unit {
 		if (isFalling()) {
 			throw new IllegalStateException("Unit is falling");
 		}
-		if (this.ismoving())
+		if (this.isMoving())
 			throw new IllegalStateException("A Unit cannot start working when it is moving");
 		if (this.hasGameObject() && this.getWorld().isSolidGround(x, y, z))
 			throw new IllegalArgumentException("A Unit cannot put down an object at a solid cube");
@@ -2196,9 +2170,9 @@ public class Unit {
 	 * 			| (this.isresting() && !this.hasRestedEnough())
 	 */
 	public void moveToAdjacent(int dx, int dy, int dz) throws IllegalArgumentException, IllegalStateException{
-		if (!this.isWorking() && !this.isresting() && !isidle()&&!isFalling())
+		if (!this.isWorking() && !this.isResting() && !isIdle()&&!isFalling())
 			throw new IllegalStateException("The Unit cannot execute a movement at this time");
-		else if (this.isresting()){
+		else if (this.isResting()){
 			if (!this.hasRestedEnough())
 				throw new IllegalStateException("The Unit needs to rest more before moving");
 			else
@@ -2207,7 +2181,7 @@ public class Unit {
 		Vector target = new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
 				this.getPosition().getCubeY() + dy + CUBELENGTH/2,
 				this.getPosition().getCubeZ() + dz + CUBELENGTH/2);
-		if ( ! this.isValidNearTarget(target))
+		if ( ! this.canHaveAsNearTarget(target))
 			throw new IllegalArgumentException("The Unit cannot move to this position");
 		if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
 			return;
@@ -2315,7 +2289,7 @@ public class Unit {
 			throw new IllegalStateException("The Unit cannot execute a movement while fighting");
 		if (this.isFalling())
 			throw new IllegalStateException("The Unit cannot execute a movement while falling");
-		else if (this.isresting()){
+		else if (this.isResting()){
 			if (!this.hasRestedEnough())
 				throw new IllegalStateException("The Unit needs to rest more before moving");
 			else
@@ -2326,7 +2300,7 @@ public class Unit {
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
 		if (! this.getWorld().unitCanStandAt(target))
 			throw new IllegalArgumentException();
-		if (this.ismoving()){
+		if (this.isMoving()){
 			this.setStatus(Status.MOVINGDISTANT);
 			this.setDistantTarget(target);
 			return;
@@ -2519,7 +2493,7 @@ public class Unit {
 			if (this.getSprinting())
 				this.setSprinting(false);
 		}
-		if (!isresting()) {
+		if (!isResting()) {
 			this.setStatus(Status.RESTING);
 			this.setProgress(0);
 			this.setActivityTime(0);
@@ -2605,7 +2579,7 @@ public class Unit {
 	 * 		|new.getTimeUntilRest==RESTING_INTERVAL
 	 */
 	private void settingInitialResttimeOk() {
-		if (this.isresting()){
+		if (this.isResting()){
 			this.setTimeUntilRest(RESTING_INTERVAL);
 		}
 	}
@@ -2617,7 +2591,7 @@ public class Unit {
 	 * 
 	 * */
 	private boolean hasRestedEnough(){
-		if ((isresting()) && (this.getActivityTime()<this.calculateMinRestTime())) {
+		if ((isResting()) && (this.getActivityTime()<this.calculateMinRestTime())) {
 			return false;
 		}
 		else {
@@ -2650,7 +2624,7 @@ public class Unit {
 	 * 		|then this.resting()
 	 */
 	private void hasToRest(){
-		if ((this.getTimeUntilRest()<=0)&&(!isAttacking())&&(!isresting())&&(!ismoving())&&(!isFalling())){
+		if ((this.getTimeUntilRest()<=0)&&(!isAttacking())&&(!isResting())&&(!isMoving())&&(!isFalling())){
 			this.resting();
 		}
 	}
@@ -3223,6 +3197,8 @@ public class Unit {
 	 * Adds this Unit to the given World
 	 * @param world
 	 * 			The World to add this Unit to.
+	 * @pre		The given World is effective and already has this Unit as one of its Units.
+	 * 			| (world != null) && (world.hasAsUnit(this))
 	 * @post	This Unit occupies a position it can stand on in the given World
 	 * 			| (new this).canStandAt((new this).getPosition())
 	 * @post	This Unit has been added to the given World
@@ -3235,11 +3211,9 @@ public class Unit {
 	 * 			The Unit is already part of a World
 	 * 			| this.getWorld() != null
 	 */
-	public void addToWorld(World world) throws IllegalStateException{
-		if (this.getWorld() != null)
-			throw new IllegalStateException("This Unit is already in a World!");
+	public void addToWorld(@Raw World world) throws IllegalStateException{
+		assert (world != null) && (world.hasAsUnit(this));
 		this.world = world;
-		world.addUnit(this);
 		int index = new Random().nextInt(world.getSpawnablePositions().size());
 		Vector startPos = world.getSpawnablePositions().get(index);
 		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,

@@ -135,7 +135,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return unit.ismoving();
+		return unit.isMoving();
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public boolean isResting(Unit unit) throws ModelException {
-		return unit.isresting();
+		return unit.isResting();
 	}
 
 	@Override

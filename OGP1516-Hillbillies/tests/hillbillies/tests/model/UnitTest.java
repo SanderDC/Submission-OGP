@@ -290,12 +290,12 @@ public class UnitTest {
 	@Test
 	public void moveAdjacent_legalcase(){
 		idleUnit.moveToAdjacent(0, 0, 1);
-		assertTrue(idleUnit.ismoving());
+		assertTrue(idleUnit.isMoving());
 	}
 	@Test
 	public void moveTo_legalcase() {
 		idleUnit.moveTo(30, 30, 30);
-		assertTrue(idleUnit.ismoving());
+		assertTrue(idleUnit.isMoving());
 	}
 	@Test(expected = IllegalStateException.class)
 	public void movingAdjacent_whileFighting(){
@@ -337,7 +337,7 @@ public class UnitTest {
 	@Test
 	public void resting_legalcase(){
 		idleUnit.resting();
-		assertTrue(idleUnit.isresting());
+		assertTrue(idleUnit.isResting());
 	}
 	@Test(expected = IllegalStateException.class)
 	public void sprint_whileIdle(){
@@ -362,6 +362,6 @@ public class UnitTest {
 	public void defaultbehavior_works(){
 		idleUnit.setDefaultBehaviorBoolean(true);
 		idleUnit.advanceTime(0.1);
-		assertFalse(idleUnit.isidle());
+		assertFalse(idleUnit.isIdle());
 	}
 }

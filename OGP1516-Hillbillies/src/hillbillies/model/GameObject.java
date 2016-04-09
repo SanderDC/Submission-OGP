@@ -8,8 +8,11 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @author Sander
  *
- * @invar  The position of each GameObject must be a valid position for any
+ * @invar  The position of each GameObject must be a valid position for that
  *         GameObject.
+ * @invar  The status of each GameObject must be a valid status for any GameObject.
+ * @invar  The weight of each GameObject must be a valid weight for any GameObject.
+ * @invar  The World of each GameObject must be a valid World for that GameObject
  */
 public abstract class GameObject {
 
@@ -33,24 +36,41 @@ public abstract class GameObject {
 	 */
 	private Status status;
 	
-	private Status getStatus() {
+	/**
+	 * Return the current Status of this GameObject
+	 */
+	@Basic
+	public Status getStatus() {
 		return this.status;
 	}
-	private void setStatus(Status status) {
-		if (isValidStatus()) {
-			this.status = status;
-		}
-		
+	
+	/**
+	 * Set the status of this GameObject to the given Status.
+	 * @param status
+	 * 			The new status for this GameObject
+	 * @post	The status of this GameObject is the given Status
+	 * @throws IllegalArgumentException
+	 * 			The given Status is not a valid Status for any GameObject
+	 */
+	private void setStatus(Status status) throws IllegalArgumentException{
+		if (!isValidStatus(status))
+			throw new IllegalArgumentException();
+		this.status = status;
 	}
-	private boolean isValidStatus () {
+	
+	/**
+	 * Check whether the given Status is a valid Status for any GameObject
+	 * @return true if the given Status is either falling or idle.
+	 */
+	private boolean isValidStatus (Status status) {
 		if (status==Status.FALLING||status==Status.IDLE) {
 			return true;
 		}
 		else
 			return false;
 	}
-	
-	
+
+
 	/**
 	 * Return the position of this GameObject.
 	 */
@@ -61,29 +81,28 @@ public abstract class GameObject {
 
 	/**
 	 * Check whether the given position is a valid position for
-	 * any GameObject.
-	 *  
+	 * this GameObject.
 	 * @param  position
 	 *         The position to check.
-	 * @return 
-	 *       | result == 
+	 * @return if the GameObject is currently in a World, true if the given position is inside that World
+	 * 		   and not in solid ground.
+	 * 		   if the GameObject is not part of a World, true if the given position is the null reference
 	 */
-	public  boolean isValidPosition(Vector position) {
-		
-		if (position==null){
-			return true;
-		}
-		
-		double[] arrayposition=  position.toArray();
-		for(int i=0;i<3;i++){
-			if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i])+1) {
+	public boolean isValidPosition(Vector position) {
+		if (this.getWorld() == null){
+			return position == null;
+		} else {
+			double[] arrayposition=  position.toArray();
+			for(int i=0;i<3;i++){
+				if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i])+1) {
+					return false;
+				}
+			}
+			if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
 				return false;
 			}
+			return true;
 		}
-		if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -95,12 +114,12 @@ public abstract class GameObject {
 	 *         the given position.
 	 *       | new.getPosition() == position
 	 * @throws IllegalArgumentException
-	 *         The given position is not a valid position for any
+	 *         The given position is not a valid position for this
 	 *         GameObject.
 	 *       | ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setPosition(Vector position) 
+	void setPosition(Vector position) 
 			throws IllegalArgumentException {
 		if (! isValidPosition(position))
 			throw new IllegalArgumentException();
@@ -115,6 +134,7 @@ public abstract class GameObject {
 	/**
 	 * Return this GameObject's weight
 	 */
+	@Basic @Raw @Immutable
 	public int getWeight() {
 		return this.weight;
 	}
@@ -123,7 +143,7 @@ public abstract class GameObject {
 	 * Variable registering this GameObject's weight
 	 */
 	private final int weight;
-	
+
 	/**
 	 * Check whether the given World is a valid World for this GameObject
 	 * @param world
@@ -138,14 +158,15 @@ public abstract class GameObject {
 			return (world == null);
 		return true;
 	}
-	
+
 	/**
 	 * Return the World this GameObject currently exists in.
 	 */
+	@Basic @Raw
 	World getWorld(){
 		return this.world;
 	}
-	
+
 	/**
 	 * Add this GameObject to the given World.
 	 * @param 	world
@@ -159,7 +180,7 @@ public abstract class GameObject {
 		this.setWorld(world);
 		world.addGameObject(this);
 	}
-	
+
 	/**
 	 * Set this GameObject's World to the given World
 	 * @param 	world
@@ -167,11 +188,12 @@ public abstract class GameObject {
 	 * @pre		The given World is a valid World for this GameObject.
 	 * @post	This GameObject's World is the given World.
 	 */
+	@Raw
 	private void setWorld(World world){
 		assert (this.canHaveAsWorld(world));
 		this.world = world;
 	}
-	
+
 	/**
 	 * Remove this gameObject from its World
 	 * @pre	The game World of this GameObject is not the null reference.
@@ -186,73 +208,72 @@ public abstract class GameObject {
 		World oldWorld = this.getWorld();
 		this.setWorld(null);
 		oldWorld.removeGameObject(this);
+		this.setPosition(null);
 	}
-	
+
 	/**
 	 * Variable registering the World this GameObject exists in.
 	 */
 	private World world;
-	
+
 	/**
 	 * Return a boolean reflecting whether this GameObject has been terminated.
 	 */
+	@Basic
 	boolean isTerminated(){
 		return this.isTerminated;
 	}
-	
+
 	/**
 	 * 
-	 * Terminate this Unit
-	 * @post	This Unit has been terminated
+	 * Terminate this GameObject
+	 * @post	This GameObject has been terminated
 	 * 			| new.isTerminated() == true
-	 * @post	This Gameobject has been removed from its World
+	 * @post	This GameObject has been removed from its World
 	 * 			| (new this).getWorld() == null
 	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
-	 
+
 	 */
-	 
+
 	void terminate(){
 		this.isTerminated=true;
 		World oldWorld= this.world;
 		this.world=null;
 		oldWorld.removeGameObject(this);
 	}
-	/**
-	 * the speed this Gameobject will fall
-	 */
-	private final Vector fallspeed=new Vector(0, 0, -3);
-	
+
 	/**
 	 * Variable registering whether this GameObject has been terminated.
 	 */
+
 	private boolean isTerminated;
+
 	/**
-	 * advancing the Gameobjects time
+	 * advancing the GameObject's time
 	 * @param time
 	 * 		The time to advance the gametime with.
-	 * @effect if this Gameobject has no solidground underneath it, it will fall
-	 * 		if!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))
-	 * 		then setStatus(Status.FALLING)&&this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
-										this.getPosition().getCubeY()+World.CUBELENGTH/2,
-										this.getPosition().getZ()))
-	 * 
-	 * *@throws IllegalArgumentException
+	 * @effect if this GameObject has no solid ground underneath it, it will fall
+	 * 			| if!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))
+	 * 			| then setStatus(Status.FALLING)&&this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
+	 *			|						this.getPosition().getCubeY()+World.CUBELENGTH/2,
+	 *			|						this.getPosition().getZ()))
+	 * @throws IllegalArgumentException
 	 * 			The given time is an illegal time.
 	 * 			| (time < 0) || (time > 0.2)
 	 */
 	public void advanceTime(double time){
-		
+
 		if (!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))) {
 			setStatus(Status.FALLING);
 			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
-										this.getPosition().getCubeY()+World.CUBELENGTH/2,
-										this.getPosition().getZ()));
-
+					this.getPosition().getCubeY()+World.CUBELENGTH/2,
+					this.getPosition().getZ()));
 		}
-	if (status==Status.FALLING) {
-		fall(time);
+		if (status==Status.FALLING) {
+			fall(time);
+		}
 	}
-	}
+	
 	/**
 	 * Update the GameObject's position as it is falling
 	 * @param time
@@ -267,49 +288,54 @@ public abstract class GameObject {
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0) || world.isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)){
 			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
-										this.getPosition().getCubeY()+World.CUBELENGTH/2,
-										this.getPosition().getCubeZ()+World.CUBELENGTH/2));
+					this.getPosition().getCubeY()+World.CUBELENGTH/2,
+					this.getPosition().getCubeZ()+World.CUBELENGTH/2));
 			this.setStatus(Status.IDLE);
-			
-			
+
+
 		}
-		
+
 		else{
 			this.setPosition(new_pos);
-			}
-		
+		}
+
 	}
+
 	/**
-	 * 
-	 *
-	 * @post	This Gameobject has been removed from its World
-	 * 			| (new this).getWorld() == null
-	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
-	 * @post	This Gameobject's position has been set to null
-	 * 			this.getnewPosition==null
-	 *
+	 * the speed this GameObject will fall
 	 */
-	public void pickedUp(Unit unit) {
-		World oldWorld= this.world;
-		setWorld(null);
-		oldWorld.removeGameObject(this);
-		this.setPosition(null);
-		
-	}
-	/**
-	 * @post	This Gameobject's position has been set to null
-	 * 			this.getnewPosition==unit.getPosition()
-	 * @post	This Gameobject has been added to a World
-	 * 			| (new this).getWorld() == unit.getWorld
-	 *			| (new this.getWorld()).hasAsGameobject(this) == true
-	 *@post		This gameobject is no longer being carried by a unit
-	 *			unit.getnewGameobject==null
-	 */
-	public void dropped(Unit unit) {
-		this.world=unit.getWorld();
-		setPosition(unit.getPosition());
-		this.world.addGameObject(this);
-		unit.setGameObject(null);
-	}
-	
+	private final Vector fallspeed=new Vector(0, 0, -3);
+//	/**
+//	 * 
+//	 *
+//	 * @post	This GameObject has been removed from its World
+//	 * 			| (new this).getWorld() == null
+//	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
+//	 * @post	This Gameobject's position has been set to null
+//	 * 			this.getnewPosition==null
+//	 *
+//	 */
+//	public void pickedUp(Unit unit) {
+//		World oldWorld= this.world;
+//		setWorld(null);
+//		oldWorld.removeGameObject(this);
+//		this.setPosition(null);
+//
+//	}
+//	
+//	/**
+//	 * @post	This Gameobject's position has been set to null
+//	 * 			this.getnewPosition==unit.getPosition()
+//	 * @post	This Gameobject has been added to a World
+//	 * 			| (new this).getWorld() == unit.getWorld
+//	 *			| (new this.getWorld()).hasAsGameobject(this) == true
+//	 *@post		This gameobject is no longer being carried by a unit
+//	 *			unit.getnewGameobject==null
+//	 */
+//	public void dropped(Unit unit) {
+//		this.addToWorld(unit.getWorld());
+//		setPosition(unit.getPosition());
+//		unit.setGameObject(null);
+//	}
+
 }

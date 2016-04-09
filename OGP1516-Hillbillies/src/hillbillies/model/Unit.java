@@ -3316,14 +3316,14 @@ public class Unit {
 	 *       	the Unit's strength equals the maximum legal strength
 	 *       	| if this.hasnogameobject
 	 *       	| then new.getgameobjec() == gObject
-	 *       	| gObject.pickedUp(this)
+	 *       	| gObject.removeFromWorld()
 	 * 
 	 */
 	@Raw
 	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
-			gObject.pickedUp(this);
+			gObject.removeFromWorld();
 		}
 		if (hasGameObject()&&gObject==null) {
 			this.gameObject=null;

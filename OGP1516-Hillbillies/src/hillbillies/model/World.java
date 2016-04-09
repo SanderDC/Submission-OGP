@@ -1,10 +1,6 @@
 package hillbillies.model;
 
-import java.awt.Checkbox;
 import java.util.*;
-
-import org.omg.CORBA.PRIVATE_MEMBER;
-
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Vector;
 import hillbillies.part2.listener.TerrainChangeListener;

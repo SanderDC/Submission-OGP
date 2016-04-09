@@ -14,6 +14,7 @@ import be.kuleuven.cs.som.annotate.Model;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part2.listener.TerrainChangeListener;
 
 public class WorldTest {
@@ -42,7 +43,7 @@ public class WorldTest {
 		coordinates[2][1][2]=1;
 		coordinates[0][1][0]=1;
 		
-		world3= new World(coordinates);
+		world3= new World(coordinates, new DefaultTerrainChangeListener());
 	}
 
 	@After

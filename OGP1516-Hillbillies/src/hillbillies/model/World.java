@@ -60,38 +60,6 @@ public class World {
 	}
 	
 	/**
-	 * Construct a World without TerrainChangeListener for testing purposes.
-	 * @param Coordinates
-	 * 			The coordinates matrix for this new World
-	 * @post   This new World has no Units yet.
-	 * @post   This new World has no Factions yet.
-	 * @post   This new World has no GameObjects yet.
-	 * @post   The collapseTime of this new World is 0.
-	 */
-	public World(int[][][] Coordinates){
-		this.setCollapseTime(0);
-		this.Coordinates=Coordinates;
-		this.connectedToBorder = new ConnectedToBorder(nbCoordinateX(), nbCoordinateY(), nbCoordinateZ());
-		for (int x=0;x<nbCoordinateX();x++){
-			for (int y=0;y<nbCoordinateY();y++){
-				for (int z=0;z<nbCoordinateZ();z++){
-					if(!isValidMaterial(Coordinates[x][y][z])){
-						Coordinates[x][y][z]=0;
-					}
-					if (unitCanStandAt(x, y, z)){
-						this.addStandablePosition(new Vector(x,y,z));
-						if ((z==0)||(isSolidGround(x, y, z-1)))
-							this.addSpawnablePosition(new Vector(x,y,z));
-					}
-					if (getCubeType(x, y, z) == 0 || getCubeType(x, y, z) == 3){
-						this.connectedToBorder.changeSolidToPassable(x, y, z);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
 	 * Advances the gametime for this World by the given time
 	 * @param time
 	 * 			The time to advance the gametime with.
@@ -185,7 +153,7 @@ public class World {
 		return getCoordinates()[0][0].length;
 	}
 	/**
-	 * 
+	 * Return an array containing the highest cube coordinate in the x-, y- and z-directions
 	 * @return returns array of the maxCoordinateCubes
 	 * 		result[0]==nbCoordinateX()-1
 	 * 		result[1]==nbCoordinateY()-1

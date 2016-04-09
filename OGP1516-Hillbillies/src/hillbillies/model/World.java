@@ -214,6 +214,93 @@ public class World {
 		}
 		return true;
 	}
+
+	/**
+	 * Return the type of the cube at the given position in this World
+	 * @param x
+	 * 			The x-coordinate of the give cube
+	 * @param y
+	 * 			The y-coordinate of the give cube
+	 * @param z
+	 * 			The z-coordinate of the give cube
+	 * @return the type of cube at the given position
+	 */
+	public int getCubeType(int x,int y, int z) {
+		return getCoordinates()[x][y][z];
+
+	}
+	
+	/**
+	 * Return the type of material of the cube in which the given position lies
+	 * @param position
+	 * 			The position whose cube to get the type of material of.
+	 * @return the type of material of the cube containing the given material
+	 */
+	int getCubeType(Vector position){
+		return this.getCubeType(position.getCubeX(), position.getCubeY(), position.getCubeZ());
+	}
+	
+	/**
+	 * Check whether the given value is a valid material type
+	 * @param i
+	 * 			The type to check
+	 * @return true if the given type is an integer from 0 to 3
+	 */
+	private boolean isValidMaterial(int i) {
+		if (i>=0&&i<=3) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+
+	/**
+	 * Set the type of the cube at the given position to the given value
+	 * @param x
+	 * 			The x-coordinate of the cube for which to set a new type
+	 * @param y
+	 * 			The y-coordinate of the cube for which to set a new type
+	 * @param z
+	 * 			The z-coordinate of the cube for which to set a new type
+	 * @param value
+	 * 			The type to set the given cube to
+	 * @post	The type of the given cube equals the given type
+	 * @effect If the given cube is changing to passable material,
+	 * 		   the positions where Units can stand and can spawn are updated accordingly
+	 * @throws IllegalArgumentException
+	 * 			The given type is not a valid cube type
+	 */
+	public void setCubeType(int x,int y, int z, int value) throws IllegalArgumentException {
+		if (!isValidMaterial(value))
+			throw new IllegalArgumentException();
+		this.getCoordinates()[x][y][z]=value;
+		this.modelListener.notifyTerrainChanged(x, y, z);
+		if (value == 0 || value == 3){
+			Vector position = new Vector(x,y,z);
+			for (Vector vector:this.getAdjacentPositions(position)){
+				if (this.getSpawnablePositions().contains(vector)){
+					if (!unitCanSpawnAt(vector))
+						this.getSpawnablePositions().remove(vector);
+				} else {
+					if (unitCanSpawnAt(vector))
+						this.addSpawnablePosition(vector);
+				}
+				if (this.getStandablePositions().contains(vector)){
+					if (!unitCanStandAt(vector))
+						this.getStandablePositions().remove(vector);
+				} else {
+					if (unitCanStandAt(vector))
+						this.addStandablePosition(vector);
+				}
+			}
+			if (unitCanStandAt(position))
+				this.addStandablePosition(position);
+			if (unitCanSpawnAt(position))
+				this.addSpawnablePosition(position);
+		}
+	}
 	
 	/**
 	 * variable keeping track of the values of the cubetypes
@@ -284,92 +371,6 @@ public class World {
 	 * Variable registering the collapseTime of this World.
 	 */
 	private double collapseTime;
-
-	/**
-	 * Return the type of the cube at the given position in this World
-	 * @param x
-	 * 			The x-coordinate of the give cube
-	 * @param y
-	 * 			The y-coordinate of the give cube
-	 * @param z
-	 * 			The z-coordinate of the give cube
-	 * @return the type of cube at the given position
-	 */
-	public int getCubeType(int x,int y, int z) {
-		return getCoordinates()[x][y][z];
-
-	}
-	
-	/**
-	 * Return the type of material of the cube in which the given position lies
-	 * @param position
-	 * 			The position whose cube to get the type of material of.
-	 * @return the type of material of the cube containing the given material
-	 */
-	int getCubeType(Vector position){
-		return this.getCubeType(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-	}
-
-	/**
-	 * Set the type of the cube at the given position to the given value
-	 * @param x
-	 * 			The x-coordinate of the cube for which to set a new type
-	 * @param y
-	 * 			The y-coordinate of the cube for which to set a new type
-	 * @param z
-	 * 			The z-coordinate of the cube for which to set a new type
-	 * @param value
-	 * 			The type to set the given cube to
-	 * @post	The type of the given cube equals the given type
-	 * @effect If the given cube is changing to passable material,
-	 * 		   the positions where Units can stand and can spawn are updated accordingly
-	 * @throws IllegalArgumentException
-	 * 			The given type is not a valid cube type
-	 */
-	public void setCubeType(int x,int y, int z, int value) throws IllegalArgumentException {
-		if (!isValidMaterial(value))
-			throw new IllegalArgumentException();
-		this.getCoordinates()[x][y][z]=value;
-		this.modelListener.notifyTerrainChanged(x, y, z);
-		if (value == 0 || value == 3){
-			Vector position = new Vector(x,y,z);
-			for (Vector vector:this.getAdjacentPositions(position)){
-				if (this.getSpawnablePositions().contains(vector)){
-					if (!unitCanSpawnAt(vector))
-						this.getSpawnablePositions().remove(vector);
-				} else {
-					if (unitCanSpawnAt(vector))
-						this.addSpawnablePosition(vector);
-				}
-				if (this.getStandablePositions().contains(vector)){
-					if (!unitCanStandAt(vector))
-						this.getStandablePositions().remove(vector);
-				} else {
-					if (unitCanStandAt(vector))
-						this.addStandablePosition(vector);
-				}
-			}
-			if (unitCanStandAt(position))
-				this.addStandablePosition(position);
-			if (unitCanSpawnAt(position))
-				this.addSpawnablePosition(position);
-		}
-	}
-	/**
-	 * Check whether the given value is a valid material type
-	 * @param i
-	 * 			The type to check
-	 * @return true if the given type is an integer from 0 to 3
-	 */
-	private boolean isValidMaterial(int i) {
-		if (i>=0&&i<=3) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
-	}
 
 	/**
 	 * Check whether this World has the given Unit as one of its

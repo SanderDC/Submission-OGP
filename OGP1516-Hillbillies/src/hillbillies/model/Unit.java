@@ -55,15 +55,20 @@ import ogp.framework.util.Util;
  *       	| isValidActivityTime(getActivityTime())
  * @invar   The enemy of each Unit must be a valid enemy for any
  *         	Unit.
- *       	| isValidEnemy(getEnemy())
+ *       	| canHaveAsEnemy(getEnemy())
  * @invar  	The progress of each Unit must be a valid progress for any
  *         	Unit.     
  *         	| isValidProgress(getProgress())
  * @invar	A Unit can only be sprinting when it is moving
  * 			| if (getSprinting()) then (ismoving())
+ * @invar	The Exp of each Unit must be a valid Exp for any Unit.
+ * 			| isValidExp(getExp())
+ * @invar	The FallPosition of each Unit must be a valid FallPosition for any Unit
+ * 			| isValidFallPosition(getFallPosition())
  * @invar	The World of each Unit must be a valid World for that Unit.
  * 			| canHaveAsWorld(getWorld())
- * @invar	The GameObject of each Unit must be a valid GameObject for that Unit
+ * @invar	The GameObject of each Unit must be a valid GameObject for any Unit.
+ * 			| canHaveAsGameObject(getGameObject())
  * @invar  	The path of a Unit must be a valid path for that
  *         	Unit.
  *       	| canHaveAsPath(getPath())
@@ -2984,6 +2989,17 @@ public class Unit {
 	private double getFallPosition() {
 		return this.fallPosition;
 	}
+	
+	/**
+	 * Check whether the given FallPosition is a valid FallPosition for any Unit
+	 * @param fallPosition
+	 * 			The FallPosition to check
+	 * @return true if and only if the given FallPosition is larger than or equal to 0.
+	 * 			| result == (fallPosition >= 0)
+	 */
+	public static boolean isValidFallPosition(double fallPosition){
+		return (fallPosition >= 0);
+	}
 
 	/**
 	 * Set the fallPosition of this Unit to the given fallPosition.
@@ -2992,13 +3008,13 @@ public class Unit {
 	 *         	The new fallPosition for this Unit.
 	 * @pre    	The given fallPosition must be valid fallPosition for this
 	 *         	Unit.
-	 *       	| (fallPosition>0)
+	 *       	| (isValidFallPosition(fallPosition))
 	 * @post   	The fallPosition of this Unit are equal to the given
 	 *         	fallPosition.
 	 *       	| new.getFallPosition() == fallPosition
 	 */
 	private void setFallPosition(double fallPosition)throws IllegalArgumentException {
-		assert (fallPosition >= 0);
+		assert (isValidFallPosition(fallPosition));
 		this.fallPosition = fallPosition;
 	}
 	/**
@@ -3160,22 +3176,43 @@ public class Unit {
 	 * 			| (this.getHitpoints() == 0)
 	 * @post	This Unit has been terminated
 	 * 			| new.isTerminated() == true
+	 * @post	This Unit is idle
+	 * 			| new.getStatus() == Status.IDLE
+	 * @post	This Unit's default behaviour is disabled
+	 * 			| new.getdefaultbehaviorboolean() == false
+	 * @post	This Unit's NearTarget is the null reference
+	 * 			| new.getNearTarget() == null
+	 * @post	This Unit's DistantTarget is the null reference
+	 * 			| new.getDistantTarget() == null
+	 * @post	This Unit's speed is the null vector
+	 * 			| new.getSpeed() == new Vector(0,0,0)
+	 * @post	This Unit's path is empty
+	 * 			| new.getPath().size() == 0
+	 * @post	This Unit's Enemy is the null reference
+	 * 			| new.getEnemy() == null
 	 * @post	This Unit has been removed from its faction
 	 * 			| (new this).getFaction() == null
 	 * 			| (new this.getFaction()).hasAsUnit(this) == false
-	 * @effect	This Unit is added to the list of Units to be terminated
-	 * 			| this.getWorld().AddToTerminatedUnits(this)
+	 * @effect	This Unit is removed from its World
+	 * 			| this.removeFromWorld()
 	 * @effect	if this Unit was carrying a gameObject, it will be dropped at this Unit's current position.
-	 * 			| this.dropObjectAt(this.getPosition())
+	 * 			| if (this.hasGameObject())
+	 * 			| then this.dropObjectAt(this.getPosition())
 	 */
 	private void terminate(){
 		assert (this.getHitpoints() == 0);
 		this.isTerminated=true;
+		this.setStatus(Status.IDLE);
+		this.setDefaultBehaviorBoolean(false);
 		if (hasGameObject()) {
 			dropObjectAt(this.getPosition());
 		}
+		this.setDistantTarget(null);
+		this.setNearTarget(null);
+		this.setSpeed(new Vector(0,0,0));
+		this.setEnemy(null);
+		this.getPath().clear();
 		this.removeFromFaction();
-//		world.AddToTerminatedUnits(this);
 		this.removeFromWorld();
 	}
 
@@ -3396,6 +3433,25 @@ public class Unit {
 		else {
 			return this.gameObject.getWeight();
 		}
+	}
+	
+	/**
+	 * Check whether the given GameObject is a valid GameObject for this Unit
+	 * @param object
+	 * 			The GameObject to be checked
+	 * @return if this Unit has been terminated, true if and only if the given object is the null reference.
+	 * 		   if this Unit has not been terminated, true if the given object is the null refererence
+	 * 		   or has not been terminated.
+	 * 		 	| if (this.isTerminated())
+	 * 			| then result == (object == null)
+	 * 			| else result == (object == null || !object.isTerminated())
+	 * 			
+	 */
+	public boolean canHaveAsGameObject(GameObject object){
+		if (this.isTerminated()){
+			return object == null;
+		}
+		return (object == null || !object.isTerminated());
 	}
 	
 	/**

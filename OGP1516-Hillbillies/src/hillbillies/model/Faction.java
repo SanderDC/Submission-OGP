@@ -12,6 +12,8 @@ import be.kuleuven.cs.som.annotate.*;
  *
  * @invar   Each Faction must have proper Units.
  *        | hasProperUnits()
+ * @invar	The World of each Faction must be a valid World for that Faction
+ * 			| canHaveAsWorld(getWorld())
  */
 public class Faction {
 

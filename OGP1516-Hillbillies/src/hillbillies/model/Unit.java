@@ -61,6 +61,9 @@ import ogp.framework.util.Util;
  *         	| isValidProgress(getProgress())
  * @invar	A Unit can only be sprinting when it is moving
  * 			| if (getSprinting()) then (ismoving())
+ * @invar	The World of each Unit must be a valid World for that Unit.
+ * 			| canHaveAsWorld(getWorld())
+ * @invar	The GameObject of each Unit must be a valid GameObject for that Unit
  * @invar  	The path of a Unit must be a valid path for that
  *         	Unit.
  *       	| canHaveAsPath(getPath())
@@ -1354,6 +1357,60 @@ public class Unit {
 	@Raw
 	private Status getStatus() {
 		return this.status;
+	}
+
+	/**
+	 * Check whether this Unit can be interrupted by an activity represented by the given Status
+	 * @param status
+	 * 			The Status representing the potential interrupting activity
+	 * @return 
+	 * 			| if (this.getStatus() == Status.FALLING)
+	 * 			| then result == false
+	 * 			| if (this.getStatus() == Status.ATTACKING)
+	 * 			| then result == (status == Status.FALLING)
+	 * 			| if (this.getStatus() == Status.RESTING)
+	 * 			| then result == (this.hasRestedEnough() || status == Status.ATTACKING || status == Status.FALLING)
+	 * 			| if (this.getStatus() == Status.WORKING || this.getStatus() == Status.IDLE)
+	 * 			| then result == true
+	 * 			| if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
+	 * 			| then result == (status == Status.FALLING || status == Status.ATTACKING)
+	 */
+	private boolean canBeInterruptedBy(Status status) {
+		if (this.status==Status.FALLING) {
+			return false;
+		}
+		if (this.status==Status.ATTACKING) {
+			return status == Status.FALLING;
+		}
+		if (this.status==Status.RESTING) {
+			if (hasRestedEnough()) {
+				return true;
+			}
+			if (status==Status.ATTACKING||status==Status.FALLING) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (this.status==Status.WORKING) {
+			return true;
+		}
+		if (this.status==Status.IDLE) {
+			return true;
+		}
+		if (this.status==Status.MOVINGADJACENT) {
+			if (status==Status.FALLING || status == Status.ATTACKING) {
+				return true;
+			}
+		}
+
+		if (this.status==Status.MOVINGDISTANT) {
+			if (status==Status.FALLING || status == Status.ATTACKING) {
+				return true;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -3288,11 +3345,6 @@ public class Unit {
 	 * Variable registering the World this Unit lives in
 	 */
 	private World world;
-
-	/**
-	 * Variable registering the gameObject this Unit is currently carrying.
-	 */
-	private GameObject gameObject=null;
 	
 	/**
 	 * 
@@ -3302,6 +3354,48 @@ public class Unit {
 	@Basic @Raw
 	private GameObject getGameObject () {
 		return this.gameObject;
+	}
+	
+	/**
+	 * Check whether this Unit is currently carrying a Boulder
+	 * @return true if the gameobject of the unit is a Boulder
+	 * 			| result==(this.getgameObect instanceof Boulder)
+	 */
+	public boolean isCarryingBoulder() {
+		return this.getGameObject() instanceof Boulder;
+	}
+	/**
+	 * Check whether this Unit is currently carrying a Log
+	 * @return true if the gameobject of the unit is a Log
+	 * 			| result==(this.getgameObect instanceof Log)
+	 */
+	public boolean isCarryingLog() {
+		return this.getGameObject() instanceof Log;
+	}
+
+	/**
+	 * Check whether this Unit is currently carrying a GameObject.
+	 * @return true if the gameobject of the unit is not null
+	 * 		result==(this.getgameObect!=null)
+	 */
+	private boolean hasGameObject() {
+		return (this.getGameObject() != null);
+	}
+	
+	/**
+	 * Returns the weight of the GameObject currently being carried by this Unit.
+	 * @return the weight of the gameobject the unit is carrying, if not carrying any object, returns 0
+	 * 			| if (! this.hasGameObject())
+	 * 			| then result==0
+	 * 			| else
+	 * 			| result==this.getgameobject.getWeight
+	 */
+	private int weightGameObject() {
+		if (! this.hasGameObject())
+			return 0;
+		else {
+			return this.gameObject.getWeight();
+		}
 	}
 	
 	/**
@@ -3329,46 +3423,11 @@ public class Unit {
 			this.gameObject=null;
 		}
 	}
-	/**
-	 * Returns the weight of the GameObject currently being carried by this Unit.
-	 * @return the weight of the gameobject the unit is carrying, if not carrying any object, returns 0
-	 * 			| if (! this.hasGameObject())
-	 * 			| then result==0
-	 * 			| else
-	 * 			| result==this.getgameobject.getWeight
-	 */
-	private int weightGameObject() {
-		if (! this.hasGameObject())
-			return 0;
-		else {
-			return this.gameObject.getWeight();
-		}
-	}
 
 	/**
-	 * Check whether this Unit is currently carrying a GameObject.
-	 * @return true if the gameobject of the unit is not null
-	 * 		result==(this.getgameObect!=null)
+	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
-	private boolean hasGameObject() {
-		return (this.getGameObject() != null);
-	}
-	/**
-	 * Check whether this Unit is currently carrying a Boulder
-	 * @return true if the gameobject of the unit is a Boulder
-	 * 			| result==(this.getgameObect instanceof Boulder)
-	 */
-	public boolean isCarryingBoulder() {
-		return this.getGameObject() instanceof Boulder;
-	}
-	/**
-	 * Check whether this Unit is currently carrying a Log
-	 * @return true if the gameobject of the unit is a Log
-	 * 			| result==(this.getgameObect instanceof Log)
-	 */
-	public boolean isCarryingLog() {
-		return this.getGameObject() instanceof Log;
-	}
+	private GameObject gameObject=null;
 	
 	/**
 	 * Find a path to a given cube in the gameworld
@@ -3498,58 +3557,4 @@ public class Unit {
 	 * Variable registering the path of this Unit.
 	 */
 	private List<Vector> path = new ArrayList<>();
-
-	/**
-	 * Check whether this Unit can be interrupted by an activity represented by the given Status
-	 * @param status
-	 * 			The Status representing the potential interrupting activity
-	 * @return 
-	 * 			| if (this.getStatus() == Status.FALLING)
-	 * 			| then result == false
-	 * 			| if (this.getStatus() == Status.ATTACKING)
-	 * 			| then result == (status == Status.FALLING)
-	 * 			| if (this.getStatus() == Status.RESTING)
-	 * 			| then result == (this.hasRestedEnough() || status == Status.ATTACKING || status == Status.FALLING)
-	 * 			| if (this.getStatus() == Status.WORKING || this.getStatus() == Status.IDLE)
-	 * 			| then result == true
-	 * 			| if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
-	 * 			| then result == (status == Status.FALLING || status == Status.ATTACKING)
-	 */
-	private boolean canBeInterruptedBy(Status status) {
-		if (this.status==Status.FALLING) {
-			return false;
-		}
-		if (this.status==Status.ATTACKING) {
-			return status == Status.FALLING;
-		}
-		if (this.status==Status.RESTING) {
-			if (hasRestedEnough()) {
-				return true;
-			}
-			if (status==Status.ATTACKING||status==Status.FALLING) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		if (this.status==Status.WORKING) {
-			return true;
-		}
-		if (this.status==Status.IDLE) {
-			return true;
-		}
-		if (this.status==Status.MOVINGADJACENT) {
-			if (status==Status.FALLING || status == Status.ATTACKING) {
-				return true;
-			}
-		}
-
-		if (this.status==Status.MOVINGDISTANT) {
-			if (status==Status.FALLING || status == Status.ATTACKING) {
-				return true;
-			}
-		}
-		return true;
-	}
 }

@@ -274,27 +274,6 @@ public class World {
 	 * variable keeping track of the values of the cubetypes
 	 */
 	private int [][][] Coordinates;
-	
-	/**
-	 * Variable registering the Units that are being terminated
-	 */
-//	private Set<Unit> TerminatedUnits=new HashSet<>();
-	
-	/**
-	 * Add the given Unit to the Set of Units that are being terminated
-	 * @param unit
-	 * 			The Unit to be added to the Set of Units that are being terminated
-	 * @post	The Set of Units that are being terminated contains the given Unit
-	 * @throws IllegalArgumentException
-	 * 			The given Unit is the null reference or does not need to be terminated
-	 */
-//	void AddToTerminatedUnits(Unit unit) throws IllegalArgumentException{
-//		if (unit == null || !unit.isTerminated())
-//			throw new IllegalArgumentException();
-//		TerminatedUnits.add(unit);
-//	}
-	
-
 
 	/**
 	 * Return the collapseTime of this World.
@@ -870,27 +849,6 @@ public class World {
 		for (int[] cube:collapsing){
 			toBeCollapsed.add(new Vector(cube[0],cube[1],cube[2]));
 		}
-//		Vector position = new Vector(x,y,z);
-//		for (Vector vector:this.getAdjacentPositions(position)){
-//			if (this.getSpawnablePositions().contains(vector)){
-//				if (!unitCanSpawnAt(vector))
-//					this.getSpawnablePositions().remove(vector);
-//			} else {
-//				if (unitCanSpawnAt(vector))
-//					this.addSpawnablePosition(vector);
-//			}
-//			if (this.getStandablePositions().contains(vector)){
-//				if (!unitCanStandAt(vector))
-//					this.getStandablePositions().remove(vector);
-//			} else {
-//				if (unitCanStandAt(vector))
-//					this.addStandablePosition(vector);
-//			}
-//		}
-//		if (unitCanStandAt(position))
-//			this.addStandablePosition(position);
-//		if (unitCanSpawnAt(position))
-//			this.addSpawnablePosition(position);
 		if (Math.random()<=0.25) {
 			if (value==1){
 				new Boulder(new Vector(x+World.CUBELENGTH/2, y+World.CUBELENGTH/2, z+World.CUBELENGTH/2), this);

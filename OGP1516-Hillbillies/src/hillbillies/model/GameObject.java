@@ -305,37 +305,4 @@ public abstract class GameObject {
 	 * the speed this GameObject will fall
 	 */
 	private final Vector fallspeed=new Vector(0, 0, -3);
-//	/**
-//	 * 
-//	 *
-//	 * @post	This GameObject has been removed from its World
-//	 * 			| (new this).getWorld() == null
-//	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
-//	 * @post	This Gameobject's position has been set to null
-//	 * 			this.getnewPosition==null
-//	 *
-//	 */
-//	public void pickedUp(Unit unit) {
-//		World oldWorld= this.world;
-//		setWorld(null);
-//		oldWorld.removeGameObject(this);
-//		this.setPosition(null);
-//
-//	}
-//	
-//	/**
-//	 * @post	This Gameobject's position has been set to null
-//	 * 			this.getnewPosition==unit.getPosition()
-//	 * @post	This Gameobject has been added to a World
-//	 * 			| (new this).getWorld() == unit.getWorld
-//	 *			| (new this.getWorld()).hasAsGameobject(this) == true
-//	 *@post		This gameobject is no longer being carried by a unit
-//	 *			unit.getnewGameobject==null
-//	 */
-//	public void dropped(Unit unit) {
-//		this.addToWorld(unit.getWorld());
-//		setPosition(unit.getPosition());
-//		unit.setGameObject(null);
-//	}
-
 }

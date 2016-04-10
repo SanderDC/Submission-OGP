@@ -3335,11 +3335,13 @@ public class Unit {
 	void addToWorld(@Raw World world) throws IllegalStateException{
 		assert (world != null) && (world.hasAsUnit(this)) && this.canHaveAsWorld(world);
 		this.world = world;
-		int index = new Random().nextInt(world.getSpawnablePositions().size());
-		Vector startPos = world.getSpawnablePositions().get(index);
-		this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
-				startPos.getCubeY() + CUBELENGTH/2,
-				startPos.getCubeZ() + CUBELENGTH/2));
+		if (!world.unitCanSpawnAt(this.getPosition())){
+			int index = new Random().nextInt(world.getSpawnablePositions().size());
+			Vector startPos = world.getSpawnablePositions().get(index);
+			this.setPosition(new Vector(startPos.getCubeX() + CUBELENGTH/2,
+					startPos.getCubeY() + CUBELENGTH/2,
+					startPos.getCubeZ() + CUBELENGTH/2));
+		}
 		if (world.getActiveFactions().size() < 5){
 			Faction faction = new Faction(world);
 			this.addToFaction(faction);

@@ -968,7 +968,7 @@ public class World {
 	 * 			|			(!isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())) &&
 	 * 			|			((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()-1)))
 	 */
-	private boolean unitCanSpawnAt(Vector position){
+	boolean unitCanSpawnAt(Vector position){
 		if (!isInsideWorld(position))
 			return false;
 		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))

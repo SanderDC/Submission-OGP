@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import be.kuleuven.cs.som.annotate.Model;
+import hillbillies.model.Faction;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
@@ -53,6 +54,25 @@ public class WorldTest {
 	@Test
 	public void isConnectedtoBorderWorld3(){
 		assertFalse(world3.isSolidConnectedToBorder(new Vector(3, 1, 2)));
+	}
+	
+	@Test
+	public void tooManyUnits(){
+		for (int i = 1; i <= 100; i++){
+			new Unit(world3, false);
+		}
+		Unit test = new Unit(new Vector(0.5,0.5,0.5), 100,100,100,"John",100,false);
+		world3.addUnit(test);
+		assertFalse(world3.hasAsUnit(test));
+	}
+	
+	@Test
+	public void tooManyFactions(){
+		for (int i = 1; i <= 5; i++){
+			new Unit(world3, false);
+		}
+		Faction test = new Faction(world3);
+		assertFalse(world3.hasAsFaction(test));
 	}
 
 }

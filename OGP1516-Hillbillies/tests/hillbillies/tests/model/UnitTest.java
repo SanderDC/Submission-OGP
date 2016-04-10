@@ -10,14 +10,17 @@ import org.junit.Test;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 public class UnitTest {
 	
 	private static Unit movingDistantUnit, movingAdjacentUnit,distantUnit, idleUnit, adjacentUnit;
+	private static World world;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+		int[][][] coordinates = new int[3][3][3];
+		world = new World(coordinates, new DefaultTerrainChangeListener());
 	}
 
 	@AfterClass
@@ -27,8 +30,11 @@ public class UnitTest {
 	@Before
 	public void setUp() throws Exception {
 		distantUnit = new Unit(new Vector(10.5,10.5,10.5), 50, 50, 50, "James", 50, false);
+		world.addUnit(distantUnit);
 		idleUnit = new Unit(new Vector(5.5,5.5,5.5), 50, 50, 50, "Idle", 50, false);
+		world.addUnit(idleUnit);
 		adjacentUnit = new Unit(new Vector(6.5,5.5,5.5), 50, 50, 50, "Adjacent to Idle", 50, false);
+		world.addUnit(adjacentUnit);
 	}
 
 	@After

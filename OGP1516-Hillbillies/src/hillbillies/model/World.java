@@ -349,7 +349,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	boolean hasAsUnit(@Raw Unit Unit) {
+	public boolean hasAsUnit(@Raw Unit Unit) {
 		return Units.contains(Unit);
 	}
 
@@ -475,7 +475,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	private boolean hasAsFaction(@Raw Faction Faction) {
+	public boolean hasAsFaction(@Raw Faction Faction) {
 		return Factions.contains(Faction);
 	}
 
@@ -546,15 +546,20 @@ public class World {
 	 * 
 	 * @param  Faction
 	 *         The Faction to be added.
-	 * @pre    The given Faction is effective and already references
-	 *         this World.
-	 *       | (Faction != null) && (Faction.getWorld() == this)
-	 * @post   This World has the given Faction as one of its Factions.
-	 *       | new.hasAsFaction(Faction)
+	 * @post   If this World did not already have 5 active factions,
+	 * 			This World has the given Faction as one of its Factions.
+	 * @throws IllegalArgumentException
+	 * 			This world cannot have the given Faction as one of its Factions.
 	 */
-	public void addFaction(@Raw Faction Faction) {
-		assert (Faction != null) && (Faction.getWorld() == this);
+	public void addFaction(@Raw Faction Faction) throws IllegalArgumentException {
+		if (! this.canHaveAsFaction(Faction))
+			throw new IllegalArgumentException();
+		if (this.getActiveFactions().size() >= 5)
+			return;
+		else {
 		Factions.add(Faction);
+		Faction.addToWorld(this);
+		}
 	}
 
 	/**

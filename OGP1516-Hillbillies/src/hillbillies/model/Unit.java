@@ -202,8 +202,7 @@ public class Unit {
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
 
-		//		this.setPosition(position);
-		this.position = new Vector(World.CUBELENGTH/2,World.CUBELENGTH/2,World.CUBELENGTH/2);
+		this.position = position;
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
 		this.setDistantTarget(null);
@@ -248,6 +247,7 @@ public class Unit {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
+		this.setPath(null);
 	}
 
 	/**
@@ -258,7 +258,6 @@ public class Unit {
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
-		//TODO: lijst met voornamen en achternamen en dan random daaruit kiezen?
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
 				new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
 				new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
@@ -3171,7 +3170,6 @@ public class Unit {
 
 	/**
 	 * Terminate this Unit
-	 * TODO: documentatie uitbreiden
 	 * @pre		This Unit's hitpoints have reached zero
 	 * 			| (this.getHitpoints() == 0)
 	 * @post	This Unit has been terminated

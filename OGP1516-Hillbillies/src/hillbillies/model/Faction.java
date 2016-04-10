@@ -29,7 +29,7 @@ public class Faction {
 	@Raw
 	public Faction(World world) {
 		this.terminated = false;
-		this.addToWorld(world);
+		world.addFaction(this);
 	}
 
 	/**
@@ -223,15 +223,17 @@ public class Faction {
 	 * Add this Faction to the given World
 	 * @param world
 	 * 			The World this Faction will exist in
+	 * @pre		The given world is effective and already has this Faction
+	 * 			as one of its Factions.
 	 * @post	This Faction has been added to the given World
 	 * @throws	IllegalArgumentException
 	 * 			The given game World is not a valid game World for this Faction
 	 */
-	private void addToWorld(World world) throws IllegalArgumentException{
+	void addToWorld(World world) throws IllegalArgumentException{
 		if (! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException("This is not a valid gameworld!");
+		assert (world != null && world.hasAsFaction(this));
 		this.world = world;
-		world.addFaction(this);
 	}
 	
 	/**

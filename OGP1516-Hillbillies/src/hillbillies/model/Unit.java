@@ -195,8 +195,8 @@ public class Unit {
 	 * 			| new.getmaxStamina() == Math.ceil(new.getToughness()*new.getWeight()/50.0)
 	 * @effect	The ActivityTime of the Unit is set to zero.
 	 * 			| this.setActivityTime(0)
-	 * @effect	The path of this new Unit is set to the null reference.
-	 * 			| this.setPath(null);
+	 * @effect	The path of this new Unit is set to the an empty list.
+	 * 			| this.setPath(new ArrayList<Vector>());
 	 * 
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
@@ -247,7 +247,7 @@ public class Unit {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
-		this.setPath(null);
+		this.setPath(new ArrayList<Vector>());
 	}
 
 	/**
@@ -3561,13 +3561,18 @@ public class Unit {
 	 *  
 	 * @param  path
 	 *         The path to check.
-	 * @return true if the given path is empty or when it is possible for a Unit to stand at
+	 * @return false if the given path is the null reference
+	 * 			true if the given path is empty or when it is possible for a Unit to stand at
 	 * 		   every position in the path and the last position of the path equals the Unit's DistantTarget
-	 *       | result == (path.size() == 0) ||
+	 * 		 | if (path == null)
+	 * 		 | then result == false
+	 *       | else result == (path.size() == 0) ||
 	 *       |				((for each vector in path: this.getWorld.unitCanStandAt(vector)) && 
 	 *       |				path.get(path.size()-1).equals(this.getDistantTarget()))
 	 */
 	private boolean isValidPath(List<Vector> path) {
+		if (path == null)
+			return false;
 		if (path.size() == 0)
 			return true;
 		for (Vector vector:path){

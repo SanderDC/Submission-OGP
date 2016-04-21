@@ -1,3 +1,0 @@
-name: "goto (10, 10, 10)"
-priority : 5
-activities : moveTo (10, 10, 10);

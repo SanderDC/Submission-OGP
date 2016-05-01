@@ -3472,4 +3472,21 @@ public class Unit {
 	 * Variable registering the path of this Unit.
 	 */
 	private List<Vector> path = new ArrayList<>();
+	
+	//code deel 3 hier
+	
+	private Task task=null;
+	public Task getTask() {
+		return task;
+	}
+	public void setTask(Task task){
+		if (task==null) {
+			this.task=null;
+		}
+		
+		if (this.task==null) {
+			this.task=task;
+		}
+		
+	}
 }

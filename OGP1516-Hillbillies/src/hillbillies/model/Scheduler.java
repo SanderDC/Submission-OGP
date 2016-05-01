@@ -46,14 +46,31 @@ private List <Task> tasks=new ArrayList<>();
 
 
 
-public void AddTask(Task task){
+public void AddOneTask(Task task){
 	this.tasks.add(task);
 }
-public void RemoveTask(Task task) {
+public void RemoveOneTask(Task task) {
 	this.tasks.remove(task);
 }
 
+public void AssignTaskToUnit(Unit unit, Task task){
+	task.AssignTaskToUnit(unit);
+	unit.setTask(task);
+}
+public void unAssignTaskOfUnit(Unit unit) {
+	unit.getTask().AssignTaskToUnit(null);
+	unit.setTask(null);
+	
+}
 
-
+public Task getTopPriorityTask(){
+	return null;
+}
+public List<Task> getConditionalTask(){
+	return null;
+}
+public void replaceTask(){
+	
+}
 
 }

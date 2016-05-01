@@ -23,5 +23,13 @@ public class Task {
 		}
 		
 	}
+	private boolean isValidPriority(int i){
+		if (i<0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 	
 }

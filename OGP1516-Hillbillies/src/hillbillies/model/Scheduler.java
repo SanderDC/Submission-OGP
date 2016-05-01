@@ -54,8 +54,11 @@ public void RemoveOneTask(Task task) {
 }
 
 public void AssignTaskToUnit(Unit unit, Task task){
-	task.AssignTaskToUnit(unit);
-	unit.setTask(task);
+	if (!task.isBeingExecuted()) {
+		task.AssignTaskToUnit(unit);
+		unit.setTask(task);
+	}
+	
 }
 public void unAssignTaskOfUnit(Unit unit) {
 	unit.getTask().AssignTaskToUnit(null);

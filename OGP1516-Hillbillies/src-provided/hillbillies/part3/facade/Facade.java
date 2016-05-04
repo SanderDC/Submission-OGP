@@ -373,8 +373,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Scheduler getScheduler(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getScheduler();
 	}
 
 	@Override
@@ -409,14 +408,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public Unit getAssignedUnit(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getUnit();
 	}
 
 	@Override
 	public Task getAssignedTask(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getTask();
 	}
 
 	@Override

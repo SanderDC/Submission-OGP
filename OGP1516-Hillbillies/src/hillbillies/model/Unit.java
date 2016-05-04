@@ -3477,7 +3477,7 @@ public class Unit {
 	
 	private Task task=null;
 	public Task getTask() {
-		return task;
+		return this.task;
 	}
 	public void setTask(Task task){
 		if (task==null) {

@@ -254,5 +254,16 @@ public class Faction {
 	 * Variable registering the current game World for this Faction.
 	 */
 	private World world;
+	
+	
+	//deel 3
+	
+	private Scheduler scheduler;
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
+	private void setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
+	}
 
 }

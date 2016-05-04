@@ -23,6 +23,9 @@ public class Task {
 		}
 		
 	}
+	public Unit getUnit(){
+		return this.unit;
+	}
 	private boolean isValidPriority(int i){
 		if (i<0) {
 			return false;

@@ -3,15 +3,19 @@ package hillbillies.model;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
+/**
+ * 
+ * @author Sander Declercq
+ * @author Bram Belpaire
+ * @invar   Each Scheduler must have proper Tasks.
+ *        | hasProperTasks()
+ */
 public class Scheduler {
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each Scheduler must have proper Tasks.
-	 *        | hasProperTasks()
-	 */
 
 	/**
 	 * Initialize this new Scheduler as a non-terminated Scheduler with 
@@ -49,7 +53,7 @@ public class Scheduler {
 	public int getNbTasks() {
 		return tasks.size();
 	}
-	
+
 	/**
 	 * Return the Task with the highest priority that is not currently being executed
 	 * @throws NoSuchElementException
@@ -206,7 +210,7 @@ public class Scheduler {
 				this.tasks.remove(task);
 		}
 	}
-	
+
 	/**
 	 * Replace a given Task with a given new Task
 	 * @param oldTask
@@ -234,6 +238,17 @@ public class Scheduler {
 		int index = this.tasks.indexOf(oldTask);
 		this.tasks.remove(index);
 		this.tasks.add(index, newTask);
+	}
+	
+	/**
+	 * Return a new list containing all Tasks currently managed by this Scheduler,
+	 * ordered by descending priority
+	 */
+	private List<Task> getTasksSorted(){
+		List<Task> result = new ArrayList<>();
+		result.addAll(tasks);
+		result.sort((Task t1, Task t2)->-1*t1.compareTo(t2));
+		return result;
 	}
 
 	/**
@@ -335,4 +350,31 @@ public class Scheduler {
 	 * Variable registering whether this Scheduler has been terminated
 	 */
 	private boolean terminated;
+	
+	/**
+	 * Return an iterator delivering all tasks managed by this Scheduler
+	 * in order of descending priority.
+	 */
+	public Iterator<Task> iterator(){
+		
+		return new Iterator<Task>(){
+			
+			private List<Task> tasks = Scheduler.this.getTasksSorted();
+			
+			private int nbItemsHandled = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return nbItemsHandled < getNbTasks();
+			}
+
+			@Override
+			public Task next() {
+				Task result = tasks.get(nbItemsHandled);
+				nbItemsHandled += 1;
+				return result;
+			}
+			
+		};
+	}
 }

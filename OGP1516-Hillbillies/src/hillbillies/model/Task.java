@@ -15,7 +15,7 @@ import be.kuleuven.cs.som.annotate.*;
  *         Task.
  *       | isValidPriority(getPriority())
  */
-public class Task {
+public class Task implements Comparable<Task>{
 
 	/**
 	 * 
@@ -205,5 +205,20 @@ public class Task {
 	 * Variable registering the Unit of this Task.
 	 */
 	private Unit unit;
+	
+	/**
+	 * 
+	 * @param other
+	 * @return
+	 */
+	@Override
+	public int compareTo(Task other) {
+		if (this.getPriority() < other.getPriority())
+			return -1;
+		else if (this.getPriority() > other.getPriority())
+			return 1;
+		else
+			return 0;
+	}
 
 }

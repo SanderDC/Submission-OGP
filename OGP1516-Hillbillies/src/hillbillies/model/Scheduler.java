@@ -172,14 +172,13 @@ public class Scheduler implements Iterable<Task>{
 		return true;		
 	}
 	/**
-	 * Check whether this Scheduler has all given Tasks as part of its
+	 * Check whether this Scheduler has the given Task as part of its
 	 * Tasks.
 	 * 
-	 * @param  tasks
-	 *         The Tasks to check.
-	 * @return The given Tasks are registered at some position as
+	 * @param  task
+	 *         The Task to check.
+	 * @return The given Task is registered at some position as
 	 *         Tasks of this Scheduler.
-	 *       | for each task in tasks:
 	 *       | 			for some I in 1..getNbTasks():
 	 *       |   		getTaskAt(I) == task
 	 */

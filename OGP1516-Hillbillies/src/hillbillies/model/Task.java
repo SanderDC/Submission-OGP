@@ -1,9 +1,9 @@
 package hillbillies.model;
 
-import java.awt.List;
+import java.util.List;
 
 public class Task {
-		public Task(String name, int priority, List activitylist, Unit unit){}
+	public Task(String name, int priority, List activitylist, Unit unit){}
 	private boolean inExecution=false;
 	private Unit unit=null;
 	public boolean isBeingExecuted(){
@@ -12,16 +12,16 @@ public class Task {
 	public void SetInexecution( boolean b) {
 		this.inExecution=b;
 	}
-	
+
 	public void AssignTaskToUnit(Unit u){
-		
+
 		if (u==null) {
 			this.unit=null;
 		}
 		if (unit==null) {
 			this.unit=u;
 		}
-		
+
 	}
 	public Unit getUnit(){
 		return this.unit;
@@ -34,5 +34,5 @@ public class Task {
 			return true;
 		}
 	}
-	
+
 }

@@ -1446,6 +1446,14 @@ public class Unit {
 	private void setStatus(Status status) throws IllegalArgumentException {
 		if (!isValidStatus(status))
 			throw new IllegalArgumentException("This is an invalid status for a Unit");
+		if (status == Status.IDLE){
+			if (this.getSprinting())
+				this.setSprinting(false);
+			this.setNearTarget(null);
+			this.setDistantTarget(null);
+			this.setSpeed(new Vector(0,0,0));
+			this.setEnemy(null);
+		}			
 		this.status = status;
 	}
 
@@ -3479,9 +3487,11 @@ public class Unit {
 	public Task getTask() {
 		return this.task;
 	}
+	
 	public void setTask(Task task){
 		if (task==null) {
 			this.task=null;
+			this.setStatus(Status.IDLE);
 		}
 		
 		if (this.task==null) {

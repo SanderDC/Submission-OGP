@@ -378,7 +378,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public void schedule(Scheduler scheduler, Task task) throws ModelException {
-		scheduler.AddOneTask(task);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

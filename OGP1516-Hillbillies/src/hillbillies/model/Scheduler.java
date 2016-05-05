@@ -250,7 +250,7 @@ public class Scheduler implements Iterable<Task>{
 		this.removeTasks(oldTask);
 		this.tasks.add(index, newTask);
 	}
-	
+	sorte
 	/**
 	 * Return a new list containing all Tasks currently managed by this Scheduler,
 	 * ordered by descending priority

@@ -369,6 +369,11 @@ public class Task implements Comparable<Task>{
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
+	
+	
+	public Set<Scheduler> getSchedulers() {
+		return schedulers;
+	}
 
 	/**
 	 * Terminate this Task.

@@ -15,7 +15,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar   Each Scheduler must have proper Tasks.
  *        | hasProperTasks()
  */
-public class Scheduler {
+public class Scheduler implements Iterable<Task>{
 
 	/**
 	 * Initialize this new Scheduler as a non-terminated Scheduler with 
@@ -328,7 +328,7 @@ public class Scheduler {
 	private Faction faction;
 
 	public boolean isTerminated(){
-		return this.isTerminated();
+		return this.terminated;
 	}
 
 	/**

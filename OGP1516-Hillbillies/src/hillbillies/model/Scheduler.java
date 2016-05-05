@@ -165,8 +165,25 @@ public class Scheduler implements Iterable<Task>{
 	 *       | 			for some I in 1..getNbTasks():
 	 *       |   		getTaskAt(I) == task
 	 */
-	public boolean hasAsTasks(@Raw Task... tasks) {
+	public boolean hasAsTasks( Collection<Task> tasks) {
 		for (Task task:tasks)
+			if(!this.tasks.contains(task))
+				return false;
+		return true;		
+	}
+	/**
+	 * Check whether this Scheduler has all given Tasks as part of its
+	 * Tasks.
+	 * 
+	 * @param  tasks
+	 *         The Tasks to check.
+	 * @return The given Tasks are registered at some position as
+	 *         Tasks of this Scheduler.
+	 *       | for each task in tasks:
+	 *       | 			for some I in 1..getNbTasks():
+	 *       |   		getTaskAt(I) == task
+	 */
+	public boolean hasAsTask( Task task) {
 			if(!this.tasks.contains(task))
 				return false;
 		return true;		
@@ -190,7 +207,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	public void addTasks(@Raw Task... tasks) {
 		for (Task task:tasks){
-			if(this.canHaveAsTask(task) && !this.hasAsTasks(task)){
+			if(this.canHaveAsTask(task) && !this.hasAsTask(task)){
 				this.tasks.add(task);
 				task.addScheduler(this);
 			}
@@ -215,7 +232,7 @@ public class Scheduler implements Iterable<Task>{
 	@Raw
 	public void removeTasks(Task... tasks) {
 		for (Task task:tasks){
-			if(task != null && this.hasAsTasks(task)){
+			if(task != null && this.hasAsTask(task)){
 				this.tasks.remove(task);
 				task.removeScheduler(this);
 			}
@@ -242,7 +259,7 @@ public class Scheduler implements Iterable<Task>{
 	 * 			| !this.hasAsTask(oldTask) || !this.canHaveAsTask(newTask)
 	 */
 	public void replaceTask(Task oldTask, Task newTask) throws IllegalArgumentException{
-		if (!this.hasAsTasks(oldTask) || !this.canHaveAsTask(newTask))
+		if (!this.hasAsTask(oldTask) || !this.canHaveAsTask(newTask))
 			throw new IllegalArgumentException();
 		if (oldTask.isBeingExecuted())
 			oldTask.interrupt();

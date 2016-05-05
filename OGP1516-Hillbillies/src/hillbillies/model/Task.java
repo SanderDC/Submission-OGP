@@ -303,7 +303,7 @@ public class Task implements Comparable<Task>{
 		for (Scheduler scheduler : schedulers) {
 			if (!canHaveAsScheduler(scheduler))
 				return false;
-			if (!scheduler.hasAsTasks(this))
+			if (!scheduler.hasAsTask(this))
 				return false;
 		}
 		return true;
@@ -332,7 +332,7 @@ public class Task implements Comparable<Task>{
 	 *       | new.hasAsScheduler(scheduler)
 	 */
 	public void addScheduler(@Raw Scheduler scheduler) {
-		assert (scheduler != null) && (scheduler.hasAsTasks(this));
+		assert (scheduler != null) && (scheduler.hasAsTask(this));
 		schedulers.add(scheduler);
 	}
 
@@ -352,7 +352,7 @@ public class Task implements Comparable<Task>{
 	 */
 	@Raw
 	public void removeScheduler(Scheduler scheduler) {
-		assert this.hasAsScheduler(scheduler) && (!scheduler.hasAsTasks(this));
+		assert this.hasAsScheduler(scheduler) && (!scheduler.hasAsTask(this));
 		schedulers.remove(scheduler);
 	}
 

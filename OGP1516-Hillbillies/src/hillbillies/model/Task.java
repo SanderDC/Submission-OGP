@@ -16,37 +16,52 @@ import be.kuleuven.cs.som.annotate.*;
  *       | isValidPriority(getPriority())
  * @invar   Each Task must have proper Schedulers.
  *        | hasProperSchedulers()
+ * @invar  The name of each Task must be a valid name for any
+ *         Task.
+ *       | isValidName(getName())
  */
 public class Task implements Comparable<Task>{
 
 	/**
-	 * 
-	 * @param name
+	 * Initialize this new Task as a non-terminated Task with 
+	 * given name, priority and activities, and no Schedulers yet.
+	 * @param  name
+	 *         The name for this new Task.
 	 * @param activitylist
-	 * @param unit
 	 * @param  priority
 	 *         The priority for this new Task.
 	 * @effect The priority of this new Task is set to
 	 *         the given priority.
 	 *       | this.setPriority(priority)
+	 * @effect The name of this new Task is set to
+	 *         the given name.
+	 *       | this.setName(name)
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority, List activitylist, Unit unit){
+	public Task(String name, int priority, List<Activity> activitylist)
+			throws IllegalArgumentException {
 		this.setPriority(priority);
+		this.setName(name);
 	}
-	
+
 	/**
 	 * Check whether this Task is currently being executed
 	 */
 	public boolean isBeingExecuted(){
 		return inExecution;
 	}
-	
-	/**
-	 * Variable registering whether this Task is currently being executed
-	 */
-	private boolean inExecution=false;
+
+	public void AssignTaskToUnit(Unit u){
+
+		if (u==null) {
+			this.unit=null;
+		}
+		if (unit==null) {
+			this.unit=u;
+		}
+
+	}
 
 	/**
 	 * Interrupt this Task
@@ -69,31 +84,10 @@ public class Task implements Comparable<Task>{
 		this.setPriority(getPriority()-1);
 	}
 
-	public void AssignTaskToUnit(Unit u){
-
-		if (u==null) {
-			this.unit=null;
-		}
-		if (unit==null) {
-			this.unit=u;
-		}
-
-	}
-
 	/**
-	 * Initialize this new Task with given priority.
-	 *
-	 * @param  priority
-	 *         The priority for this new Task.
-	 * @effect The priority of this new Task is set to
-	 *         the given priority.
-	 *       | this.setPriority(priority)
+	 * Variable registering whether this Task is currently being executed
 	 */
-	public Task(int priority)
-			throws IllegalArgumentException {
-		this.setPriority(priority);
-	}
-
+	private boolean inExecution=false;
 
 	/**
 	 * Return the priority of this Task.
@@ -141,21 +135,6 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the priority of this Task.
 	 */
 	private int priority;
-
-	/**
-	 * Initialize this new Task with given Unit.
-	 *
-	 * @param  unit
-	 *         The Unit for this new Task.
-	 * @effect The Unit of this new Task is set to
-	 *         the given Unit.
-	 *       | this.setUnit(unit)
-	 */
-	public Task(Unit unit)
-			throws IllegalArgumentException {
-		this.setUnit(unit);
-	}
-
 
 	/**
 	 * Return the Unit of this Task.
@@ -209,7 +188,59 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the Unit of this Task.
 	 */
 	private Unit unit;
+
+	/**
+	 * Return the name of this Task.
+	 */
+	@Basic @Raw
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Check whether the given name is a valid name for
+	 * any Task.
+	 *  
+	 * @param  name
+	 *         The name to check.
+	 * @return true
+	 *       | result == true
+	 */
+	public static boolean isValidName(String name) {
+		return true;
+	}
+
+	/**
+	 * Set the name of this Task to the given name.
+	 * 
+	 * @param  name
+	 *         The new name for this Task.
+	 * @post   The name of this new Task is equal to
+	 *         the given name.
+	 *       | new.getName() == name
+	 * @throws IllegalArgumentException
+	 *         The given name is not a valid name for any
+	 *         Task.
+	 *       | ! isValidName(getName())
+	 */
+	@Raw
+	public void setName(String name) 
+			throws IllegalArgumentException {
+		if (! isValidName(name))
+			throw new IllegalArgumentException();
+		this.name = name;
+	}
+
+	/**
+	 * Variable registering the name of this Task.
+	 */
+	private String name;
 	
+	/**
+	 * Variable registering the activities for this Task
+	 */
+	List<Activity> activities = new ArrayList<>();
+
 	/**
 	 * 
 	 * @param other
@@ -223,22 +254,6 @@ public class Task implements Comparable<Task>{
 			return 1;
 		else
 			return 0;
-	}
-	
-	/** TO BE ADDED TO THE CLASS INVARIANTS
-	 * @invar   Each Task must have proper Schedulers.
-	 *        | hasProperSchedulers()
-	 */
-
-	/**
-	 * Initialize this new Task as a non-terminated Task with 
-	 * no Schedulers yet.
-	 * 
-	 * @post   This new Task has no Schedulers yet.
-	 *       | new.getNbSchedulers() == 0
-	 */
-	@Raw
-	public Task() {
 	}
 
 	/**
@@ -264,11 +279,11 @@ public class Task implements Comparable<Task>{
 	 *         and that Scheduler is a valid Scheduler for a Task.
 	 *       | result ==
 	 *       |   (scheduler != null) &&
-	 *       |   scheduler.canHaveAsTask(this)
+	 *       |   !scheduler.isTerminated()
 	 */
 	@Raw
 	public boolean canHaveAsScheduler(Scheduler scheduler) {
-		return (scheduler != null) && (scheduler.canHaveAsTask(this));
+		return (scheduler != null) && (!scheduler.isTerminated());
 	}
 
 	/**
@@ -352,7 +367,7 @@ public class Task implements Comparable<Task>{
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
-	
+
 	/**
 	 * Terminate this Task.
 	 *
@@ -366,26 +381,29 @@ public class Task implements Comparable<Task>{
 	 * 		   | for each scheduler in schedulers:
 	 * 		   | 			scheduler.removeTasks(this)
 	 */
-	 public void terminate() {
-		 for (Scheduler scheduler:this.schedulers)
-			 scheduler.removeTasks(this);
-		 this.getUnit().setTask(null);
-		 this.setUnit(null);
-		 this.isTerminated = true;
-	 }
-	 
-	 /**
-	  * Return a boolean indicating whether or not this Task
-	  * is terminated.
-	  */
-	 @Basic @Raw
-	 public boolean isTerminated() {
-		 return this.isTerminated;
-	 }
-	 
-	 /**
-	  * Variable registering whether this person is terminated.
-	  */
-	 private boolean isTerminated = false;
-	 
+	public void terminate() {
+		for (Scheduler scheduler:this.schedulers)
+			scheduler.removeTasks(this);
+		if (this.getUnit() != null) {
+			this.getUnit().setTask(null);
+			this.setUnit(null);
+		}
+		this.inExecution = false;
+		this.isTerminated = true;
+	}
+
+	/**
+	 * Return a boolean indicating whether or not this Task
+	 * is terminated.
+	 */
+	@Basic @Raw
+	public boolean isTerminated() {
+		return this.isTerminated;
+	}
+
+	/**
+	 * Variable registering whether this person is terminated.
+	 */
+	private boolean isTerminated = false;
+
 }

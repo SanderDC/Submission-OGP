@@ -26,6 +26,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	@Raw
 	public Scheduler() {
+		
 	}
 
 	/**
@@ -90,11 +91,12 @@ public class Scheduler implements Iterable<Task>{
 	 *         and that Task can have this Scheduler as its Scheduler.
 	 *       | result ==
 	 *       |   (task != null) &&
-	 *       |   Task.isValidScheduler(this)
+	 *       |   task.canHaveAsScheduler(this) &&
+	 *       |	 !task.isTerminated()
 	 */
 	@Raw
 	public boolean canHaveAsTask(Task task) {
-		return (task != null);
+		return (task != null) && (!task.isTerminated()) && (task.canHaveAsScheduler(this));
 	}
 
 	/**
@@ -173,10 +175,11 @@ public class Scheduler implements Iterable<Task>{
 	 * 
 	 * @param  tasks
 	 *         The Tasks to be added.
-	 * @post	Every Task that is effective and is not yet one of this Scheduler's tasks
+	 * @post	Every Task that is a valid Task for this Scheduler
+	 * 		  	and is not yet one of this Scheduler's tasks
 	 * 			is added to this Scheduler
 	 * 			| for each task in tasks:
-	 * 			|			if (task != null && !this.hasAsTask(task))
+	 * 			|			if (this.canHaveAsTask(task) && !this.hasAsTask(task))
 	 * 			|			then (new this).hasAsTask(task) &&
 	 * 			|					(new task).hasAsScheduler(this)
 	 * @post   The number of Tasks of this Scheduler is
@@ -185,8 +188,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	public void addTasks(@Raw Task... tasks) {
 		for (Task task:tasks){
-			if((task != null)
-					&& (!this.hasAsTasks(task))){
+			if(this.canHaveAsTask(task) && !this.hasAsTasks(task)){
 				this.tasks.add(task);
 				task.addScheduler(this);
 			}

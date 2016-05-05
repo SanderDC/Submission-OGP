@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -10,6 +12,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *         object_name_Eng.
  *       | isValidPropertyName_Java(getPropertyName_Java())
  */
+import javafx.collections.transformation.SortedList;
 public class Scheduler {
 		public Scheduler(Faction faction ){
 			
@@ -75,5 +78,6 @@ public List<Task> getConditionalTask(){
 public void replaceTask(){
 	
 }
+
 
 }

@@ -1,8 +1,8 @@
 package hillbillies.model;
 
-import java.awt.List;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 public class Task {
 		public Task(String name, int priority, List activitylist, Unit unit){
@@ -19,16 +19,16 @@ public class Task {
 	public void SetInexecution( boolean b) {
 		this.inExecution=b;
 	}
-	
+
 	public void AssignTaskToUnit(Unit u){
-		
+
 		if (u==null) {
 			this.unit=null;
 		}
 		if (unit==null) {
 			this.unit=u;
 		}
-		
+
 	}
 	public Unit getUnit(){
 		return this.unit;
@@ -65,4 +65,5 @@ public String getName(){
 	public void addScheduler(Scheduler scheduler){
 		Schedulers.add(scheduler);
 	}
+
 }

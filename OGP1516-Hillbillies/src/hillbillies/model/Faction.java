@@ -30,6 +30,8 @@ public class Faction {
 	public Faction(World world) {
 		this.terminated = false;
 		world.addFaction(this);
+		Scheduler scheduler = new Scheduler();
+		this.setScheduler(scheduler);
 	}
 
 	/**
@@ -187,6 +189,7 @@ public class Faction {
 		assert (this.getNbUnits() == 0);
 		this.terminated = true;
 		this.removeFromWorld();
+		
 	}
 	
 	/**
@@ -258,12 +261,46 @@ public class Faction {
 	
 	//deel 3
 	
-	private Scheduler scheduler;
+	/**
+	 * Return this Faction's Scheduler
+	 */
 	public Scheduler getScheduler() {
 		return this.scheduler;
 	}
-	private void setScheduler(Scheduler scheduler) {
+	
+	/**
+	 * Set this Faction's Scheduler to the given Scheduler
+	 * @param scheduler
+	 * 			The new Scheduler for this Faction
+	 * @post  This Faction has the given Scheduler as its Scheduler
+	 * @post  The given Scheduler has this Faction as its Faction
+	 * @throws IllegalArgumentException
+	 * 			The given Scheduler is not a valid Scheduler for this Faction
+	 */
+	private void setScheduler(Scheduler scheduler) throws IllegalArgumentException{
+		if (!this.canHaveAsScheduler(scheduler))
+			throw new IllegalArgumentException();
 		this.scheduler = scheduler;
+		scheduler.addToFaction(this);
 	}
-
+	
+	/**
+	 * Check whether the given Scheduler is a valid Scheduler for this Faction
+	 * @param scheduler
+	 * 			The Scheduler to be checked
+	 * @return if this Faction is not terminated, true if the given Scheduler is not the null reference
+	 * 			and has not been terminated.
+	 * 		   Else, true if the given Scheduler is the null reference
+	 */
+	public boolean canHaveAsScheduler(Scheduler scheduler){
+		if (!this.isTerminated())
+			return (scheduler != null) && (!scheduler.isTerminated());
+		else
+			return scheduler == null;
+	}
+	
+	/**
+	 * Variable registering this Faction's Scheduler
+	 */
+	private Scheduler scheduler;
 }

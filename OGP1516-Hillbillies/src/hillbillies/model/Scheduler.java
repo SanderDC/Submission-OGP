@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -147,4 +148,5 @@ public class Scheduler {
 	 * Variable registering whether this Scheduler has been terminated
 	 */
 	private boolean terminated;
+	
 }

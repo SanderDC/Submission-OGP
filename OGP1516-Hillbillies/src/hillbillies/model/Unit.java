@@ -3494,9 +3494,7 @@ public class Unit {
 			this.setStatus(Status.IDLE);
 		}
 		
-		if (this.task==null) {
-			this.task=task;
-		}
+		
 		
 	}
 }

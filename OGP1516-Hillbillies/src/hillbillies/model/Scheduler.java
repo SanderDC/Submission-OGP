@@ -177,7 +177,8 @@ public class Scheduler implements Iterable<Task>{
 	 * 			is added to this Scheduler
 	 * 			| for each task in tasks:
 	 * 			|			if (task != null && !this.hasAsTask(task))
-	 * 			|			then (new this).hasAsTask(task)
+	 * 			|			then (new this).hasAsTask(task) &&
+	 * 			|					(new task).hasAsScheduler(this)
 	 * @post   The number of Tasks of this Scheduler is
 	 *         incremented by the amount of given tasks or less.
 	 *       | new.getNbTasks() <= getNbTasks() + tasks.size()
@@ -185,8 +186,10 @@ public class Scheduler implements Iterable<Task>{
 	public void addTasks(@Raw Task... tasks) {
 		for (Task task:tasks){
 			if((task != null)
-					&& (!this.hasAsTasks(task)))
+					&& (!this.hasAsTasks(task))){
 				this.tasks.add(task);
+				task.addScheduler(this);
+			}
 		}
 	}
 
@@ -199,15 +202,19 @@ public class Scheduler implements Iterable<Task>{
 	 *         decremented by the amount of given Tasks or less.
 	 *       | new.getNbTasks() >= getNbTasks() - tasks.size()
 	 * @post   This Scheduler no longer has the given Tasks as
-	 *         some of its Tasks.
+	 *         some of its Tasks and the given Tasks no longer have this Scheduler
+	 *         as one of their Schedulers
 	 *       | for each task in tasks:
-	 *       | 	! new.hasAsTask(task)
+	 *       | 	! (new this).hasAsTask(task)
+	 *       |	! (new task).hasAsScheduler(this)
 	 */
 	@Raw
 	public void removeTasks(Task... tasks) {
 		for (Task task:tasks){
-			if(task != null && this.hasAsTasks(task))
+			if(task != null && this.hasAsTasks(task)){
 				this.tasks.remove(task);
+				task.removeScheduler(this);
+			}
 		}
 	}
 
@@ -236,7 +243,7 @@ public class Scheduler implements Iterable<Task>{
 		if (oldTask.isBeingExecuted())
 			oldTask.interrupt();
 		int index = this.tasks.indexOf(oldTask);
-		this.tasks.remove(index);
+		this.removeTasks(oldTask);
 		this.tasks.add(index, newTask);
 	}
 	

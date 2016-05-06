@@ -1,4 +1,6 @@
-package hillbillies.model;
+package hillbillies.model.statements;
+
+import hillbillies.model.StatementTypes;
 
 public class Statement {
 	public Statement( StatementTypes sTypes) {

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.statements.*;
 
 /**
  * 
@@ -41,7 +42,7 @@ public class Task implements Comparable<Task>{
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority, List<Activity> activitylist)
+	public Task(String name, int priority, List<Statement> activitylist)
 			throws IllegalArgumentException {
 		this.setPriority(priority);
 		this.setName(name);

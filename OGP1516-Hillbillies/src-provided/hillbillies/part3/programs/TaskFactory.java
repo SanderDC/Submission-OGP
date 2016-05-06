@@ -1,18 +1,11 @@
-/**
- * 
- */
 package hillbillies.part3.programs;
 
 import java.util.List;
 
-import hillbillies.model.*;
-import hillbillies.model.expressions.Expression;
-import hillbillies.model.statements.Statement;
+import hillbillies.model.Task;
+import hillbillies.model.statements.*;
+import hillbillies.model.expressions.*;
 
-/**
- * @author Sander
- *
- */
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override

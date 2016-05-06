@@ -8,6 +8,6 @@ import hillbillies.model.Unit;
 
 public interface UnitExpression {
 
-	public abstract Unit evaluate() throws NoSuchElementException;
+	public Unit evaluate() throws NoSuchElementException;
 	
 }

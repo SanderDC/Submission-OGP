@@ -1,7 +1,7 @@
 package hillbillies.model.expressions;
 
-public abstract class BooleanExpression extends Expression {
+public interface BooleanExpression{
 	
-	public abstract boolean evaluate();
+	public boolean evaluate();
 
 }

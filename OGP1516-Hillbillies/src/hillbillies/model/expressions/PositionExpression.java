@@ -6,6 +6,6 @@ import hillbillies.model.Vector;
 
 public interface PositionExpression {
 	
-	public abstract Vector evaluate() throws NoSuchElementException;
+	public Vector evaluate() throws NoSuchElementException;
 	
 }

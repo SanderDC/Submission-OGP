@@ -40,18 +40,18 @@ public class SchedulerTest {
 	@Test
 	public void addOneTask() {
 		scheduler1.addTasks(task);
-		assertTrue(scheduler1.hasAsTasks(task));
+		assertTrue(scheduler1.hasAsTask(task));
 		assertTrue(task.hasAsScheduler(scheduler1));
 	}
 	
 	@Test
 	public void addMultipleTasks(){
 		scheduler1.addTasks(task1,task2,task3);
-		assertTrue(scheduler1.hasAsTasks(task1));
+		assertTrue(scheduler1.hasAsTask(task1));
 		assertTrue(task1.hasAsScheduler(scheduler1));
-		assertTrue(scheduler1.hasAsTasks(task2));
+		assertTrue(scheduler1.hasAsTask(task2));
 		assertTrue(task2.hasAsScheduler(scheduler1));
-		assertTrue(scheduler1.hasAsTasks(task3));
+		assertTrue(scheduler1.hasAsTask(task3));
 		assertTrue(task3.hasAsScheduler(scheduler1));
 	}
 	
@@ -59,7 +59,7 @@ public class SchedulerTest {
 	public void addTask_Illegal(){
 		task.terminate();
 		scheduler1.addTasks(task);
-		assertFalse(scheduler1.hasAsTasks(task));
+		assertFalse(scheduler1.hasAsTask(task));
 		assertFalse(task.hasAsScheduler(scheduler1));
 	}
 

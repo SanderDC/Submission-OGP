@@ -7,7 +7,8 @@ import hillbillies.model.GameObject;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 
-public class GameObjectPositionExpression<T extends GameObject> extends PositionExpression {
+public class GameObjectPositionExpression<T extends GameObject> extends Expression 
+																implements PositionExpression {
 
 	@SuppressWarnings("unchecked")
 	@Override

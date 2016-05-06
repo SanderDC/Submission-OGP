@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Vector;
 
-public class NextToPositionExpression extends PositionExpression {
+public class NextToPositionExpression extends Expression implements PositionExpression {
 	
 	public NextToPositionExpression(PositionExpression position) {
 		this.target = position;

@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Vector;
 
-public class LiteralPositionExpression extends PositionExpression {
+public class LiteralPositionExpression extends Expression implements PositionExpression {
 	
 	public LiteralPositionExpression(int x, int y, int z) {
 		this.position = new Vector(x, y, z);

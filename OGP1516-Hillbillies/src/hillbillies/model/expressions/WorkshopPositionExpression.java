@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
 
-public class WorkshopPositionExpression extends PositionExpression {
+public class WorkshopPositionExpression extends Expression implements PositionExpression {
 
 	@Override
 	public Vector evaluate() throws NoSuchElementException {

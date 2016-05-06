@@ -2,7 +2,7 @@ package hillbillies.model.expressions;
 
 import hillbillies.model.Vector;
 
-public class HerePositionExpression extends PositionExpression {
+public class HerePositionExpression extends Expression implements PositionExpression {
 
 	@Override
 	public Vector evaluate() {

@@ -5,7 +5,7 @@ import java.util.*;
 import hillbillies.model.Faction;
 import hillbillies.model.Unit;
 
-public class EnemyUnitExpression extends UnitExpression {
+public class EnemyUnitExpression extends Expression implements UnitExpression {
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {

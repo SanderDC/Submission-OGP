@@ -6,7 +6,7 @@ import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 
-public abstract class UnitExpression extends Expression {
+public interface UnitExpression {
 
 	public abstract Unit evaluate() throws NoSuchElementException;
 	

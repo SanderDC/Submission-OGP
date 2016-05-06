@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.*;
 
-public class FriendUnitExpression extends UnitExpression {
+public class FriendUnitExpression extends Expression implements UnitExpression {
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {

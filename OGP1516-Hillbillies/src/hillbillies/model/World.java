@@ -823,7 +823,7 @@ public class World {
 	 * @return true if and only if the material at the given position is either Wood or Rock
 	 * 			| this.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())
 	 */
-	boolean isSolidGround(Vector position) {
+	public boolean isSolidGround(Vector position) {
 		return this.isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ());
 	}
 

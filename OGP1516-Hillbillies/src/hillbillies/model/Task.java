@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.statements.*;
 
 /**
  * 
@@ -21,6 +22,9 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar  The name of each Task must be a valid name for any
  *         Task.
  *       | isValidName(getName())
+ * @invar  The selectedPosition of each Task must be a valid selectedPosition for any
+ *         Task.
+ *       | isValidSelectedPosition(getSelectedPosition())
  */
 public class Task implements Comparable<Task>{
 
@@ -41,7 +45,7 @@ public class Task implements Comparable<Task>{
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority, List<Activity> activitylist)
+	public Task(String name, int priority, List<Statement> activitylist)
 			throws IllegalArgumentException {
 		this.setPriority(priority);
 		this.setName(name);
@@ -237,7 +241,7 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the name of this Task.
 	 */
 	private String name;
-	
+
 	/**
 	 * Variable registering the activities for this Task
 	 */
@@ -369,8 +373,8 @@ public class Task implements Comparable<Task>{
 	 *       |     (! scheduler.isTerminated()) )
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
-	
-	
+
+
 	public Set<Scheduler> getSchedulers() {
 		return schedulers;
 	}
@@ -412,5 +416,65 @@ public class Task implements Comparable<Task>{
 	 * Variable registering whether this person is terminated.
 	 */
 	private boolean isTerminated = false;
+	
+	/**
+	 * Initialize this new Task with given selectedPosition.
+	 *
+	 * @param  selectedPosition
+	 *         The selectedPosition for this new Task.
+	 * @effect The selectedPosition of this new Task is set to
+	 *         the given selectedPosition.
+	 *       | this.setSelectedPosition(selectedPosition)
+	 */
+	public Task(Vector selectedPosition)
+			throws IllegalArgumentException {
+		this.setSelectedPosition(selectedPosition);
+	}
 
+	/**
+	 * Return the selectedPosition of this Task.
+	 */
+	@Basic @Raw
+	public Vector getSelectedPosition() {
+		return this.selectedPosition;
+	}
+
+	/**
+	 * Check whether the given selectedPosition is a valid selectedPosition for
+	 * any Task.
+	 *  
+	 * @param  selectedPosition
+	 *         The selectedPosition to check.
+	 * @return 
+	 *       | result == 
+	 */
+	public static boolean isValidSelectedPosition(Vector selectedPosition) {
+		return false;
+	}
+
+	/**
+	 * Set the selectedPosition of this Task to the given selectedPosition.
+	 * 
+	 * @param  selectedPosition
+	 *         The new selectedPosition for this Task.
+	 * @post   The selectedPosition of this new Task is equal to
+	 *         the given selectedPosition.
+	 *       | new.getSelectedPosition() == selectedPosition
+	 * @throws IllegalArgumentException
+	 *         The given selectedPosition is not a valid selectedPosition for any
+	 *         Task.
+	 *       | ! isValidSelectedPosition(getSelectedPosition())
+	 */
+	@Raw
+	public void setSelectedPosition(Vector selectedPosition) 
+			throws IllegalArgumentException {
+		if (! isValidSelectedPosition(selectedPosition))
+			throw new IllegalArgumentException();
+		this.selectedPosition = selectedPosition;
+	}
+
+	/**
+	 * Variable registering the selectedPosition of this Task.
+	 */
+	private Vector selectedPosition;
 }

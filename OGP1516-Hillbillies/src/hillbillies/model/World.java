@@ -174,7 +174,7 @@ public class World {
 	 * @return true if all coordinates of the given Vector lie between
 	 * 			this gameworld's minimum and maximum coordinate in that direction.
 	 */
-	boolean isInsideWorld(Vector position){
+	public boolean isInsideWorld(Vector position){
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
 			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i] + 1))
@@ -974,7 +974,7 @@ public class World {
 	 * 						|| position.getCubeZ() == 0
 	 * 		
 	 */
-	boolean unitCanStandAt(Vector position){
+	public boolean unitCanStandAt(Vector position){
 		if (!isInsideWorld(position))
 			return false;
 		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))

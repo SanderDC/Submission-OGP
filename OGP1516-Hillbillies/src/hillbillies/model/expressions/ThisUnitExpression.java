@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.NoSuchElementException;
+
 import hillbillies.model.Unit;
 
 public class ThisUnitExpression extends UnitExpression {
@@ -9,7 +11,7 @@ public class ThisUnitExpression extends UnitExpression {
 //	}
 
 	@Override
-	public Unit evaluate() {
+	public Unit evaluate() throws NoSuchElementException {
 		return this.getUnit();
 	}
 

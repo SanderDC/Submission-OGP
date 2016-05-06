@@ -8,7 +8,7 @@ import hillbillies.model.Unit;
 public class EnemyUnitExpression extends UnitExpression {
 
 	@Override
-	public Unit evaluate() {
+	public Unit evaluate() throws NoSuchElementException {
 		Unit result = null;
 		double distance = 0;
 		Set<Unit> allOptions = new HashSet<>();
@@ -26,7 +26,10 @@ public class EnemyUnitExpression extends UnitExpression {
 				distance = this.getUnit().getPosition().getDistanceTo(other.getPosition());
 			}
 		}
-		return result;
+		if (result == null)
+			throw new NoSuchElementException();
+		else
+			return result;
 	}
 
 }

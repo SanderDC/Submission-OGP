@@ -1,11 +1,13 @@
 package hillbillies.model.expressions;
 
+import java.util.NoSuchElementException;
+
 import hillbillies.model.*;
 
 public class FriendUnitExpression extends UnitExpression {
 
 	@Override
-	public Unit evaluate() {
+	public Unit evaluate() throws NoSuchElementException {
 		Faction faction = this.getUnit().getFaction();
 		Unit result = null;
 		double distance = 0;
@@ -19,7 +21,10 @@ public class FriendUnitExpression extends UnitExpression {
 				distance = this.getUnit().getPosition().getDistanceTo(other.getPosition());
 			}
 		}
-		return result;
+		if (result == null)
+			throw new NoSuchElementException();
+		else
+			return result;
 	}
 
 }

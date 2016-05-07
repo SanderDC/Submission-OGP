@@ -2,6 +2,8 @@ package hillbillies.part3.programs;
 
 import java.util.List;
 
+import hillbillies.model.Boulder;
+import hillbillies.model.Log;
 import hillbillies.model.Task;
 import hillbillies.model.statements.*;
 import hillbillies.model.expressions.*;
@@ -83,80 +85,67 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsSolidBoolean((PositionExpression) position);
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsPassableBoolean((PositionExpression) position);
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsFriendBoolean((UnitExpression) unit);
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsEnemyBoolean((UnitExpression) unit);
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IsAliveBoolean((UnitExpression) unit);
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new CarriesItemBoolean((UnitExpression) unit);
 	}
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new NotBooleanExpression((BooleanExpression) expression);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AndBooleanExpression((BooleanExpression) left, (BooleanExpression) right);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new OrBooleanExpression((BooleanExpression) left, (BooleanExpression) right);
 	}
 
 	@Override
 	public Expression createHerePosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new HerePositionExpression();
 	}
 
 	@Override
 	public Expression createLogPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GameObjectPositionExpression<Log>();
 	}
 
 	@Override
 	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GameObjectPositionExpression<Boulder>();
 	}
 
 	@Override
 	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkshopPositionExpression();
 	}
 
 	@Override
@@ -167,50 +156,42 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new NextToPositionExpression((PositionExpression) position);
 	}
 
 	@Override
 	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LiteralPositionExpression(x, y, z);
 	}
 
 	@Override
 	public Expression createThis(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ThisUnitExpression();
 	}
 
 	@Override
 	public Expression createFriend(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new FriendUnitExpression();
 	}
 
 	@Override
 	public Expression createEnemy(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EnemyUnitExpression();
 	}
 
 	@Override
 	public Expression createAny(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AnyUnitExpression();
 	}
 
 	@Override
 	public Expression createTrue(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TrueBooleanExpression();
 	}
 
 	@Override
 	public Expression createFalse(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new FalseBooleanExpression();
 	}
 
 }

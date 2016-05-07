@@ -85,67 +85,67 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		return new IsSolidBoolean((PositionExpression) position);
+		return new IsSolidBoolean((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		return new IsPassableBoolean((PositionExpression) position);
+		return new IsPassableBoolean((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		return new IsFriendBoolean((UnitExpression) unit);
+		return new IsFriendBoolean((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		return new IsEnemyBoolean((UnitExpression) unit);
+		return new IsEnemyBoolean((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		return new IsAliveBoolean((UnitExpression) unit);
+		return new IsAliveBoolean((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		return new CarriesItemBoolean((UnitExpression) unit);
+		return new CarriesItemBoolean((UnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		return new NotBooleanExpression((BooleanExpression) expression);
+		return new NotBooleanExpression((BooleanExpression) expression, sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new AndBooleanExpression((BooleanExpression) left, (BooleanExpression) right);
+		return new AndBooleanExpression((BooleanExpression) left, (BooleanExpression) right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new OrBooleanExpression((BooleanExpression) left, (BooleanExpression) right);
+		return new OrBooleanExpression((BooleanExpression) left, (BooleanExpression) right, sourceLocation);
 	}
 
 	@Override
 	public Expression createHerePosition(SourceLocation sourceLocation) {
-		return new HerePositionExpression();
+		return new HerePositionExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createLogPosition(SourceLocation sourceLocation) {
-		return new GameObjectPositionExpression<Log>();
+		return new GameObjectPositionExpression<Log>(sourceLocation);
 	}
 
 	@Override
 	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		return new GameObjectPositionExpression<Boulder>();
+		return new GameObjectPositionExpression<Boulder>(sourceLocation);
 	}
 
 	@Override
 	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
-		return new WorkshopPositionExpression();
+		return new WorkshopPositionExpression(sourceLocation);
 	}
 
 	@Override
@@ -156,42 +156,42 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		return new NextToPositionExpression((PositionExpression) position);
+		return new NextToPositionExpression((PositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		return new LiteralPositionExpression(x, y, z);
+		return new LiteralPositionExpression(x, y, z, sourceLocation);
 	}
 
 	@Override
 	public Expression createThis(SourceLocation sourceLocation) {
-		return new ThisUnitExpression();
+		return new ThisUnitExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createFriend(SourceLocation sourceLocation) {
-		return new FriendUnitExpression();
+		return new FriendUnitExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createEnemy(SourceLocation sourceLocation) {
-		return new EnemyUnitExpression();
+		return new EnemyUnitExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createAny(SourceLocation sourceLocation) {
-		return new AnyUnitExpression();
+		return new AnyUnitExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createTrue(SourceLocation sourceLocation) {
-		return new TrueBooleanExpression();
+		return new TrueBooleanExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createFalse(SourceLocation sourceLocation) {
-		return new FalseBooleanExpression();
+		return new FalseBooleanExpression(sourceLocation);
 	}
 
 }

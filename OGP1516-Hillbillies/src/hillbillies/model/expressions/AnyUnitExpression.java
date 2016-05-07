@@ -5,8 +5,13 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 public class AnyUnitExpression extends Expression implements UnitExpression {
+
+	public AnyUnitExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {

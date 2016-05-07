@@ -1,8 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public class NotBooleanExpression extends Expression implements BooleanExpression {
 
-	public NotBooleanExpression(BooleanExpression expression) {
+	public NotBooleanExpression(BooleanExpression expression, SourceLocation sourceLocation) {
+		super(sourceLocation);
 		this.target = expression;
 	}
 

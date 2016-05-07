@@ -1,9 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public class IsPassableBoolean extends PositionBoolean {
 
-	public IsPassableBoolean(PositionExpression position) {
-		super(position);
+	public IsPassableBoolean(PositionExpression position, SourceLocation sourceLocation) {
+		super(position, sourceLocation);
 	}
 
 	@Override

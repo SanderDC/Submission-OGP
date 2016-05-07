@@ -1,9 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public class IsAliveBoolean extends UnitBoolean {
 
-	public IsAliveBoolean(UnitExpression unit) {
-		super(unit);
+	public IsAliveBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override

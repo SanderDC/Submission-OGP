@@ -1,9 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public class IsFriendBoolean extends UnitBoolean {
 
-	public IsFriendBoolean(UnitExpression unit) {
-		super(unit);
+	public IsFriendBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override

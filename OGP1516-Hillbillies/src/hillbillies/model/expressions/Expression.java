@@ -3,6 +3,7 @@ package hillbillies.model.expressions;
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 /**
  * 
@@ -11,6 +12,10 @@ import hillbillies.model.Unit;
  *
  */
 public abstract class Expression {
+	
+	public Expression(SourceLocation sourceLocation){
+		this.sourceLocation = sourceLocation;
+	}
 	
 	public void addToTask(Task task) {
 		this.setTask(task);
@@ -31,4 +36,10 @@ public abstract class Expression {
 	protected Unit getUnit(){
 		return this.getTask().getUnit();
 	}
+	
+	protected SourceLocation getSourceLocation(){
+		return this.sourceLocation;
+	}
+	
+	private final SourceLocation sourceLocation;
 }

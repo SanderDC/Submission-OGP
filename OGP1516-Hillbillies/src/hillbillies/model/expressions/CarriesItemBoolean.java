@@ -1,11 +1,12 @@
 package hillbillies.model.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 public class CarriesItemBoolean extends UnitBoolean {
 
-	public CarriesItemBoolean(UnitExpression unit) {
-		super(unit);
+	public CarriesItemBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override

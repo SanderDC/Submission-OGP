@@ -4,8 +4,13 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Vector;
 import hillbillies.model.World;
+import hillbillies.part3.programs.SourceLocation;
 
 public class WorkshopPositionExpression extends Expression implements PositionExpression {
+
+	public WorkshopPositionExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
 
 	@Override
 	public Vector evaluate() throws NoSuchElementException {

@@ -1,8 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public abstract class BinaryBooleanExpression extends Expression implements BooleanExpression {
 
-	public BinaryBooleanExpression(BooleanExpression leftExpression, BooleanExpression rightExpression) {
+	public BinaryBooleanExpression(BooleanExpression leftExpression, BooleanExpression rightExpression, SourceLocation sourceLocation) {
+		super(sourceLocation);
 		this.leftExpression = leftExpression;
 		this.rightExpression = rightExpression;
 	}

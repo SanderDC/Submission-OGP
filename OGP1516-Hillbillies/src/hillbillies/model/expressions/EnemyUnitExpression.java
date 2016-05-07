@@ -4,8 +4,13 @@ import java.util.*;
 
 import hillbillies.model.Faction;
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 public class EnemyUnitExpression extends Expression implements UnitExpression {
+
+	public EnemyUnitExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {

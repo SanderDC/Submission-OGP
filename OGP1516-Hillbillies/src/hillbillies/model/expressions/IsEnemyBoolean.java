@@ -1,11 +1,12 @@
 package hillbillies.model.expressions;
 
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 public class IsEnemyBoolean extends UnitBoolean {
 
-	public IsEnemyBoolean(UnitExpression unit) {
-		super(unit);
+	public IsEnemyBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+		super(unit, sourceLocation);
 	}
 
 	@Override

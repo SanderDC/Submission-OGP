@@ -6,9 +6,14 @@ import java.util.Set;
 import hillbillies.model.GameObject;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
+import hillbillies.part3.programs.SourceLocation;
 
 public class GameObjectPositionExpression<T extends GameObject> extends Expression 
 																implements PositionExpression {
+
+	public GameObjectPositionExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

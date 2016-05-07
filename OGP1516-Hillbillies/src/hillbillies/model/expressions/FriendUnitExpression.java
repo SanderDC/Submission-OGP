@@ -3,8 +3,13 @@ package hillbillies.model.expressions;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.*;
+import hillbillies.part3.programs.SourceLocation;
 
 public class FriendUnitExpression extends Expression implements UnitExpression {
+
+	public FriendUnitExpression(SourceLocation sourceLocation) {
+		super(sourceLocation);
+	}
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {

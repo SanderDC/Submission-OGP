@@ -4,10 +4,12 @@ import java.util.*;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Vector;
+import hillbillies.part3.programs.SourceLocation;
 
 public class NextToPositionExpression extends Expression implements PositionExpression {
 	
-	public NextToPositionExpression(PositionExpression position) {
+	public NextToPositionExpression(PositionExpression position, SourceLocation sourceLocation) {
+		super(sourceLocation);
 		this.target = position;
 	}
 

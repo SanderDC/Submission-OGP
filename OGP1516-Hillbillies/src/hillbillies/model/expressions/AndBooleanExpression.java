@@ -1,9 +1,11 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
+
 public class AndBooleanExpression extends BinaryBooleanExpression {
 
-	public AndBooleanExpression(BooleanExpression leftExpression, BooleanExpression rightExpression) {
-		super(leftExpression, rightExpression);
+	public AndBooleanExpression(BooleanExpression leftExpression, BooleanExpression rightExpression, SourceLocation sourceLocation) {
+		super(leftExpression, rightExpression, sourceLocation);
 	}
 
 	@Override

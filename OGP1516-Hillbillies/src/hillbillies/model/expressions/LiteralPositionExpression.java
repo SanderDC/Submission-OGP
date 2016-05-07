@@ -3,10 +3,12 @@ package hillbillies.model.expressions;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Vector;
+import hillbillies.part3.programs.SourceLocation;
 
 public class LiteralPositionExpression extends Expression implements PositionExpression {
 	
-	public LiteralPositionExpression(int x, int y, int z) {
+	public LiteralPositionExpression(int x, int y, int z, SourceLocation sourceLocation) {
+		super(sourceLocation);
 		this.position = new Vector(x, y, z);
 	}
 

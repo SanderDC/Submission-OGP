@@ -26,9 +26,7 @@ public class FollowStatement extends Statement {
 					this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
 
 				}
-				else {
-					
-				}
+				
 			}
 			
 		}

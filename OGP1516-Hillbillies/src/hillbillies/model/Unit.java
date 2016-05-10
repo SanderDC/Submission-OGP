@@ -1,6 +1,9 @@
 package hillbillies.model;
 
 import java.util.*;
+
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.Util;
 
@@ -2587,11 +2590,13 @@ public class Unit {
 	 * 			With a chance of one in four, the Unit starts attacking.
 	 */
 	private void defaultbehavior(){
-		if (this.getTask()!=null) {
-			//TODO: uit te voeren taak implementeren
-		}
-		if(this.getStatus()==Status.IDLE){
-			if (!possibleattack()) {
+		
+		 if(this.getStatus()==Status.IDLE){
+			 if(this.getFaction().getScheduler().getTopPriorityTask()!=null) {
+					this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
+				}
+			 
+			 else if (!possibleattack()) {
 				defaultNoAttack();
 			}
 			else{

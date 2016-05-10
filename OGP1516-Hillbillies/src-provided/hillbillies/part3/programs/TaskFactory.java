@@ -203,4 +203,10 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		return new FalseBooleanExpression();
 	}
 
+	@Override
+	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

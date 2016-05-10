@@ -10,7 +10,8 @@ public class CreateMove extends Statement {
 	private LiteralPositionExpression expression;
 	@Override
 	public void addToTask(Task task) {
-		// TODO Auto-generated method stub
+		task.addStatement(this);
+		this.setTask(task);
 		
 	}
 	@Override

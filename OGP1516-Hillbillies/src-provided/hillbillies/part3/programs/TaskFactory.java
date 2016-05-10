@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 import hillbillies.model.Boulder;
 import hillbillies.model.Log;
 import hillbillies.model.Task;
@@ -18,9 +19,15 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		
 		 List<Task> tasklist= new ArrayList<>();
-		for (int i[] : selectedCubes) {
+		if (selectedCubes.size()!=0) {
+			for (int i[] : selectedCubes) {
+				tasklist.add(new Task(name, priority, activity));
+			}
+		}
+		else {
 			tasklist.add(new Task(name, priority, activity));
 		}
+		
 		return tasklist;
 			
 		
@@ -54,7 +61,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreatePrintStatement(value);
+		return new CreatePrintStatement((ReadVariable) value);
 	}
 
 	@Override
@@ -66,23 +73,23 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateMove( position);
+		return new CreateMove( (LiteralPositionExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateWork(position);
+		return new CreateWork((LiteralPositionExpression) position);
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		return new attackStatement(unit);
+		return new FollowStatement((AnyUnitExpression) unit);
 	}
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new attackStatement(unit);
+		return new attackStatement((EnemyUnitExpression) unit);
 		
 	}
 

@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
+
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -45,10 +47,11 @@ public class Task implements Comparable<Task>{
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority, List<Statement> activitylist)
+	public Task(String name, int priority,Statement activitylist)
 			throws IllegalArgumentException {
 		this.setPriority(priority);
 		this.setName(name);
+		activitylist.addToTask(this);
 	}
 
 	/**
@@ -477,4 +480,25 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the selectedPosition of this Task.
 	 */
 	private Vector selectedPosition;
+	
+	
+	
+	/**
+	 * Variable registering the Statement of this Task.
+	 */
+	private List<Statement> statements;
+	
+
+	/**
+	 * Return the Statement of the Task
+	 */
+	public List<Statement> getstatement(){
+		return this.statements;
+	}
+	
+	public void addStatement(Statement statement){
+		this.statements.add(statement);
+	}
+	
+	
 }

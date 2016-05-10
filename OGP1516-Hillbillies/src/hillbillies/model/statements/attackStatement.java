@@ -22,7 +22,8 @@ public class attackStatement extends Statement {
 	}
 	@Override
 	public void addToTask(Task task) {
-		// TODO Auto-generated method stub
+		task.addStatement(this);
+		this.setTask(task);
 		
 	}
 

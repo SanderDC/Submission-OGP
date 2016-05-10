@@ -518,7 +518,7 @@ public class Unit {
 	 * 			|					(Math.abs(this.getPosition().getCubeY() - Math.floor(position.getY())) <= 1) &&
 	 * 			|					(Math.abs(this.getPosition().getCubeZ() - Math.floor(position.getZ())) <= 1)
 	 */
-	private boolean isAdjacentPosition(Vector position){
+	public boolean isAdjacentPosition(Vector position){
 		if (position == null)
 			return false;
 		if (Math.abs(this.getPosition().getCubeX() - Math.floor(position.getX())) > 1)

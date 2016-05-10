@@ -15,7 +15,24 @@ public class FollowStatement extends Statement {
 	return	expression.evaluate().getPosition();
 	}
 	public void execute(){
-		this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
+		boolean hasPathed=false;
+		while (!expression.evaluate().isTerminated()||this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())) {
+			if (!hasPathed) {
+				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
+
+			}
+			else {
+				if (expression.evaluate().isMoving()) {
+					this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
+
+				}
+				else {
+					
+				}
+			}
+			
+		}
+		
 	}
 	@Override
 	public void addToTask(Task task) {

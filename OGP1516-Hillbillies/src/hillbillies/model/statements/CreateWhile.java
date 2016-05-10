@@ -5,7 +5,7 @@ import hillbillies.model.expressions.Expression;
 
 public class CreateWhile extends Statement {
  public CreateWhile(Expression condition, Statement body){
-	 this.expression=expression;
+	 this.expression=condition;
 	 this.body=body;
  }
 private Expression expression;

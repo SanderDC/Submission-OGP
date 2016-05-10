@@ -1,9 +1,5 @@
 package hillbillies.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -486,7 +482,7 @@ public class Task implements Comparable<Task>{
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
-	private List<Statement> statements;
+	private List<Statement> statements=new ArrayList<Statement>();
 	
 
 	/**

@@ -2596,12 +2596,12 @@ public class Unit {
 					this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
 				}
 			 
-			 else if (!possibleattack()) {
+			 else {if (!possibleattack()) {
 				defaultNoAttack();
 			}
 			else{
 				defaultWithAttack();
-			}
+			}}
 		}
 	}
 

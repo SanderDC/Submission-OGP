@@ -2,6 +2,7 @@ package hillbillies.model.statements;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 
 /**
  * 
@@ -22,7 +23,7 @@ public abstract class Statement {
 	}
 	
 	@Raw
-	private void setTask(Task task) {
+	protected void setTask(Task task) {
 		this.task = task;
 	}
 
@@ -30,4 +31,12 @@ public abstract class Statement {
 	 * Variable registering the Task of this Statement.
 	 */
 	private Task task;	
+	
+	protected Unit getUnit(){
+		return this.getTask().getUnit();
+	}
+	
+	public abstract void execute();
+		
+	
 }

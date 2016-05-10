@@ -2587,6 +2587,9 @@ public class Unit {
 	 * 			With a chance of one in four, the Unit starts attacking.
 	 */
 	private void defaultbehavior(){
+		if (this.getTask()!=null) {
+			//TODO: uit te voeren taak implementeren
+		}
 		if(this.getStatus()==Status.IDLE){
 			if (!possibleattack()) {
 				defaultNoAttack();

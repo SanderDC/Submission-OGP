@@ -22,4 +22,10 @@ public class SequenceStatement extends Statement {
 	}
 	
 	private List<Statement> statements;
+
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		
+	}
 }

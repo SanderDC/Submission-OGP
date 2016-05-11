@@ -3,6 +3,7 @@ package hillbillies.model;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.expressions.Expression;
 import hillbillies.model.statements.*;
 
 /**
@@ -496,5 +497,13 @@ public class Task implements Comparable<Task>{
 		this.statements.add(statement);
 	}
 	
+	public Expression getVariableExpression(String name){
+		return this.variables.get(name);
+	}
 	
+	public void storeVariableExpression(String name, Expression expression){
+		this.variables.put(name, expression);
+	}
+	
+	private HashMap<String,Expression> variables = new HashMap<>();
 }

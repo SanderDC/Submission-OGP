@@ -1,18 +1,17 @@
 package hillbillies.model.expressions;
 
+import hillbillies.part3.programs.SourceLocation;
 
-public class ReadVariable extends Expression {
-public  ReadVariable(String v){
-	this.name=v;
+public abstract class ReadVariable extends Expression {
+	public  ReadVariable(String variableName, SourceLocation sourceLocation){
+		super(sourceLocation);
+		this.variableName=variableName;
+	}
 	
+	protected Expression getExpression(){
+		return this.getTask().getVariableExpression(this.variableName);
+	}
+
+	private String variableName;
+
 }
-
-private String name;
-
-
-public double evaluate(){
-
-
-	return 0;
-
-}}

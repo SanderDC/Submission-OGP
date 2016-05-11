@@ -3503,7 +3503,7 @@ public class Unit {
 			this.setStatus(Status.IDLE);
 		}
 		else {
-			if (!hasTask()) {
+			if (!hasTask()&&this.IsValidTask(task)) {
 				this.task=task;
 
 			}
@@ -3516,6 +3516,14 @@ public class Unit {
 				return false;
 			}
 		}
+	private boolean IsValidTask(Task task){
+		if (task.isTerminated()) {
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
 		
 		
 	

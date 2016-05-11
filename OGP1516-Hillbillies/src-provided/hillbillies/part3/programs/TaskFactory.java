@@ -42,14 +42,14 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateWhile(condition, body);
+		return new CreateWhile((BooleanExpression) condition, body);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return  new CreateIf(condition, ifBody, elseBody);
+		return  new CreateIf((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override

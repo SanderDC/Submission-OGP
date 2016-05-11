@@ -2,6 +2,7 @@ package hillbillies.part3.programs;
 import hillbillies.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,6 +15,8 @@ import hillbillies.model.statements.*;
 import hillbillies.model.expressions.*;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
+	
+	private HashMap<String,Class<? extends Expression>> types = new HashMap<>();
 
 	@Override
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
@@ -36,6 +39,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
+		this.types.put(variableName, value.getClass());
 		return null;
 	}
 
@@ -96,7 +100,16 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new ReadVariable( variableName);
+		if (!types.containsKey(variableName))
+			return null;
+		else if (PositionExpression.class.isAssignableFrom(types.get(variableName)))
+			return new ReadPositionExpression(variableName, sourceLocation);
+		else if (BooleanExpression.class.isAssignableFrom(types.get(variableName)))
+			return new ReadBooleanExpression(variableName, sourceLocation);
+		else if (UnitExpression.class.isAssignableFrom(types.get(variableName)))
+			return new ReadUnitExpression(variableName, sourceLocation);
+		else
+			return null;
 	}
 
 	@Override

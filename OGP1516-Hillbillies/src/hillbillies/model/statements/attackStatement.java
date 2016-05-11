@@ -24,6 +24,7 @@ public class attackStatement extends Statement {
 	public void addToTask(Task task) {
 		task.addStatement(this);
 		this.setTask(task);
+		this.expression.addToTask(task);
 		
 	}
 

@@ -14,6 +14,7 @@ public class CreateMove extends Statement {
 	public void addToTask(Task task) {
 		task.addStatement(this);
 		this.setTask(task);
+		this.expression.addToTask(task);
 		
 	}
 	@Override

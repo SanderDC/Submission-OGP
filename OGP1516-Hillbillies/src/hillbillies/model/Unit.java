@@ -3534,7 +3534,7 @@ public class Unit {
 			}
 		}
 	private boolean IsValidTask(Task task){
-		if (task.isTerminated()) {
+		if (task.isTerminated()&&task.getUnit()==null) {
 			return false;
 		}
 		else{

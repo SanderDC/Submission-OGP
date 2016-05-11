@@ -65,10 +65,11 @@ public class Task implements Comparable<Task>{
 		if (u==null) {
 			this.unit=null;
 		}
-		if (unit==null) {
+		if (this.unit==null) {
 			this.unit=u;
+			u.setTask(this);
 		}
-
+		
 	}
 
 	/**

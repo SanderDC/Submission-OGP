@@ -14,7 +14,7 @@ private Statement body;
  
  @Override
  public void execute() {
-	 while(expression.evaluate()){
+	 if(expression.evaluate()){
 		 body.execute();
 	 }
 		 	

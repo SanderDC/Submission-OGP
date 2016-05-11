@@ -2330,8 +2330,13 @@ public class Unit {
 			}
 			this.hasToRest();
 			Status status = this.getStatus();
+			
+			
 			if (status==Status.FALLING) {
 				this.falling(time);
+			}
+			if (hasTask()) {
+				task.getstatement();
 			}
 			if (status == Status.IDLE){
 				if (getdefaultbehaviorboolean())
@@ -2593,16 +2598,19 @@ public class Unit {
 	private void defaultbehavior(){
 		
 		 if(this.getStatus()==Status.IDLE){
-			 if(this.getFaction().getScheduler().getTopPriorityTask()!=null) {
+			 try{
 					this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
 				}
-			 
-			 else {if (!possibleattack()) {
-				defaultNoAttack();
+			 catch (NoSuchElementException e) {
+				 if (!possibleattack()) {
+						defaultNoAttack();
+					}
+					else{
+						defaultWithAttack();
+					}
 			}
-			else{
-				defaultWithAttack();
-			}}
+			 
+			 
 		}
 	}
 

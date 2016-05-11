@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.*;
 
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.statements.*;
 
@@ -24,7 +25,7 @@ import hillbillies.model.statements.*;
  *         Task.
  *       | isValidSelectedPosition(getSelectedPosition())
  */
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task>, Iterable<Statement>{
 
 	/**
 	 * Initialize this new Task as a non-terminated Task with 
@@ -494,6 +495,37 @@ public class Task implements Comparable<Task>{
 	
 	public void addStatement(Statement statement){
 		this.statements.add(statement);
+	}
+	public int getNbStatements(){
+		return this.getstatement().size();
+	}
+	
+	
+	/**
+	 * Return an iterator delivering all tasks managed by this Scheduler
+	 * in order of descending priority.
+	 */
+	public Iterator<Statement> iterator(){
+		
+		return new Iterator<Statement>(){
+			
+			private List<Statement> statements = Task.this.getstatement();
+			
+			private int nbItemsHandled = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return nbItemsHandled < getNbStatements();
+			}
+
+			@Override
+			public Statement next() {
+				Statement result = statements.get(nbItemsHandled);
+				nbItemsHandled += 1;
+				return result;
+			}
+			
+		};
 	}
 	
 	

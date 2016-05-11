@@ -23,7 +23,6 @@ public class attackStatement extends Statement {
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
-		task.setStatement(this);
 		this.expression.addToTask(task);
 		
 	}

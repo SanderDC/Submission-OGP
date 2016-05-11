@@ -1730,7 +1730,7 @@ public class Unit {
 
 
 		List<Integer> dataList = new ArrayList<Integer>();
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 8; i++) {
 			dataList.add(i);
 		}
 		Collections.shuffle(dataList);
@@ -1741,6 +1741,7 @@ public class Unit {
 				i=dataList.size();
 			}
 		}
+		
 
 
 	}
@@ -1758,40 +1759,48 @@ public class Unit {
 	 * 		|if (i==0 up to and including 8)
 	 * 		|result==new Vector.newposition
 	 */
-	private Vector selectDodgePosition(int i)throws IllegalArgumentException{
-		if (i==0){
-			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getY(), this.getPosition().getZ());
+	private Vector selectDodgePosition(int randomnumber)throws IllegalArgumentException{
+		
+		if (randomnumber==0) {
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()-Math.random());
+
 		}
-		if (i==1){
-			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
+		if (randomnumber==1) {
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()-Math.random());
+
 		}
-		if (i==2){
-			return new Vector(this.getPosition().getCubeX()+ CUBELENGTH + Math.random(), this.getPosition().getY(), this.getPosition().getZ());
+		if (randomnumber==2) {
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()-Math.random());
+
 		}
-		if (i==3){
-			return new Vector(this.getPosition().getCubeX()+CUBELENGTH + Math.random(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
+		if (randomnumber==3) {
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()+Math.random());
+
 		}
-		if (i==4){
-			return new Vector(this.getPosition().getX(), this.getPosition().getCubeY()-Math.random(), this.getPosition().getZ());
+		if (randomnumber==4) {
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()+Math.random());
+
 		}
-		if (i==5){
-			return new Vector(this.getPosition().getCubeX()+CUBELENGTH + Math.random(), this.getPosition().getCubeY()+CUBELENGTH + Math.random(), this.getPosition().getZ());
+		if (randomnumber==5) {
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()+Math.random());
+
 		}
-		if (i==6){
-			return new Vector(this.getPosition().getX(), this.getPosition().getCubeY()+CUBELENGTH + Math.random(), this.getPosition().getZ());
+		if (randomnumber==6) {
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()-Math.random());
+
 		}
-		if (i==7){
-			return new Vector(this.getPosition().getCubeX()-Math.random(), this.getPosition().getCubeY()+CUBELENGTH+Math.random(), this.getPosition().getZ());
-		}
-		if (i == 8){
-			Vector result = this.getPosition().getCubePosition().add(new Vector(Math.random(), Math.random(), Math.random()));
-			while (result.equals(this.getPosition()))
-				result = this.getPosition().getCubePosition().add(new Vector(Math.random(), Math.random(), Math.random()));
-			return result;
+		if (randomnumber==7) {
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()+Math.random());
+
 		}
 		else {
-			throw new IllegalArgumentException("input is not valid");
+			throw new IllegalArgumentException("dodge mislukte");
 		}
+				
+		
+			
+		
+		
 	}
 
 	/**

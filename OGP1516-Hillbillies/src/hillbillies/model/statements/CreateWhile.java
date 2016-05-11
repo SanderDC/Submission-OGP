@@ -24,7 +24,6 @@ private Statement body;
 @Override
 public void addToTask(Task task) {
 	this.setTask(task);
-	task.setStatement(this);
 	body.setTask(task);
 	this.expression.addToTask(task);
 	

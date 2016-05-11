@@ -30,7 +30,6 @@ public class CreateIf extends Statement {
 		@Override
 		public void addToTask(Task task) {
 			this.setTask(task);
-			task.setStatement(this);
 			this.expression.addToTask(task);
 			this.trueStatement.setTask(task);
 			this.falseStatement.setTask(task);

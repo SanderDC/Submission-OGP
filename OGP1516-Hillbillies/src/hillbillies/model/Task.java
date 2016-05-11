@@ -49,7 +49,8 @@ public class Task implements Comparable<Task>{
 			throws IllegalArgumentException {
 		this.setPriority(priority);
 		this.setName(name);
-		activitylist.addToTask(this);
+		this.statements=activitylist;
+		this.statements.addToTask(this);
 	}
 
 	/**

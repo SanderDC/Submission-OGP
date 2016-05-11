@@ -12,9 +12,8 @@ public class SequenceStatement extends Statement {
 
 	@Override
 	public void addToTask(Task task) {
-		for (Statement statement:statements){
-			statement.addToTask(task);
-		}
+		this.setTask(task);
+		task.setStatement(this);
 	}
 	
 	public List<Statement> getSequence(){

@@ -20,8 +20,8 @@ public class CreateWork extends Statement{
 	
 	@Override
 	public void addToTask(Task task) {
-		task.addStatement(this);
 		this.setTask(task);
+		task.setStatement(this);
 		this.expression.addToTask(task);
 		
 	}

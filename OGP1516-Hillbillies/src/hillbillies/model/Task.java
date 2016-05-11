@@ -26,7 +26,7 @@ import hillbillies.model.statements.*;
  *         Task.
  *       | isValidSelectedPosition(getSelectedPosition())
  */
-public class Task implements Comparable<Task>, Iterable<Statement>{
+public class Task implements Comparable<Task>{
 
 	/**
 	 * Initialize this new Task as a non-terminated Task with 
@@ -484,50 +484,50 @@ public class Task implements Comparable<Task>, Iterable<Statement>{
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
-	private List<Statement> statements=new ArrayList<Statement>();
+	private Statement statements;
 	
 
 	/**
 	 * Return the Statement of the Task
 	 */
-	public List<Statement> getstatement(){
+	public Statement getstatement(){
 		return this.statements;
 	}
 	
-	public void addStatement(Statement statement){
-		this.statements.add(statement);
+	public void setStatement(Statement statement){
+		this.statements=statement;
 	}
-	public int getNbStatements(){
-		return this.getstatement().size();
-	}
-	
-	
-	/**
-	 * Return an iterator delivering all tasks managed by this Scheduler
-	 * in order of descending priority.
-	 */
-	public Iterator<Statement> iterator(){
-		
-		return new Iterator<Statement>(){
-			
-			private List<Statement> statements = Task.this.getstatement();
-			
-			private int nbItemsHandled = 0;
-			
-			@Override
-			public boolean hasNext() {
-				return nbItemsHandled < getNbStatements();
-			}
-
-			@Override
-			public Statement next() {
-				Statement result = statements.get(nbItemsHandled);
-				nbItemsHandled += 1;
-				return result;
-			}
-			
-		};
-	}
+//	public int getNbStatements(){
+//		return this.getstatement().size();
+//	}
+//	
+//	
+//	/**
+//	 * Return an iterator delivering all tasks managed by this Scheduler
+//	 * in order of descending priority.
+//	 */
+//	public Iterator<Statement> iterator(){
+//		
+//		return new Iterator<Statement>(){
+//			
+//			private List<Statement> statements = Task.this.getstatement();
+//			
+//			private int nbItemsHandled = 0;
+//			
+//			@Override
+//			public boolean hasNext() {
+//				return nbItemsHandled < getNbStatements();
+//			}
+//
+//			@Override
+//			public Statement next() {
+//				Statement result = statements.get(nbItemsHandled);
+//				nbItemsHandled += 1;
+//				return result;
+//			}
+//			
+//		};
+//	}
 	
 	public Expression getVariableExpression(String name){
 		return this.variables.get(name);

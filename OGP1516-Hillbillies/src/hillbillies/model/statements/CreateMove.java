@@ -12,8 +12,8 @@ public class CreateMove extends Statement {
 	private PositionExpression expression;
 	@Override
 	public void addToTask(Task task) {
-		task.addStatement(this);
 		this.setTask(task);
+		task.setStatement(this);
 		this.expression.addToTask(task);
 		
 	}

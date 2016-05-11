@@ -27,7 +27,7 @@ public abstract class Expression {
 	}
 	
 	@Raw
-	protected void setTask(Task task){
+	public void setTask(Task task){
 		this.task = task;
 	}
 

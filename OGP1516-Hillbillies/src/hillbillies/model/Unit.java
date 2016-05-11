@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.*;
 
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.stringtemplate.v4.compiler.STParser.ifstat_return;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -3501,8 +3502,21 @@ public class Unit {
 			this.task=null;
 			this.setStatus(Status.IDLE);
 		}
+		else {
+			if (!hasTask()) {
+				this.task=task;
+
+			}
+		}}
+	private	boolean hasTask(){
+			if (this.task!=null) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 		
 		
-		
-	}
+	
 }

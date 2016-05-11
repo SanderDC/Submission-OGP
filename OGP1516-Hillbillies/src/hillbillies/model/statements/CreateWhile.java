@@ -25,6 +25,8 @@ private Statement body;
 public void addToTask(Task task) {
 	task.addStatement(this);
 	this.setTask(task);
+	body.setTask(task);
+	
 	
 }
 }

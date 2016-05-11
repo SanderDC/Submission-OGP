@@ -2,12 +2,13 @@ package hillbillies.model.statements;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.LiteralPositionExpression;
+import hillbillies.model.expressions.PositionExpression;
 
 public class CreateWork extends Statement{
-	public CreateWork(LiteralPositionExpression expression){
+	public CreateWork(PositionExpression expression){
 	this.expression=expression;
 }
-	private LiteralPositionExpression expression;
+	private PositionExpression expression;
 	
 	
 	@Override

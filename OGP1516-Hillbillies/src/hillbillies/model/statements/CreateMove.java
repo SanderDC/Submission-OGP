@@ -2,12 +2,14 @@ package hillbillies.model.statements;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.LiteralPositionExpression;
+import hillbillies.model.expressions.PositionExpression;
+import javafx.geometry.Pos;
 
 public class CreateMove extends Statement {
-	public CreateMove(LiteralPositionExpression expression) {
+	public CreateMove(PositionExpression expression) {
 		this.expression=expression;
 	}
-	private LiteralPositionExpression expression;
+	private PositionExpression expression;
 	@Override
 	public void addToTask(Task task) {
 		task.addStatement(this);

@@ -73,18 +73,18 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateMove( (LiteralPositionExpression) position);
+		return new CreateMove( (PositionExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateWork((LiteralPositionExpression) position);
+		return new CreateWork((PositionExpression) position);
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		return new FollowStatement((AnyUnitExpression) unit);
+		return new FollowStatement((UnitExpression) unit);
 	}
 
 	@Override

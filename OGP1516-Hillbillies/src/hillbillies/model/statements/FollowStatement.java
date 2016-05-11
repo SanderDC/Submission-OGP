@@ -3,13 +3,14 @@ package hillbillies.model.statements;
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.model.expressions.AnyUnitExpression;
+import hillbillies.model.expressions.UnitExpression;
 
 public class FollowStatement extends Statement {
 	
-	public FollowStatement( AnyUnitExpression expression){
+	public FollowStatement( UnitExpression expression){
 		this.expression=expression;
 	}
-	private AnyUnitExpression expression;
+	private UnitExpression expression;
 
 	private Vector getfollowPositition(){
 	return	expression.evaluate().getPosition();

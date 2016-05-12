@@ -39,5 +39,10 @@ public class GameObjectPositionExpression<T extends GameObject> extends Expressi
 		} else
 			return result.getPosition();
 	}
+	
+	@Override
+	public GameObjectPositionExpression<T> clone(){
+		return new GameObjectPositionExpression<>(getSourceLocation());
+	}
 
 }

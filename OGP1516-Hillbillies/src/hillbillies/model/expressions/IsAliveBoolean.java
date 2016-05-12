@@ -12,5 +12,9 @@ public class IsAliveBoolean extends UnitBoolean {
 	public boolean evaluate() {
 		return (!this.getTarget().evaluate().isTerminated());
 	}
-
+	
+	@Override
+	public IsAliveBoolean clone(){
+		return new IsAliveBoolean(getTarget().clone(), getSourceLocation());
+	}
 }

@@ -11,4 +11,5 @@ public interface PositionExpression {
 	
 	public void addToTask(Task task);
 	
+	public PositionExpression clone();
 }

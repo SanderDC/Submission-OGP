@@ -12,5 +12,10 @@ public class TrueBooleanExpression extends Expression implements BooleanExpressi
 	public boolean evaluate() {
 		return true;
 	}
+	
+	@Override
+	public TrueBooleanExpression clone(){
+		return new TrueBooleanExpression(getSourceLocation());
+	}
 
 }

@@ -22,5 +22,10 @@ public class AnyUnitExpression extends Expression implements UnitExpression {
 		}
 		return iter.next();
 	}
+	
+	@Override
+	public AnyUnitExpression clone(){
+		return new AnyUnitExpression(getSourceLocation());
+	}
 
 }

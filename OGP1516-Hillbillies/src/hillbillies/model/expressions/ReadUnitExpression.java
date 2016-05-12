@@ -15,5 +15,10 @@ public class ReadUnitExpression extends ReadVariable implements UnitExpression {
 	public Unit evaluate() throws NoSuchElementException {
 		return ((UnitExpression) this.getExpression()).evaluate();
 	}
+	
+	@Override
+	public ReadUnitExpression clone(){
+		return new ReadUnitExpression(getVariableName(), getSourceLocation());
+	}
 
 }

@@ -15,5 +15,10 @@ public class ReadPositionExpression extends ReadVariable implements PositionExpr
 	public Vector evaluate() throws NoSuchElementException {
 		return ((PositionExpression) this.getExpression()).evaluate();
 	}
+	
+	@Override
+	public ReadPositionExpression clone(){
+		return new ReadPositionExpression(getVariableName(), getSourceLocation());
+	}
 
 }

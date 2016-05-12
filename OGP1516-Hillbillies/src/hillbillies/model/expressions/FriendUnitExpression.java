@@ -31,5 +31,10 @@ public class FriendUnitExpression extends Expression implements UnitExpression {
 		else
 			return result;
 	}
+	
+	@Override
+	public FriendUnitExpression clone(){
+		return new FriendUnitExpression(getSourceLocation());
+	}
 
 }

@@ -14,4 +14,6 @@ public abstract class PositionBoolean extends Expression implements BooleanExpre
 	}
 	
 	private final PositionExpression target;
+	
+	public abstract PositionBoolean clone();
 }

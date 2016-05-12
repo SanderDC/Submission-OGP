@@ -12,5 +12,10 @@ public class OrBooleanExpression extends BinaryBooleanExpression {
 	public boolean evaluate() {
 		return (this.getLeftExpression().evaluate()) || (this.getRightExpression().evaluate());
 	}
+	
+	@Override
+	public OrBooleanExpression clone(){
+		return new OrBooleanExpression(getLeftExpression().clone(), getRightExpression().clone(), getSourceLocation());
+	}
 
 }

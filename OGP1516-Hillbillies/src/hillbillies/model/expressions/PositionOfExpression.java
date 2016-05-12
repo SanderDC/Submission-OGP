@@ -18,4 +18,9 @@ public class PositionOfExpression extends Expression implements PositionExpressi
 	}
 	
 	private final UnitExpression target;
+	
+	@Override
+	public PositionOfExpression clone(){
+		return new PositionOfExpression(target.clone(), getSourceLocation());
+	}
 }

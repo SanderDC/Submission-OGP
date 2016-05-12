@@ -17,5 +17,9 @@ public class IsEnemyBoolean extends UnitBoolean {
 		else
 			return !this.getUnit().getFaction().hasAsUnit(target);
 	}
-
+	
+	@Override
+	public IsEnemyBoolean clone(){
+		return new IsEnemyBoolean(getTarget().clone(), getSourceLocation());
+	}
 }

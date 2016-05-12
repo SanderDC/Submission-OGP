@@ -12,5 +12,10 @@ public class IsPassableBoolean extends PositionBoolean {
 	public boolean evaluate() {
 		return this.getUnit().getWorld().isSolidGround(this.getTarget().evaluate());
 	}
+	
+	@Override
+	public IsPassableBoolean clone(){
+		return new IsPassableBoolean(getTarget().clone(), getSourceLocation());
+	}
 
 }

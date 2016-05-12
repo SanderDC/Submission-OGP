@@ -12,5 +12,10 @@ public class IsFriendBoolean extends UnitBoolean {
 	public boolean evaluate() {
 		return this.getUnit().getFaction().hasAsUnit(this.getTarget().evaluate());
 	}
+	
+	@Override
+	public IsFriendBoolean clone(){
+		return new IsFriendBoolean(getTarget().clone(), getSourceLocation());
+	}
 
 }

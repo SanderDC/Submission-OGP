@@ -15,5 +15,9 @@ public class ThisUnitExpression extends Expression implements UnitExpression {
 	public Unit evaluate() throws NoSuchElementException {
 		return this.getUnit();
 	}
-
+	
+	@Override
+	public ThisUnitExpression clone(){
+		return new ThisUnitExpression(getSourceLocation());
+	}
 }

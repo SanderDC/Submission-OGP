@@ -7,5 +7,7 @@ public interface BooleanExpression{
 	public boolean evaluate();
 	
 	public void addToTask(Task task);
+	
+	public BooleanExpression clone();
 
 }

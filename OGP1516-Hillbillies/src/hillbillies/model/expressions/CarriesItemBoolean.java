@@ -14,5 +14,10 @@ public class CarriesItemBoolean extends UnitBoolean {
 		Unit unit = this.getTarget().evaluate();
 		return unit.isCarryingLog() || unit.isCarryingBoulder();
 	}
+	
+	@Override
+	public CarriesItemBoolean clone(){
+		return new CarriesItemBoolean(getTarget().clone(), getSourceLocation());
+	}
 
 }

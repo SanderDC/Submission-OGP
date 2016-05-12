@@ -37,4 +37,9 @@ public class NextToPositionExpression extends Expression implements PositionExpr
 	}
 	
 	private final PositionExpression target;
+	
+	@Override
+	public NextToPositionExpression clone(){
+		return new NextToPositionExpression(target.clone(), getSourceLocation());
+	}
 }

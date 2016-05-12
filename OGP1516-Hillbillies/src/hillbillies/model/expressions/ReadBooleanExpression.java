@@ -12,5 +12,10 @@ public class ReadBooleanExpression extends ReadVariable implements BooleanExpres
 	public boolean evaluate() {
 		return ((BooleanExpression) this.getExpression()).evaluate();
 	}
+	
+	@Override
+	public ReadBooleanExpression clone(){
+		return new ReadBooleanExpression(getVariableName(), getSourceLocation());
+	}
 
 }

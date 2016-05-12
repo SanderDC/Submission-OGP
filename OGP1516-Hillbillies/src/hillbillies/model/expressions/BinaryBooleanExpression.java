@@ -21,4 +21,6 @@ public abstract class BinaryBooleanExpression extends Expression implements Bool
 	}
 	
 	private BooleanExpression rightExpression;
+	
+	public abstract BinaryBooleanExpression clone();
 }

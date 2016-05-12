@@ -1730,7 +1730,7 @@ public class Unit {
 
 
 		List<Integer> dataList = new ArrayList<Integer>();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 9; i++) {
 			dataList.add(i);
 		}
 		Collections.shuffle(dataList);
@@ -1762,39 +1762,42 @@ public class Unit {
 	private Vector selectDodgePosition(int randomnumber)throws IllegalArgumentException{
 		
 		if (randomnumber==0) {
-			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()-Math.random());
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==1) {
-			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()-Math.random());
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==2) {
-			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()-Math.random());
+			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==3) {
-			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()+Math.random());
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==4) {
-			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()+Math.random());
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==5) {
-			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()+Math.random());
+			return new Vector(this.getPosition().getX()+Math.random(), this.getPosition().getY(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==6) {
-			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()+Math.random(), this.getPosition().getZ()-Math.random());
+			return new Vector(this.getPosition().getX(), this.getPosition().getY()+Math.random(), this.getPosition().getZ());
 
 		}
 		if (randomnumber==7) {
-			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY()-Math.random(), this.getPosition().getZ()+Math.random());
+			return new Vector(this.getPosition().getX(), this.getPosition().getY()-Math.random(), this.getPosition().getZ());
 
 		}
+		if(randomnumber==8) {
+			return new Vector(this.getPosition().getCubeX()+Math.random(), this.getPosition().getCubeY()+Math.random(), this.getPosition().getCubeZ());
+		}
 		else {
-			throw new IllegalArgumentException("dodge mislukte");
+			throw new IllegalArgumentException("cannot use this integer");
 		}
 				
 		

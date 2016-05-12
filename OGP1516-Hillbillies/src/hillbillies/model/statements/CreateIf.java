@@ -31,8 +31,8 @@ public class CreateIf extends Statement {
 		public void addToTask(Task task) {
 			this.setTask(task);
 			this.expression.addToTask(task);
-			this.trueStatement.setTask(task);
-			this.falseStatement.setTask(task);
+			this.trueStatement.addToTask(task);
+			this.falseStatement.addToTask(task);
 			
 		}
 }

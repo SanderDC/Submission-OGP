@@ -7,7 +7,6 @@ public class BreakStatement  extends Statement{
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
-		task.setStatement(this);
 	}
 
 	@Override

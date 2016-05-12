@@ -12,7 +12,7 @@ public class CreatePrintStatement extends Statement {
 	private ReadVariable expression;
 	@Override
 	public void addToTask(Task task) {
-		task.addStatement(this);
+		expression.addToTask(task);
 		this.setTask(task);
 		
 	}

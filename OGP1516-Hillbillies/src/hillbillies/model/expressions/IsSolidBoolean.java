@@ -13,4 +13,8 @@ public class IsSolidBoolean extends PositionBoolean {
 		return this.getUnit().getWorld().isSolidGround(this.getTarget().evaluate());
 	}
 	
+	@Override
+	public IsSolidBoolean clone(){
+		return new IsSolidBoolean(getTarget().clone(), getSourceLocation());
+	}
 }

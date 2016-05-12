@@ -11,6 +11,10 @@ public abstract class ReadVariable extends Expression {
 	protected Expression getExpression(){
 		return this.getTask().getVariableExpression(this.variableName);
 	}
+	
+	protected String getVariableName(){
+		return this.variableName;
+	}
 
 	private String variableName;
 

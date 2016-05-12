@@ -13,5 +13,10 @@ public class HerePositionExpression extends Expression implements PositionExpres
 	public Vector evaluate() {
 		return this.getUnit().getPosition();
 	}
+	
+	@Override
+	public HerePositionExpression clone(){
+		return new HerePositionExpression(getSourceLocation());
+	}
 
 }

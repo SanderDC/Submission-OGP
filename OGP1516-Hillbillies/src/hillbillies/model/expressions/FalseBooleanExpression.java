@@ -12,5 +12,10 @@ public class FalseBooleanExpression extends Expression implements BooleanExpress
 	public boolean evaluate() {
 		return false;
 	}
+	
+	@Override
+	public FalseBooleanExpression clone(){
+		return new FalseBooleanExpression(getSourceLocation());
+	}
 
 }

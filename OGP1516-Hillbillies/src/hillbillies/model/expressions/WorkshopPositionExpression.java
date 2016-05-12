@@ -38,5 +38,10 @@ public class WorkshopPositionExpression extends Expression implements PositionEx
 		else
 			return new Vector(result[0],result[1],result[2]);
 	}
+	
+	@Override
+	public WorkshopPositionExpression clone(){
+		return new WorkshopPositionExpression(getSourceLocation());
+	}
 
 }

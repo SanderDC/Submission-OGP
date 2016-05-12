@@ -13,4 +13,9 @@ public class AndBooleanExpression extends BinaryBooleanExpression {
 		return (this.getLeftExpression().evaluate()) && (this.getRightExpression().evaluate());
 	}
 
+	@Override
+	public AndBooleanExpression clone() {
+		return new AndBooleanExpression(getLeftExpression().clone(), getRightExpression().clone(), getSourceLocation());
+	}
+
 }

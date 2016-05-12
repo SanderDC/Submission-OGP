@@ -19,4 +19,9 @@ public class NotBooleanExpression extends Expression implements BooleanExpressio
 	}
 	
 	private BooleanExpression target;
+	
+	@Override
+	public NotBooleanExpression clone(){
+		return new NotBooleanExpression(getTarget().clone(), getSourceLocation());
+	}
 }

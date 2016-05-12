@@ -14,4 +14,6 @@ public abstract class UnitBoolean extends Expression implements BooleanExpressio
 	}
 	
 	private final UnitExpression target;
+	
+	public abstract UnitBoolean clone();
 }

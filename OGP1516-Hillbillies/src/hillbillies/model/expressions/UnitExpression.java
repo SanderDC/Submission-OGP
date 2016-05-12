@@ -11,4 +11,6 @@ public interface UnitExpression {
 	public Unit evaluate() throws NoSuchElementException;
 	
 	public void addToTask(Task task);
+	
+	public UnitExpression clone();
 }

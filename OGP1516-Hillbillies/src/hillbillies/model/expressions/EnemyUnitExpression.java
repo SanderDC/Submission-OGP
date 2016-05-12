@@ -36,5 +36,10 @@ public class EnemyUnitExpression extends Expression implements UnitExpression {
 		else
 			return result;
 	}
+	
+	@Override
+	public EnemyUnitExpression clone(){
+		return new EnemyUnitExpression(getSourceLocation());
+	}
 
 }

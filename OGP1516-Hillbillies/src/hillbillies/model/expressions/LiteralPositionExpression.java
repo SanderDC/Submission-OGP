@@ -21,4 +21,9 @@ public class LiteralPositionExpression extends Expression implements PositionExp
 	}
 	
 	private final Vector position;
+	
+	@Override
+	public LiteralPositionExpression clone(){
+		return new LiteralPositionExpression(this.position.getCubeX(), this.position.getCubeY(), this.position.getCubeZ(), getSourceLocation());
+	}
 }

@@ -4,9 +4,9 @@ import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.ReadVariable;
 
-public class CreatePrintStatement extends Statement {
+public class PrintStatement extends Statement {
 	
-	public  CreatePrintStatement(ReadVariable value) {
+	public  PrintStatement(ReadVariable value) {
 		this.expression=value;
 	}
 	private ReadVariable expression;

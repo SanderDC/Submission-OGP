@@ -4,8 +4,8 @@ import hillbillies.model.Task;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 
-public class CreateWhile extends Statement {
- public CreateWhile(BooleanExpression condition, Statement body){
+public class WhileStatement extends Statement {
+ public WhileStatement(BooleanExpression condition, Statement body){
 	 this.expression=condition;
 	 this.body=body;
  }

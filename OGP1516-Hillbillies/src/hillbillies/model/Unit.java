@@ -2363,12 +2363,15 @@ public class Unit {
 					}
 				}
 				}
-				if (!this.getTask().getstatement().getexecuted()) {
-					if (this.getTask().getstatement().check()) {
-						this.getTask().terminate();
-							
+				if (hasTask()) {
+					if (!this.getTask().getstatement().getexecuted()) {
+						if (this.getTask().getstatement().check()) {
+							this.getTask().terminate();
+								
+							}
 						}
-					}
+				}
+			}
 			
 			if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
 				this.move(time);
@@ -2377,7 +2380,7 @@ public class Unit {
 			if (status == Status.WORKING)
 				this.advanceWork(time);
 			if (status == Status.ATTACKING)
-				this.attack(getEnemy(), time);}
+				this.attack(getEnemy(), time);
 		}
 
 	}
@@ -3545,6 +3548,7 @@ public class Unit {
 		else {
 			if (!hasTask()&&this.IsValidTask(task)) {
 				this.task=task;
+				
 
 			}
 		}}

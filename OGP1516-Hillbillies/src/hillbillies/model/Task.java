@@ -60,20 +60,19 @@ public class Task implements Comparable<Task>{
 		return inExecution;
 	}
 
-	public void AssignTaskToUnit(Unit u){
+	public void AssignTaskToUnit(Unit unit){
 
-		if (u==null) {
-			this.unit=null;
-		}
+		
 		if (this.unit==null) {
-			this.unit=u;
-			u.setTask(this);
+			this.unit=unit;
+			unit.setTask(this);
+			this.inExecution=true;
 		}
 		
 	}
 	public void unAssignTaskofUnit(Unit unit){
 		unit.setTask(null);
-		this.setUnit(null);
+		this.unit=null;
 		this.getstatement().setExecuted(false);
 		this.setPriority(this.getPriority()-1);
 	}
@@ -406,7 +405,7 @@ public class Task implements Comparable<Task>{
 			scheduler.removeTasks(this);
 		if (this.getUnit() != null) {
 			this.getUnit().setTask(null);
-			this.setUnit(null);
+			this.unit=null;
 		}
 		this.inExecution = false;
 		this.isTerminated = true;

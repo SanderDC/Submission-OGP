@@ -4,7 +4,7 @@ import hillbillies.model.Task;
 
 public interface BooleanExpression{
 	
-	public boolean evaluate();
+	public Boolean evaluate();
 	
 	public void addToTask(Task task);
 	

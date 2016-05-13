@@ -1,48 +1,34 @@
 package hillbillies.model.statements;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import hillbillies.model.Task;
-import hillbillies.model.expressions.LiteralPositionExpression;
-import hillbillies.model.expressions.PositionExpression;
 
-public class WorkStatement extends Statement {
-	
-	public WorkStatement(PositionExpression expression){
+import hillbillies.model.Task;
+import hillbillies.model.expressions.EnemyUnitExpression;
+import hillbillies.model.expressions.Expression;
+
+public class AttackStatement extends Statement {
+
+	public  AttackStatement(EnemyUnitExpression expression) {
 		this.expression=expression;
 	}
-	
-	private PositionExpression expression;
+
+	private EnemyUnitExpression expression;
 
 	@Override
 	public void execute(){
-		this.getUnit().WorkAt(expression.evaluate().getCubeX(),expression.evaluate().getCubeY(),expression.evaluate().getCubeZ());
+		this.getUnit().startAttack(expression.evaluate());
 	}
 
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.expression.addToTask(task);
-
 	}
 
-
-
 	@Override
-	public boolean check() {
-		if ( !this.getUnit().isWorking()) {
-			this.setExecuted(true);
-			return true;
-		}
-		else
-			return false;
-			
-		
-	}
-	@Override
-	public Statement clone() {
-		return new WorkStatement(expression.clone());
+	public AttackStatement clone() {
+		return new AttackStatement(expression.clone());
 	}
 
 	@Override
@@ -61,8 +47,19 @@ public class WorkStatement extends Statement {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;
-				return WorkStatement.this;
+				return AttackStatement.this;
 			}
+
 		};
 	}
+
+	@Override
+	public boolean check() {
+		if (!this.getUnit().isAttacking()) {
+			
+			return true;
+		}
+		return false;
+	}
+
 }

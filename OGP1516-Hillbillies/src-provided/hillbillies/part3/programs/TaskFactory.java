@@ -39,6 +39,9 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
+		if (this.types.containsKey(variableName))
+			if (value.getClass().getInterfaces()[0] != types.get(variableName).getInterfaces()[0])
+				return null;
 		this.types.put(variableName, value.getClass());
 		return null;
 	}

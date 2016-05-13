@@ -1,33 +1,74 @@
 package hillbillies.model.statements;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import hillbillies.model.Task;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 
 public class WhileStatement extends Statement {
- public WhileStatement(BooleanExpression condition, Statement body){
-	 this.expression=condition;
-	 this.body=body;
- }
-private BooleanExpression expression;
-private Statement body;
- 
- @Override
- public void execute() {
-	 if(expression.evaluate()){
-		 body.execute();
-	 }
-		 	
- }
- 
+	
+	public WhileStatement(BooleanExpression condition, Statement body){
+		this.expression=condition;
+		this.body=body;
+		this.body.setParentStatement(this);
+	}
+	
+	private BooleanExpression expression;
+	
+	private Statement body;
 
-@Override
-public void addToTask(Task task) {
-	this.setTask(task);
-	body.addToTask(task);
-	this.expression.addToTask(task);
+	@Override
+	public void execute() {
+		if(expression.evaluate()){
+			body.execute();
+		}
+
+	}
+
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		body.addToTask(task);
+		this.expression.addToTask(task);
+	}
+
+	@Override
+	public WhileStatement clone() {
+		return new WhileStatement(expression.clone(), body.clone());
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>() {
+			
+			Iterator<Statement> subIterator = body.iterator();
+			
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (subIterator.hasNext())
+					return subIterator.next();
+				else if (expression.evaluate()){
+					subIterator = body.iterator();
+					return subIterator.next();
+				} else
+					throw new NoSuchElementException();
+			}
+			
+			@Override
+			public boolean hasNext() {
+				if (subIterator.hasNext())
+					return true;
+				else if (expression.evaluate())
+					return true;
+				return false;
+			}
+		};
+	}
 	
 	
+<<<<<<< HEAD
 }
 
 
@@ -36,4 +77,6 @@ public boolean check() {
 	// TODO Auto-generated method stub
 	return false;
 }
+=======
+>>>>>>> branch 'master' of https://github.com/SanderDC/Submission-OGP.git
 }

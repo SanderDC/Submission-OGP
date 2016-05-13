@@ -1,5 +1,7 @@
 package hillbillies.model.statements;
 
+import java.util.Iterator;
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -10,7 +12,7 @@ import hillbillies.model.Unit;
  * @author Bram Belpaire
  *
  */
-public abstract class Statement {
+public abstract class Statement implements Iterable<Statement> {
 
 	public abstract void addToTask(Task task);
 
@@ -36,7 +38,6 @@ public abstract class Statement {
 		return this.getTask().getUnit();
 	}
 	
-	public abstract void execute();
 	private boolean executed=false;
 	
 	public boolean getexecuted () {
@@ -46,5 +47,19 @@ public abstract class Statement {
 		this.executed=e;
 	}
 	public abstract boolean check();
+	protected Statement getParentStatement(){
+		return this.parentStatement;
+	}
 	
+	protected void setParentStatement(Statement statement){
+		this.parentStatement = statement;
+	}
+	
+	public abstract Iterator<Statement> iterator();
+	
+	private Statement parentStatement;
+	
+	public abstract void execute();
+	
+	public abstract Statement clone();	
 }

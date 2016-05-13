@@ -9,7 +9,7 @@ public class IsFriendBoolean extends UnitBoolean {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return this.getUnit().getFaction().hasAsUnit(this.getTarget().evaluate());
 	}
 	

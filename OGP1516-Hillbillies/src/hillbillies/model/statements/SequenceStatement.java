@@ -8,6 +8,9 @@ public class SequenceStatement extends Statement {
 	
 	public SequenceStatement(List<Statement> sequence) {
 		this.statements = sequence;
+		for (Statement statement:this.statements){
+			statement.setParentStatement(this);
+		}
 	}
 
 	@Override
@@ -22,7 +25,7 @@ public class SequenceStatement extends Statement {
 		return this.statements;
 	}
 	
-	private List<Statement> statements;
+	private List<Statement> statements = new ArrayList<>();
 
 	@Override
 	public void execute() {
@@ -35,4 +38,39 @@ public class SequenceStatement extends Statement {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	public SequenceStatement clone() {
+		List<Statement> cloned = new ArrayList<>();
+		for (Statement statement:this.statements){
+			cloned.add(statement.clone());
+		}
+		return new SequenceStatement(cloned);
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>(){
+			
+			private Iterator<Statement> nextStatements = statements.iterator();
+			
+			private Iterator<Statement> currentIterator;
+
+			@Override
+			public boolean hasNext() {
+				return nextStatements.hasNext() || currentIterator.hasNext();
+			}
+
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (!hasNext())
+					throw new NoSuchElementException();
+				if (currentIterator == null)
+					currentIterator = nextStatements.next().iterator();
+				else if (!currentIterator.hasNext())
+					currentIterator = nextStatements.next().iterator();
+				return currentIterator.next();
+			}
+			
+		};
+	}
+	
 }

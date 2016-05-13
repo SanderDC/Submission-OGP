@@ -9,7 +9,7 @@ public class TrueBooleanExpression extends Expression implements BooleanExpressi
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return true;
 	}
 	

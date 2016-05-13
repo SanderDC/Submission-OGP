@@ -5,42 +5,38 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
-import hillbillies.model.expressions.ReadVariable;
 
-public class PrintStatement extends Statement {
-
-	public  PrintStatement(Expression value) {
-		this.expression=value;
+public class AssignmentStatement extends Statement {
+	
+	public AssignmentStatement(Expression expression, String variableName) {
+		this.expression = expression;
+		this.variableName = variableName;
 	}
-
+	
+	private String variableName;
+	
 	private Expression expression;
 
 	@Override
 	public void addToTask(Task task) {
-		expression.addToTask(task);
 		this.setTask(task);
-
-	}
-
-	private Object getvalue(){
-		return expression.evaluate();
+		this.expression.addToTask(task);
 	}
 
 	@Override
 	public void execute() {
-		System.out.println(getvalue()); 
-
+		this.getTask().storeVariableExpression(variableName, expression);
 	}
 
 	@Override
 	public Statement clone() {
-		return new PrintStatement(expression.clone());
+		return new AssignmentStatement(expression.clone(), variableName);
 	}
 
 	@Override
 	public Iterator<Statement> iterator() {
 		return new Iterator<Statement>(){
-
+			
 			private boolean statementHandled = false;
 
 			@Override
@@ -53,8 +49,16 @@ public class PrintStatement extends Statement {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;
-				return PrintStatement.this;
+				return AssignmentStatement.this;
 			}
+			
 		};
 	}
+
+	@Override
+	public boolean check() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }

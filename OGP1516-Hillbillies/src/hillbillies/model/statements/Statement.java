@@ -37,6 +37,14 @@ public abstract class Statement {
 	}
 	
 	public abstract void execute();
-		
+	private boolean executed=false;
+	
+	public boolean getexecuted () {
+		return this.executed;
+	}
+	public void setExecuted(boolean e){
+		this.executed=e;
+	}
+	public abstract boolean check();
 	
 }

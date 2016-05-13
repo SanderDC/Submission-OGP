@@ -24,4 +24,18 @@ public class WorkStatement extends Statement{
 		this.expression.addToTask(task);
 		
 	}
+
+
+
+	@Override
+	public boolean check() {
+		if ( !this.getUnit().isWorking()) {
+			this.setExecuted(true);
+			return true;
+		}
+		else
+			return false;
+			
+		
+	}
 	}

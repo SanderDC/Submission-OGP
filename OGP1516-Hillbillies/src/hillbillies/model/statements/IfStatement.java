@@ -36,4 +36,11 @@ public class IfStatement extends Statement {
 		this.falseStatement.addToTask(task);
 
 	}
+
+
+	@Override
+	public boolean check() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

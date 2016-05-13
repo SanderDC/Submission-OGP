@@ -71,6 +71,12 @@ public class Task implements Comparable<Task>{
 		}
 		
 	}
+	public void unAssignTaskofUnit(Unit unit){
+		unit.setTask(null);
+		this.setUnit(null);
+		this.getstatement().setExecuted(false);
+		this.setPriority(this.getPriority()-1);
+	}
 
 	/**
 	 * Interrupt this Task

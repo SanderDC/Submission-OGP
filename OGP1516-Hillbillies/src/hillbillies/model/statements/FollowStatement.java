@@ -16,27 +16,33 @@ public class FollowStatement extends Statement {
 	return	expression.evaluate().getPosition();
 	}
 	public void execute(){
-		boolean hasPathed=false;
-		while (!expression.evaluate().isTerminated()||this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())) {
-			if (!hasPathed) {
 				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
-
-			}
-			else {
-				if (expression.evaluate().isMoving()) {
-					this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
-
-				}
-				
 			}
 			
-		}
+			
+			
 		
-	}
+		
+	
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.expression.addToTask(task);
 		
+	}
+	@Override
+	public boolean check() {
+		
+		if( this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())){
+			this.setExecuted(true);
+			return true;}
+		else{
+			if (expression.evaluate().isMoving()||expression.evaluate().isFalling()) {
+				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
+				
+			}
+			return false;
+			
+		}
 	}
 }

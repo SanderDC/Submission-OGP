@@ -418,7 +418,6 @@ public class Scheduler implements Iterable<Task>{
 	    }
 	 
 	public Stream<Task> Sort(){
-		stream().
 		return this.stream().sorted();
 	}
 

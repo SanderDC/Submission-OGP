@@ -20,6 +20,14 @@ public class MoveToStatement extends Statement {
 	public void execute(){
 		this.getUnit().moveTo(expression.evaluate().getCubeX(),expression.evaluate().getCubeY(),expression.evaluate().getCubeZ());
 	}
+	@Override
+	public boolean check() {
+		if (expression.evaluate().equals(getUnit().getPosition())) {
+			this.setExecuted(true);
+			return true;
+		}
+		return false;
+	}
 	
 	
 }

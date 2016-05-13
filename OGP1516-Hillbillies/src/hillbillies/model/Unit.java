@@ -6,6 +6,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 import org.stringtemplate.v4.compiler.STParser.ifstat_return;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.statements.Statement;
 import ogp.framework.util.Util;
 
 /**
@@ -2347,13 +2348,26 @@ public class Unit {
 			if (status==Status.FALLING) {
 				this.falling(time);
 			}
-			if (hasTask()) {
-				task.getstatement();
-			}
+			if (!this.getTask().getstatement().getexecuted()) {
+				if (this.getTask().getstatement().check()) {
+					this.getTask().terminate();
+						
+					}
+				}
+			
+			
 			if (status == Status.IDLE){
-				if (getdefaultbehaviorboolean())
+				if (getdefaultbehaviorboolean()){
 					defaultbehavior();
-			}
+				if (hasTask()) {
+					try {
+						task.getstatement().execute();
+					} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
+						task.unAssignTaskofUnit(this);
+					}
+				}
+				}
+			
 			if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
 				this.move(time);
 			if (status == Status.RESTING)
@@ -2361,7 +2375,7 @@ public class Unit {
 			if (status == Status.WORKING)
 				this.advanceWork(time);
 			if (status == Status.ATTACKING)
-				this.attack(getEnemy(), time);
+				this.attack(getEnemy(), time);}
 		}
 
 	}
@@ -2917,7 +2931,7 @@ public class Unit {
 	 * @return true if the status of this unit is the falling status
 	 * 		| result==(this.getstatus==Status.FALLING)
 	 */
-	private boolean isFalling(){
+	public boolean isFalling(){
 		if (this.getStatus()==Status.FALLING){
 			return true;
 		}
@@ -3544,7 +3558,14 @@ public class Unit {
 			return true;
 		}
 	}
-		
+	
+	
+	private Statement getcurrenStatement(){
+		return this.getTask().getstatement();
+	}
+	private void checkiffullfilled(){
+		this.getTask().getstatement();
+	}	
 		
 	
 }

@@ -29,4 +29,10 @@ public class SequenceStatement extends Statement {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean check() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

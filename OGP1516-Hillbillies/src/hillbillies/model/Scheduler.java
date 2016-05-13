@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -409,4 +410,16 @@ public class Scheduler implements Iterable<Task>{
 			
 		};
 	}
+	 public  Stream<Task> stream() {
+	    	Stream.Builder<Task> builder = Stream.builder();
+	    	for (Task element: this.tasks)
+	    		builder.accept(element);
+	    	return builder.build();    		
+	    }
+	 
+	public Stream<Task> Sort(){
+		stream().
+		return this.stream().sorted();
+	}
+
 }

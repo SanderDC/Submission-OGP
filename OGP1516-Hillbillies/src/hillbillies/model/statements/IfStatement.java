@@ -13,14 +13,20 @@ public class IfStatement extends Statement {
 		this.expression=expression;
 		this.trueStatement=lStatement;
 		this.trueStatement.setParentStatement(this);
-		this.falseStatement=rStatement;
-		this.falseStatement.setParentStatement(this);
+		if (rStatement != null) {
+			this.falseStatement = rStatement;
+			this.falseStatement.setParentStatement(this);
+		}
 	}
 
 
 	private BooleanExpression expression;
 
 	private Statement trueStatement;
+	
+	boolean hasElseStatement(){
+		return this.falseStatement != null;
+	}
 
 	private Statement falseStatement;
 
@@ -40,8 +46,8 @@ public class IfStatement extends Statement {
 		this.setTask(task);
 		this.expression.addToTask(task);
 		this.trueStatement.addToTask(task);
-		this.falseStatement.addToTask(task);
-
+		if (this.hasElseStatement())
+			this.falseStatement.addToTask(task);
 	}
 
 
@@ -66,7 +72,10 @@ public class IfStatement extends Statement {
 			@Override
 			public boolean hasNext() {
 				if (firstCall)
-					return true;
+					if (hasElseStatement())
+						return true;
+					else
+						return expression.evaluate();
 				else
 					return subIterator.hasNext();
 			}

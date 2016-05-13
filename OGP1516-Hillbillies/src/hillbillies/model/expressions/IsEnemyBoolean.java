@@ -10,7 +10,7 @@ public class IsEnemyBoolean extends UnitBoolean {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		Unit target = this.getTarget().evaluate();
 		if (target.getWorld() != this.getUnit().getWorld())
 			return false;

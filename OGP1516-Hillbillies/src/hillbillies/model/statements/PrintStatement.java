@@ -19,7 +19,7 @@ public class PrintStatement extends Statement {
 
 	}
 
-	private double getvalue(){
+	private Object getvalue(){
 		return expression.evaluate();
 	}
 

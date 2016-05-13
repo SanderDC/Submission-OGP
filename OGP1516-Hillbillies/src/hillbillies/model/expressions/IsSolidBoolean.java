@@ -9,7 +9,7 @@ public class IsSolidBoolean extends PositionBoolean {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return this.getUnit().getWorld().isSolidGround(this.getTarget().evaluate());
 	}
 	

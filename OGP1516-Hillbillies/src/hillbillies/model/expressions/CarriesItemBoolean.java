@@ -10,7 +10,7 @@ public class CarriesItemBoolean extends UnitBoolean {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		Unit unit = this.getTarget().evaluate();
 		return unit.isCarryingLog() || unit.isCarryingBoulder();
 	}

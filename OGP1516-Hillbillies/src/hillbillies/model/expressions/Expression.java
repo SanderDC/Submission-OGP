@@ -43,5 +43,7 @@ public abstract class Expression {
 	
 	private final SourceLocation sourceLocation;
 	
+	public abstract Object evaluate();
+	
 	public abstract Expression clone();
 }

@@ -9,7 +9,7 @@ public class FalseBooleanExpression extends Expression implements BooleanExpress
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return false;
 	}
 	

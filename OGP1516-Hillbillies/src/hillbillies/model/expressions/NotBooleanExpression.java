@@ -10,7 +10,7 @@ public class NotBooleanExpression extends Expression implements BooleanExpressio
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return !(this.getTarget().evaluate());
 	}
 	

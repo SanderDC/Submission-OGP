@@ -9,7 +9,7 @@ public class ReadBooleanExpression extends ReadVariable implements BooleanExpres
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return ((BooleanExpression) this.getExpression()).evaluate();
 	}
 	

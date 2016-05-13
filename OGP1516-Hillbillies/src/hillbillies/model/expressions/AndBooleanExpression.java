@@ -9,7 +9,7 @@ public class AndBooleanExpression extends BinaryBooleanExpression {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return (this.getLeftExpression().evaluate()) && (this.getRightExpression().evaluate());
 	}
 

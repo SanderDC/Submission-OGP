@@ -9,7 +9,7 @@ public class IsAliveBoolean extends UnitBoolean {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return (!this.getTarget().evaluate().isTerminated());
 	}
 	

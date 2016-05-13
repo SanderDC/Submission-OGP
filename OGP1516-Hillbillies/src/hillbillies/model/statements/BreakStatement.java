@@ -14,7 +14,7 @@ public class BreakStatement  extends Statement{
 
 	@Override
 	public void execute() {
-
+		this.getWhileStatement().breakWhile();
 	}
 
 	@Override

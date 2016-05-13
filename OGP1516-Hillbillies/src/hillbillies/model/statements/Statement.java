@@ -52,5 +52,12 @@ public abstract class Statement implements Iterable<Statement> {
 	
 	public abstract void execute();
 	
+	public WhileStatement getWhileStatement() {
+		if (this.getParentStatement() instanceof WhileStatement)
+			return (WhileStatement) this.getParentStatement();
+		else
+			return this.getParentStatement().getWhileStatement();
+	}
+	
 	public abstract Statement clone();	
 }

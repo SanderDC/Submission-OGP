@@ -13,6 +13,7 @@ public class WhileStatement extends Statement {
 		this.expression=condition;
 		this.body=body;
 		this.body.setParentStatement(this);
+		this.broken = false;
 	}
 	
 	private BooleanExpression expression;
@@ -33,6 +34,16 @@ public class WhileStatement extends Statement {
 		body.addToTask(task);
 		this.expression.addToTask(task);
 	}
+	
+	void breakWhile(){
+		this.broken = true;
+	}
+	
+	boolean isBroken(){
+		return this.broken;
+	}
+	
+	private boolean broken;
 
 	@Override
 	public WhileStatement clone() {
@@ -58,6 +69,8 @@ public class WhileStatement extends Statement {
 			
 			@Override
 			public boolean hasNext() {
+				if (isBroken())
+					return false;
 				if (subIterator.hasNext())
 					return true;
 				else if (expression.evaluate())
@@ -66,6 +79,4 @@ public class WhileStatement extends Statement {
 			}
 		};
 	}
-	
-	
 }

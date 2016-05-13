@@ -46,14 +46,14 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateWhile((BooleanExpression) condition, body);
+		return new WhileStatement((BooleanExpression) condition, body);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return  new CreateIf((BooleanExpression) condition, ifBody, elseBody);
+		return  new IfStatement((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreatePrintStatement((ReadVariable) value);
+		return new PrintStatement((ReadVariable) value);
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateMove( (PositionExpression) position);
+		return new MoveToStatement( (PositionExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new CreateWork((PositionExpression) position);
+		return new WorkStatement((PositionExpression) position);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new attackStatement((EnemyUnitExpression) unit);
+		return new AttackStatement((EnemyUnitExpression) unit);
 		
 	}
 

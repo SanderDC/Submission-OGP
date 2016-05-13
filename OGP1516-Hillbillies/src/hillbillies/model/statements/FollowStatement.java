@@ -6,15 +6,17 @@ import hillbillies.model.expressions.AnyUnitExpression;
 import hillbillies.model.expressions.UnitExpression;
 
 public class FollowStatement extends Statement {
-	
+
 	public FollowStatement( UnitExpression expression){
 		this.expression=expression;
 	}
+
 	private UnitExpression expression;
 
 	private Vector getfollowPositition(){
-	return	expression.evaluate().getPosition();
+		return	expression.evaluate().getPosition();
 	}
+	
 	public void execute(){
 		boolean hasPathed=false;
 		while (!expression.evaluate().isTerminated()||this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())) {
@@ -27,16 +29,23 @@ public class FollowStatement extends Statement {
 					this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
 
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
+	
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.expression.addToTask(task);
-		
+
 	}
+
+	@Override
+	public FollowStatement clone() {
+		return new FollowStatement(expression.clone());
+	}
+	
 }

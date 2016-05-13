@@ -22,11 +22,21 @@ public class SequenceStatement extends Statement {
 		return this.statements;
 	}
 	
-	private List<Statement> statements;
+	private List<Statement> statements = new ArrayList<>();
 
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public SequenceStatement clone() {
+		List<Statement> cloned = new ArrayList<>();
+		for (Statement statement:this.statements){
+			cloned.add(statement.clone());
+		}
+		return new SequenceStatement(cloned);
+	}
+	
 }

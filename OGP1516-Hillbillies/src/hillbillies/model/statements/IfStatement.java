@@ -14,7 +14,9 @@ public class IfStatement extends Statement {
 
 
 	private BooleanExpression expression;
+
 	private Statement trueStatement;
+
 	private Statement falseStatement;
 
 	@Override
@@ -36,4 +38,11 @@ public class IfStatement extends Statement {
 		this.falseStatement.addToTask(task);
 
 	}
+
+
+	@Override
+	public IfStatement clone() {
+		return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
+	}
+
 }

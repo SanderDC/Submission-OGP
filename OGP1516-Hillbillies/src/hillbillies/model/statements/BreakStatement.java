@@ -14,4 +14,9 @@ public class BreakStatement  extends Statement{
 		
 	}
 
+	@Override
+	public BreakStatement clone() {
+		return new BreakStatement();
+	}
+
 }

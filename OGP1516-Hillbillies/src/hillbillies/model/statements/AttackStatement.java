@@ -18,13 +18,18 @@ public class AttackStatement extends Statement {
 	public void execute(){
 		this.getUnit().startAttack(expression.evaluate());
 	}
+	
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.expression.addToTask(task);
-
 	}
 
+	@Override
+	public AttackStatement clone() {
+		return new AttackStatement(expression.clone());
+	}
+	
 }
 
 

@@ -5,17 +5,20 @@ import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.ReadVariable;
 
 public class PrintStatement extends Statement {
-	
-	public  PrintStatement(ReadVariable value) {
+
+	public  PrintStatement(Expression value) {
 		this.expression=value;
 	}
-	private ReadVariable expression;
+
+	private Expression expression;
+
 	@Override
 	public void addToTask(Task task) {
 		expression.addToTask(task);
 		this.setTask(task);
-		
+
 	}
+
 	private double getvalue(){
 		return expression.evaluate();
 	}
@@ -23,8 +26,11 @@ public class PrintStatement extends Statement {
 	@Override
 	public void execute() {
 		System.out.println(getvalue()); 
-		
+
 	}
-	
-		
+
+	@Override
+	public Statement clone() {
+		return new PrintStatement(expression.clone());
+	}
 }

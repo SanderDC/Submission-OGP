@@ -37,6 +37,6 @@ public abstract class Statement {
 	}
 	
 	public abstract void execute();
-		
 	
+	public abstract Statement clone();	
 }

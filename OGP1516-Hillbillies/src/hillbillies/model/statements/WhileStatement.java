@@ -68,8 +68,7 @@ public class WhileStatement extends Statement {
 	}
 	
 	
-<<<<<<< HEAD
-}
+
 
 
 @Override
@@ -77,6 +76,4 @@ public boolean check() {
 	// TODO Auto-generated method stub
 	return false;
 }
-=======
->>>>>>> branch 'master' of https://github.com/SanderDC/Submission-OGP.git
 }

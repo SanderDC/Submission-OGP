@@ -36,6 +36,16 @@ public abstract class Statement {
 		return this.getTask().getUnit();
 	}
 	
+	protected Statement getParentStatement(){
+		return this.parentStatement;
+	}
+	
+	protected void setParentStatement(Statement statement){
+		this.parentStatement = statement;
+	}
+	
+	private Statement parentStatement;
+	
 	public abstract void execute();
 	
 	public abstract Statement clone();	

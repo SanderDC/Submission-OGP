@@ -9,6 +9,7 @@ public class WhileStatement extends Statement {
 	public WhileStatement(BooleanExpression condition, Statement body){
 		this.expression=condition;
 		this.body=body;
+		this.body.setParentStatement(this);
 	}
 	
 	private BooleanExpression expression;

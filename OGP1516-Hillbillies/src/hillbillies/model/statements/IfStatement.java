@@ -9,7 +9,9 @@ public class IfStatement extends Statement {
 	public  IfStatement(BooleanExpression expression, Statement lStatement, Statement rStatement) {
 		this.expression=expression;
 		this.trueStatement=lStatement;
+		this.trueStatement.setParentStatement(this);
 		this.falseStatement=rStatement;
+		this.falseStatement.setParentStatement(this);
 	}
 
 

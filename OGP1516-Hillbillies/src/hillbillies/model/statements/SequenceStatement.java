@@ -8,6 +8,9 @@ public class SequenceStatement extends Statement {
 	
 	public SequenceStatement(List<Statement> sequence) {
 		this.statements = sequence;
+		for (Statement statement:this.statements){
+			statement.setParentStatement(this);
+		}
 	}
 
 	@Override

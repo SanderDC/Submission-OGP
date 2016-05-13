@@ -1,5 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import hillbillies.model.Task;
 import hillbillies.model.expressions.LiteralPositionExpression;
 import hillbillies.model.expressions.PositionExpression;
@@ -27,5 +30,26 @@ public class WorkStatement extends Statement {
 	@Override
 	public Statement clone() {
 		return new WorkStatement(expression.clone());
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>(){
+
+			private boolean statementHandled = false;
+
+			@Override
+			public boolean hasNext() {
+				return !statementHandled;
+			}
+
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (!hasNext())
+					throw new NoSuchElementException();
+				statementHandled = true;
+				return WorkStatement.this;
+			}
+		};
 	}
 }

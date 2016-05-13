@@ -1,5 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
 
@@ -30,4 +33,26 @@ public class AssignmentStatement extends Statement {
 		return new AssignmentStatement(expression.clone(), variableName);
 	}
 
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>(){
+			
+			private boolean statementHandled = false;
+
+			@Override
+			public boolean hasNext() {
+				return !statementHandled;
+			}
+
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (!hasNext())
+					throw new NoSuchElementException();
+				statementHandled = true;
+				return AssignmentStatement.this;
+			}
+			
+		};
+	}
+	
 }

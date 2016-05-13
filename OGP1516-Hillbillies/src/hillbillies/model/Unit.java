@@ -1451,7 +1451,7 @@ public class Unit {
 		if (!isValidStatus(status))
 			throw new IllegalArgumentException("This is an invalid status for a Unit");
 		if (status == Status.IDLE){
-			if (this.getSprinting())
+			if (this.isMoving())
 				this.setSprinting(false);
 			this.setNearTarget(null);
 			this.setDistantTarget(null);
@@ -1734,10 +1734,11 @@ public class Unit {
 			dataList.add(i);
 		}
 		Collections.shuffle(dataList);
+		int j;
 		for (int i = 0; i < dataList.size(); i++) {
-			dataList.get(i);
-			if (isValidPosition(selectDodgePosition(i))) {
-				setPosition(selectDodgePosition(i));
+			j = dataList.get(i);
+			if (isValidPosition(selectDodgePosition(j))) {
+				setPosition(selectDodgePosition(j));
 				i=dataList.size();
 			}
 		}
@@ -1760,7 +1761,7 @@ public class Unit {
 	 * 		|result==new Vector.newposition
 	 */
 	private Vector selectDodgePosition(int randomnumber)throws IllegalArgumentException{
-		
+		//TODO: dodge klopt niet
 		if (randomnumber==0) {
 			return new Vector(this.getPosition().getX()-Math.random(), this.getPosition().getY(), this.getPosition().getZ());
 

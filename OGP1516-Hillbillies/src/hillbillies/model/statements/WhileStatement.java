@@ -1,5 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import hillbillies.model.Task;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
@@ -34,6 +37,34 @@ public class WhileStatement extends Statement {
 	@Override
 	public WhileStatement clone() {
 		return new WhileStatement(expression.clone(), body.clone());
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>() {
+			
+			Iterator<Statement> subIterator = body.iterator();
+			
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (subIterator.hasNext())
+					return subIterator.next();
+				else if (expression.evaluate()){
+					subIterator = body.iterator();
+					return subIterator.next();
+				} else
+					throw new NoSuchElementException();
+			}
+			
+			@Override
+			public boolean hasNext() {
+				if (subIterator.hasNext())
+					return true;
+				else if (expression.evaluate())
+					return true;
+				return false;
+			}
+		};
 	}
 	
 	

@@ -41,5 +41,32 @@ public class SequenceStatement extends Statement {
 		}
 		return new SequenceStatement(cloned);
 	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return new Iterator<Statement>(){
+			
+			private Iterator<Statement> nextStatements = statements.iterator();
+			
+			private Iterator<Statement> currentIterator;
+
+			@Override
+			public boolean hasNext() {
+				return nextStatements.hasNext() || currentIterator.hasNext();
+			}
+
+			@Override
+			public Statement next() throws NoSuchElementException {
+				if (!hasNext())
+					throw new NoSuchElementException();
+				if (currentIterator == null)
+					currentIterator = nextStatements.next().iterator();
+				else if (!currentIterator.hasNext())
+					currentIterator = nextStatements.next().iterator();
+				return currentIterator.next();
+			}
+			
+		};
+	}
 	
 }

@@ -38,54 +38,46 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		if (this.types.containsKey(variableName))
 			if (value.getClass().getInterfaces()[0] != types.get(variableName).getInterfaces()[0])
 				return null;
 		this.types.put(variableName, value.getClass());
-		return null;
+		return new AssignmentStatement(value, variableName);
 	}
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new WhileStatement((BooleanExpression) condition, body);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return  new IfStatement((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BreakStatement();
 	}
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new PrintStatement((ReadVariable) value);
+		return new PrintStatement(value);
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new SequenceStatement(statements);
 	}
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new MoveToStatement( (PositionExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new WorkStatement((PositionExpression) position);
 	}
 
@@ -102,7 +94,6 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		if (!types.containsKey(variableName))
 			return null;
 		else if (PositionExpression.class.isAssignableFrom(types.get(variableName)))

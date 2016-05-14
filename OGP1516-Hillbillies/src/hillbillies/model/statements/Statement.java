@@ -38,7 +38,7 @@ public abstract class Statement implements Iterable<Statement> {
 		return this.getTask().getUnit();
 	}
 	
-	private boolean executed=false;
+	protected boolean executed=false;
 	
 	public boolean getexecuted () {
 		return this.executed;

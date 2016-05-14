@@ -29,15 +29,12 @@ public class SequenceStatement extends Statement {
 
 	@Override
 	public void execute() {
-		Iterator<Statement> itr= this.iterator();
-		boolean foundstatement = false;
-		Statement statementtoexecute = null;
 		for (Statement statement : statements) {
-			if (!foundstatement&&!statement.executed) {
-				 statementtoexecute=statement;
+			if (!statement.executed) {
+				statement.execute();
+				return;
 			}
 		}
-		statementtoexecute.execute();
 		}
 		
 	
@@ -46,6 +43,7 @@ public class SequenceStatement extends Statement {
 	public boolean check() {
 		for (Statement statement : statements) {
 			if (!statement.executed) {
+				statement.check();
 				return false;
 			}
 		}

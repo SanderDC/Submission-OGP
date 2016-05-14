@@ -60,7 +60,7 @@ public class PrintStatement extends Statement {
 
 	@Override
 	public boolean check() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return true;
 	}
 }

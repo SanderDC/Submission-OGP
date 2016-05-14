@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
 public class IsSolidBoolean extends PositionBoolean {
@@ -17,4 +18,6 @@ public class IsSolidBoolean extends PositionBoolean {
 	public IsSolidBoolean clone(){
 		return new IsSolidBoolean(getTarget().clone(), getSourceLocation());
 	}
+	
+	
 }

@@ -3574,12 +3574,7 @@ public class Unit {
 	}
 	
 	
-	private Statement getcurrenStatement(){
-		return this.getTask().getstatement();
-	}
-	private void checkiffullfilled(){
-		this.getTask().getstatement();
-	}	
+	
 		
 	
 }

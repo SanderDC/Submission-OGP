@@ -35,13 +35,16 @@ public class IfStatement extends Statement {
 	
 	@Override
 	public void execute(){
-		if (trueorfalse>0) {
+		if (!(trueorfalse>0)) {
 			if (expression.evaluate()) {
 				trueorfalse=1;
 				trueStatement.execute();
 			}
 			else {
 				trueorfalse=2;
+				if (!hasElseStatement()) {
+					return;
+				}
 				falseStatement.execute();
 			}
 		}
@@ -65,8 +68,13 @@ public class IfStatement extends Statement {
 			this.setExecuted(true);
 			return true;
 		}
+		if (!this.hasElseStatement()&&this.trueorfalse==2){
+			this.setExecuted(true);
+			return true;
+		}
 		if (this.trueorfalse==2&&falseStatement.check()) {
 			this.setExecuted(true);
+			
 			return true;
 		}
 		return false;

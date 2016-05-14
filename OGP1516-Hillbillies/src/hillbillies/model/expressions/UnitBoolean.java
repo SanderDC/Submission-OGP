@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class UnitBoolean extends Expression implements BooleanExpression {
@@ -14,6 +15,11 @@ public abstract class UnitBoolean extends Expression implements BooleanExpressio
 	}
 	
 	private final UnitExpression target;
-	
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		target.addToTask(task);
+		
+	}
 	public abstract UnitBoolean clone();
 }

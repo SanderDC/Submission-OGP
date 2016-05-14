@@ -2,6 +2,7 @@ package hillbillies.model;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	@Raw
 	public Scheduler() {
-		
+
 	}
 
 	/**
@@ -184,8 +185,8 @@ public class Scheduler implements Iterable<Task>{
 	 *       |   		getTaskAt(I) == task
 	 */
 	public boolean hasAsTask( Task task) {
-			if(!this.tasks.contains(task))
-				return false;
+		if(!this.tasks.contains(task))
+			return false;
 		return true;		
 	}
 
@@ -267,7 +268,7 @@ public class Scheduler implements Iterable<Task>{
 		this.removeTasks(oldTask);
 		this.tasks.add(index, newTask);
 	}
-	
+
 	/**
 	 * Return a new list containing all Tasks currently managed by this Scheduler,
 	 * ordered by descending priority
@@ -383,40 +384,32 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	private boolean terminated;
 	
+	/**
+	 * Return the Tasks managed by this Scheduler that satisfy a given condition
+	 * @param predicate
+	 * 			The predicate representing the condition the Tasks to be returned need to satisfy
+	 * @return A Stream of Tasks that satisfy the given condition
+	 * 			| result == this.tasks.stream().filter(predicate)
+	 */
+	public Stream<Task> selectByCondition(Predicate <? super Task> predicate){
+		return this.tasks.stream().filter(predicate);
+	}
 
 	/**
 	 * Return an iterator delivering all tasks managed by this Scheduler
 	 * in order of descending priority.
 	 */
 	public Iterator<Task> iterator(){
-		
-		return new Iterator<Task>(){
-			
-			private List<Task> tasks = Scheduler.this.getTasksSorted();
-			
-			private int nbItemsHandled = 0;
-			
-			@Override
-			public boolean hasNext() {
-				return nbItemsHandled < getNbTasks();
-			}
-
-			@Override
-			public Task next() {
-				Task result = tasks.get(nbItemsHandled);
-				nbItemsHandled += 1;
-				return result;
-			}
-			
-		};
+		return this.tasks.stream().sorted((Task t1, Task t2) -> -1*t1.compareTo(t2)).iterator();
 	}
-	 public  Stream<Task> stream() {
-	    	Stream.Builder<Task> builder = Stream.builder();
-	    	for (Task element: this.tasks)
-	    		builder.accept(element);
-	    	return builder.build();    		
-	    }
-	 
+	
+	public  Stream<Task> stream() {
+		Stream.Builder<Task> builder = Stream.builder();
+		for (Task element: this.tasks)
+			builder.accept(element);
+		return builder.build();    		
+	}
+
 	public Stream<Task> Sort(){
 		return this.stream().sorted();
 	}

@@ -2,8 +2,7 @@ package hillbillies.model;
 
 import java.util.*;
 
-import org.omg.CORBA.PRIVATE_MEMBER;
-import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.model.statements.Statement;
@@ -2370,7 +2369,14 @@ public class Unit {
 				if (hasTask()) {
 					if (!this.getTask().getstatement().getexecuted()) {
 						if (this.getTask().getstatement().check()) {
-							this.getTask().terminate();
+							boolean allexecuted=true;
+							Iterator <Statement> iterator=this.getTask().getstatement().iterator();
+							while (iterator.hasNext()&&allexecuted) {
+								if (!iterator.next().getexecuted()) {
+									allexecuted=false;
+								}
+								
+							}
 								
 							}
 						}

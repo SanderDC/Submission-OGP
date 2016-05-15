@@ -69,4 +69,5 @@ public abstract class Statement implements Iterable<Statement> {
 	}
 	
 	public abstract Statement clone();	
+	
 }

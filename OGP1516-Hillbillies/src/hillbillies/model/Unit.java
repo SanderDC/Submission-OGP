@@ -2335,6 +2335,7 @@ public class Unit {
 	 * 			| (time < 0) || (time > 0.2)
 	 */
 	public void advanceTime(double time) throws IllegalArgumentException{
+		//TODO
 		if (!isTerminated) {
 			if (time<0||time>0.2)
 				throw new IllegalArgumentException();
@@ -2354,26 +2355,31 @@ public class Unit {
 			}
 			
 			
-			
+			if (hasTask()&&hasexecutedonce) {
+				if (!this.getTask().getstatement().getexecuted()) {
+					if (this.getTask().getstatement().check()) {
+							this.getTask().terminate();		
+							hasexecutedonce=false;
+						}
+					}
+			}
 			if (status == Status.IDLE){
 				if (getdefaultbehaviorboolean()){
 					defaultbehavior();
 				if (hasTask()) {
+					
 					try {
 						task.getstatement().execute();
+						hasexecutedonce=true;
 					} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
 						task.unAssignTaskofUnit(this);
+						hasexecutedonce=false;
 					}
 				}
 				}
-				if (hasTask()) {
-					if (!this.getTask().getstatement().getexecuted()) {
-						if (this.getTask().getstatement().check()) {
-								this.getTask().terminate();							
-							}
-						}
-				}
+				
 			}
+			
 			
 			if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
 				this.move(time);
@@ -3572,7 +3578,6 @@ public class Unit {
 	}
 	
 	
-	
 		
-	
+	private boolean hasexecutedonce=false;
 }

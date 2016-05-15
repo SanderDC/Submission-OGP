@@ -84,10 +84,9 @@ public class WhileStatement extends Statement {
 public void   setExecuted(boolean e) {
 	this.executed=e;
 	Iterator<Statement> itr= this.iterator();
-	while (itr.hasNext()) {
-		Statement statement=itr.next();
-		statement.setExecuted(e);
-	}
+	body.setExecuted(e);
+		
+	
 	
 }
 

@@ -35,7 +35,7 @@ public class IfStatement extends Statement {
 	
 	@Override
 	public void execute(){
-		if (!(trueorfalse>0)) {
+		
 			if (expression.evaluate()) {
 				trueorfalse=1;
 				trueStatement.execute();
@@ -47,7 +47,7 @@ public class IfStatement extends Statement {
 				}
 				falseStatement.execute();
 			}
-		}
+		
 		
 	}
 
@@ -123,10 +123,9 @@ public class IfStatement extends Statement {
 	public void   setExecuted(boolean e) {
 		this.executed=e;
 		this.trueorfalse=0;
-		Iterator<Statement> itr= this.iterator();
-		while (itr.hasNext()) {
-			Statement statement=itr.next();
-			statement.setExecuted(e);
+		this.trueStatement.setExecuted(e);
+		if (hasElseStatement()) {
+			this.falseStatement.setExecuted(e);
 		}
 		
 	}

@@ -86,13 +86,14 @@ public class SequenceStatement extends Statement {
 	@Override
 	public void   setExecuted(boolean e) {
 		this.executed=e;
-		Iterator<Statement> itr= this.iterator();
-		while (itr.hasNext()) {
-			Statement statement=itr.next();
+		for (Statement statement : statements) {
 			statement.setExecuted(e);
+
+		}
+			 
 		}
 		
-	}
+	
 	
 	
 }

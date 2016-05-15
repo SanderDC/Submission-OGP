@@ -1363,7 +1363,7 @@ public class Unit {
 	 */
 	@Basic
 	@Raw
-	private Status getStatus() {
+	Status getStatus() {
 		return this.status;
 	}
 
@@ -1761,7 +1761,7 @@ public class Unit {
 	private Vector selectDodgePosition(int randomnumber,float distance)throws IllegalArgumentException{
 		//TODO: dodge klopt niet
 		Random random= new Random();
-		
+
 		if (randomnumber==0) {
 			return new Vector(this.getPosition().getX()-distance, this.getPosition().getY(), this.getPosition().getZ());
 
@@ -1800,11 +1800,11 @@ public class Unit {
 		else {
 			throw new IllegalArgumentException("cannot use this integer");
 		}
-				
-		
-			
-		
-		
+
+
+
+
+
 	}
 
 	/**
@@ -2252,7 +2252,7 @@ public class Unit {
 			throw new IllegalStateException("This Unit cannot start moving at this time");
 		Vector target = new Vector(cubeX + CUBELENGTH/2, cubeY + CUBELENGTH/2, cubeZ + CUBELENGTH/2);
 		if (! this.getWorld().unitCanStandAt(target))
-			throw new IllegalArgumentException();		
+			throw new IllegalArgumentException();
 		if (this.getPosition().getCubePosition().equals(new Vector(cubeX,cubeY,cubeZ)))
 			return;
 		if (this.isResting())
@@ -2344,39 +2344,43 @@ public class Unit {
 			}
 			this.hasToRest();
 			Status status = this.getStatus();
-			
-			
+
+
 			if (status==Status.FALLING) {
 				this.falling(time);
 			}
-			
-			
-			if (hasTask()&&hasexecutedonce) {
-				if (!this.getTask().getstatement().getexecuted()) {
-					if (this.getTask().getstatement().check()) {
-							this.getTask().terminate();		
-							hasexecutedonce=false;
-						}
-					}
+			if (this.hasTask() && this.getStatus() == Status.IDLE){
+				this.getTask().advanceTask(time);
+				return;
 			}
+
+			//			if (hasTask()&&hasexecutedonce) {
+			//				if (!this.getTask().getstatement().getexecuted()) {
+			//					if (this.getTask().getstatement().check()) {
+			//							this.getTask().terminate();		
+			//							hasexecutedonce=false;
+			//						}
+			//					}
+			//			}
 			if (status == Status.IDLE){
 				if (getdefaultbehaviorboolean()){
 					defaultbehavior();
-				if (hasTask()) {
-					
-					try {
-						task.getstatement().execute();
-						hasexecutedonce=true;
-					} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
-						task.unAssignTaskofUnit(this);
-						hasexecutedonce=false;
-					}
+//					if (hasTask()) {
+//
+//						try {
+//							task.getstatement().execute();
+//							hasexecutedonce=true;
+//						} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
+//							e.printStackTrace();
+//							task.unAssignTaskofUnit(this);
+//							hasexecutedonce=false;
+//						}
+//					}
 				}
-				}
-				
+
 			}
-			
-			
+
+
 			if (status == Status.MOVINGADJACENT || status == Status.MOVINGDISTANT)
 				this.move(time);
 			if (status == Status.RESTING)
@@ -2631,25 +2635,25 @@ public class Unit {
 	 * 			With a chance of one in four, the Unit starts attacking.
 	 */
 	private void defaultbehavior(){
-		
-		 if(this.getStatus()==Status.IDLE){
-			 if (!this.hasTask()) {
-				 try{
-						this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
-					}
-				 catch (NoSuchElementException e) {
-					 if (!possibleattack()) {
-							defaultNoAttack();
-						}
-						else{
-							defaultWithAttack();
-						}
+
+		if(this.getStatus()==Status.IDLE){
+			if (!this.hasTask()) {
+				try{
+					this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
 				}
-				
+				catch (NoSuchElementException e) {
+					if (!possibleattack()) {
+						defaultNoAttack();
+					}
+					else{
+						defaultWithAttack();
+					}
+				}
+
 			}
-			 
-			 
-			 
+
+
+
 		}
 	}
 
@@ -2906,7 +2910,7 @@ public class Unit {
 	private double getFallPosition() {
 		return this.fallPosition;
 	}
-	
+
 	/**
 	 * Check whether the given FallPosition is a valid FallPosition for any Unit
 	 * @param fallPosition
@@ -3300,7 +3304,7 @@ public class Unit {
 	 * Variable registering the World this Unit lives in
 	 */
 	private World world;
-	
+
 	/**
 	 * 
 	 * @return the gameobject this unit is carrying, if any
@@ -3310,7 +3314,7 @@ public class Unit {
 	private GameObject getGameObject () {
 		return this.gameObject;
 	}
-	
+
 	/**
 	 * Check whether this Unit is currently carrying a Boulder
 	 * @return true if the gameobject of the unit is a Boulder
@@ -3336,7 +3340,7 @@ public class Unit {
 	private boolean hasGameObject() {
 		return (this.getGameObject() != null);
 	}
-	
+
 	/**
 	 * Returns the weight of the GameObject currently being carried by this Unit.
 	 * @return the weight of the gameobject the unit is carrying, if not carrying any object, returns 0
@@ -3352,7 +3356,7 @@ public class Unit {
 			return this.gameObject.getWeight();
 		}
 	}
-	
+
 	/**
 	 * Check whether the given GameObject is a valid GameObject for this Unit
 	 * @param object
@@ -3371,7 +3375,7 @@ public class Unit {
 		}
 		return (object == null || !object.isTerminated());
 	}
-	
+
 	/**
 	 * Set the Gameobject of the Unit to the given Gameobject
 	 * 
@@ -3402,7 +3406,7 @@ public class Unit {
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
 	private GameObject gameObject=null;
-	
+
 	/**
 	 * Find a path to a given cube in the gameworld
 	 * @param x
@@ -3536,14 +3540,14 @@ public class Unit {
 	 * Variable registering the path of this Unit.
 	 */
 	private List<Vector> path = new ArrayList<>();
-	
+
 	//code deel 3 hier
-	
+
 	private Task task=null;
 	public Task getTask() {
 		return this.task;
 	}
-	
+
 	public void setTask(Task task){
 		if (task==null) {
 			this.task=null;
@@ -3552,18 +3556,18 @@ public class Unit {
 		else {
 			if (!hasTask()&&this.IsValidTask(task)) {
 				this.task=task;
-				
+
 
 			}
 		}}
 	private	boolean hasTask(){
-			if (this.task!=null) {
-				return true;
-			}
-			else {
-				return false;
-			}
+		if (this.task!=null) {
+			return true;
 		}
+		else {
+			return false;
+		}
+	}
 	private boolean IsValidTask(Task task){
 		if (task.isTerminated()&&task.getUnit()==null) {
 			return false;
@@ -3572,8 +3576,8 @@ public class Unit {
 			return true;
 		}
 	}
-	
-	
-		
+
+
+
 	private boolean hasexecutedonce=false;
 }

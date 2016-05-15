@@ -3,6 +3,7 @@ package hillbillies.model.statements;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
 import hillbillies.model.Task;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
@@ -30,14 +31,24 @@ public class IfStatement extends Statement {
 
 	private Statement falseStatement;
 
+	private int trueorfalse=0;
+	
 	@Override
 	public void execute(){
-		if (expression.evaluate()) {
-			trueStatement.execute();
+		if (!(trueorfalse>0)) {
+			if (expression.evaluate()) {
+				trueorfalse=1;
+				trueStatement.execute();
+			}
+			else {
+				trueorfalse=2;
+				if (!hasElseStatement()) {
+					return;
+				}
+				falseStatement.execute();
+			}
 		}
-		else {
-			falseStatement.execute();
-		}
+		
 	}
 
 
@@ -53,7 +64,19 @@ public class IfStatement extends Statement {
 
 	@Override
 	public boolean check() {
-		// TODO Auto-generated method stub
+		if (this.trueorfalse==1&&trueStatement.check()) {
+			this.setExecuted(true);
+			return true;
+		}
+		if (!this.hasElseStatement()&&this.trueorfalse==2){
+			this.setExecuted(true);
+			return true;
+		}
+		if (this.trueorfalse==2&&falseStatement.check()) {
+			this.setExecuted(true);
+			
+			return true;
+		}
 		return false;
 	}
 	public IfStatement clone() {
@@ -95,6 +118,17 @@ public class IfStatement extends Statement {
 			}
 
 		};
+	}
+	@Override
+	public void   setExecuted(boolean e) {
+		this.executed=e;
+		this.trueorfalse=0;
+		Iterator<Statement> itr= this.iterator();
+		while (itr.hasNext()) {
+			Statement statement=itr.next();
+			statement.setExecuted(e);
+		}
+		
 	}
 
 }

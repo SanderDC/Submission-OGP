@@ -29,14 +29,25 @@ public class SequenceStatement extends Statement {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		for (Statement statement : statements) {
+			if (!statement.executed) {
+				statement.execute();
+				return;
+			}
+		}
+		}
 		
-	}
+	
 
 	@Override
 	public boolean check() {
-		// TODO Auto-generated method stub
-		return false;
+		for (Statement statement : statements) {
+			if (!statement.executed) {
+				statement.check();
+				return false;
+			}
+		}
+		return true;
 	}
 	public SequenceStatement clone() {
 		List<Statement> cloned = new ArrayList<>();
@@ -72,5 +83,16 @@ public class SequenceStatement extends Statement {
 			
 		};
 	}
+	@Override
+	public void   setExecuted(boolean e) {
+		this.executed=e;
+		Iterator<Statement> itr= this.iterator();
+		while (itr.hasNext()) {
+			Statement statement=itr.next();
+			statement.setExecuted(e);
+		}
+		
+	}
+	
 	
 }

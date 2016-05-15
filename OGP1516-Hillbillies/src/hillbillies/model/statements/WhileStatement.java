@@ -80,11 +80,23 @@ public class WhileStatement extends Statement {
 		};
 	}
 
-
+@Override
+public void   setExecuted(boolean e) {
+	this.executed=e;
+	Iterator<Statement> itr= this.iterator();
+	while (itr.hasNext()) {
+		Statement statement=itr.next();
+		statement.setExecuted(e);
+	}
+	
+}
 
 @Override
 public boolean check() {
-	// TODO Auto-generated method stub
-	return false;
+	if (expression.evaluate()) {
+		return false;
+	}
+	this.setExecuted(true);
+	return true;
 }
 }

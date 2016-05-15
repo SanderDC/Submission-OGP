@@ -106,7 +106,16 @@ public class Task implements Comparable<Task>{
 	public boolean isBeingExecuted(){
 		return inExecution;
 	}
-
+	/**
+	 * 
+	 * @param unit
+	 * @effect	if the Unit does not currently have an assigned unit, it will set this task's unit to 
+	 * 			the given Unit and the Given Unit will have it's task set to this task
+	 * 			|new.getunit==unit
+	 * 			|unit.setTask(this)
+	 * 			|isBeingexecuted==true
+	 * 			|new.getiterator==this.statements.iterator()
+	 */
 	public void AssignTaskToUnit(Unit unit){
 
 
@@ -118,6 +127,17 @@ public class Task implements Comparable<Task>{
 		}
 
 	}
+	/**
+	 * 
+	 * @param unit
+	 * @effect	the Unit's task will be set null and this Task's Unit will also be set to null
+	 * 			it will no longer be flagged as being executed and its priority will be reduced by 1
+	 * 			|unit.setTask(null)
+	 * 			|new.getunit==null
+	 * 			|this.inexecution==false
+	 * 			|new.getPriority==oldpriority-1
+	 * 		
+	 */
 	public void unAssignTaskofUnit(Unit unit){
 		unit.setTask(null);
 		this.unit=null;
@@ -515,7 +535,7 @@ public class Task implements Comparable<Task>{
 	//			
 	//		};
 	//	}
-
+	
 	public Expression getVariableExpression(String name){
 		return this.variables.get(name);
 	}
@@ -586,7 +606,9 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the Statement of this Task.
 	 */
 	private Statement statements;
-
+	/**
+	 * variable registering the iterator this task is using
+	 */
 	private Iterator<Statement> iterator;
 
 }

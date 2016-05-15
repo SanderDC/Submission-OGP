@@ -1621,6 +1621,7 @@ public class Unit extends GameObject {
 	 * 		if the unit dodges it will take no damage but it will have to dodge to another position
 	 * 		|if (Math.random() <= 0.20 * this.getAgility() / attacker.getAgility())
 	 * 		|then this.dodge
+	 * 		|new.getHitpoints() == this.getHitpoints()
 	 * @post if the unit parries it takes no damage
 	 * 		| if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
 	 * 		| then new.getHitpoints() == this.getHitpoints()
@@ -1696,19 +1697,20 @@ public class Unit extends GameObject {
 	 * @param int i
 	 * 
 	 * @throws IllegalArgumentException
-	 * 		if the integer provided is not part of the interval [0,7], then this 
+	 * 		if the integer provided is not part of the interval [0,8], then this 
 	 * 		method shall throw an IllegalArgumentException
-	 * 		|if(i !=(0 up to and including 7))
+	 * 		|if(i !=(0 up to and including 8))
 	 * 
 	 * @ return
-	 * 		returns the vector of a Cube next to the Unit on the same level of the z-plane
+	 * 		returns the vector of a Position with the x and y position not being 
+	 * 		further than 1 of the Units exact position on the same level of the z-plane
+	 * 
 	 * 		as the unit is currently standing
 	 * 		|if (i==0 up to and including 8)
 	 * 		|result==new Vector.newposition
 	 */
 	private Vector selectDodgePosition(int randomnumber,float distance)throws IllegalArgumentException{
-		//TODO: dodge klopt niet
-		Random random= new Random();
+		
 
 		if (randomnumber==0) {
 			return new Vector(this.getPosition().getX()-distance, this.getPosition().getY(), this.getPosition().getZ());
@@ -2570,6 +2572,8 @@ public class Unit extends GameObject {
 
 	/**
 	 * if a Unit is idle and it has defaultbehavior enabled, it will choose an activity at random
+	 * @post	if thhe Scheduler of the Unit's faction has a Task that is valid for execution, it
+	 * 			will assign the Task to this Unit 
 	 * @post	if no attackableUnits are in range then
 	 * 			With a chance of one in three, movement to a random cube in the gameworld is initiated.
 	 * 			With a chance of one in two, sprinting will be enabled.
@@ -3467,12 +3471,33 @@ public class Unit extends GameObject {
 	private List<Vector> path = new ArrayList<>();
 
 	//code deel 3 hier
-
+	/**
+	 * variable registering the Target of the Unit
+	 */
 	private Task task=null;
+	
+	/**
+	 * 
+	 * @return returns the task of this unit
+	 * 		|result==this.Task
+	 */
 	public Task getTask() {
 		return this.task;
 	}
-
+	/**
+	 * 
+	 * @param task
+	 * @post	if the argument task was null, the Unit's task will be set to null and it's status
+	 * 			will also be set to IDLE
+	 * 			|if(task==null)
+	 * 			|new.getTask==null
+	 * 			|new.getStatus==status.IDLE
+	 * @effect	otherwise if the Unit didn't already have a task and the given task is valid
+	 * 			it will become this Units task
+	 * 			|if (!hasTask()&&this.IsValidTask(task))
+	 * 			|new.getTask==task
+	 * 		
+	 */
 	public void setTask(Task task){
 		if (task==null) {
 			this.task=null;
@@ -3485,24 +3510,28 @@ public class Unit extends GameObject {
 
 			}
 		}}
+	
+	/**
+	 * 
+	 * @return returns whether the unit has a task to execute
+	 * 		|result==ths.task!==null
+	 */
+	
 	private	boolean hasTask(){
-		if (this.task!=null) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return this.task!=null;
 	}
+	
+	/**
+	 * 
+	 * @param task
+	 * @return returns whether the task to execute is valid
+	 * 
+	 * 		|result==!(result==task.isTerminated()&&task.getUnit()==null)
+	 */
 	private boolean IsValidTask(Task task){
-		if (task.isTerminated()&&task.getUnit()==null) {
-			return false;
-		}
-		else{
-			return true;
-		}
+		return !(task.isTerminated()&&task.getUnit()==null); 
 	}
 
 
 
-	private boolean hasexecutedonce=false;
 }

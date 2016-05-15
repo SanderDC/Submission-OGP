@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
 public class NotBooleanExpression extends Expression implements BooleanExpression {
@@ -23,5 +24,11 @@ public class NotBooleanExpression extends Expression implements BooleanExpressio
 	@Override
 	public NotBooleanExpression clone(){
 		return new NotBooleanExpression(getTarget().clone(), getSourceLocation());
+	}
+	
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		this.target.addToTask(task);
 	}
 }

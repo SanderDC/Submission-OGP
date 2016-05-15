@@ -2,6 +2,7 @@ package hillbillies.model.expressions;
 
 import java.util.NoSuchElementException;
 
+import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -22,5 +23,11 @@ public class PositionOfExpression extends Expression implements PositionExpressi
 	@Override
 	public PositionOfExpression clone(){
 		return new PositionOfExpression(target.clone(), getSourceLocation());
+	}
+	
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		this.target.addToTask(task);
 	}
 }

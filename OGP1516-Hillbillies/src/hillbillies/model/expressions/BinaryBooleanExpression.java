@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class BinaryBooleanExpression extends Expression implements BooleanExpression {
@@ -18,6 +19,13 @@ public abstract class BinaryBooleanExpression extends Expression implements Bool
 	
 	protected BooleanExpression getRightExpression(){
 		return this.rightExpression;
+	}
+	
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		this.leftExpression.addToTask(task);
+		this.rightExpression.addToTask(task);
 	}
 	
 	private BooleanExpression rightExpression;

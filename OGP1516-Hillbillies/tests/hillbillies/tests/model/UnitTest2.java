@@ -104,7 +104,7 @@ public class UnitTest2 {
 			assertTrue(Idleunit.getAgility() >= 25||Idleunit.getAgility()<=100);
 			assertTrue(Idleunit.getStrength() >= 25||Idleunit.getStrength()<=100);
 			assertTrue(Idleunit.getToughness() >= 25||Idleunit.getToughness()<=100);
-			assertTrue((Idleunit.getWeight() >= 25||Idleunit.getWeight()<=100)&&Idleunit.getWeight()>=Idleunit.getMinWeight());
+			assertTrue((Idleunit.getWeight() >= 25&&Idleunit.getWeight()<=100)&&Idleunit.getWeight()>=Idleunit.getMinWeight());
 			assertTrue(Idleunit.getmaxHitpoints() ==Math.ceil((double) Idleunit.getToughness() * (double) Idleunit.getWeight() / 50.0));
 			assertTrue(Idleunit.getmaxStamina() ==Math.ceil((double) Idleunit.getToughness() * (double) Idleunit.getWeight() / 50.0));
 			assertTrue(Idleunit.getHitpoints() ==Math.ceil((double) Idleunit.getToughness() * (double) Idleunit.getWeight() / 50.0));
@@ -161,7 +161,7 @@ public class UnitTest2 {
 			int weightbefore=upgradeUnit.getWeight();
 			for (int i = 0; i < 101; i++) {
 				world4.advanceTime(0.2);
-			}			assertTrue(upgradeUnit.getToughness()>Toughnessbefore&&upgradeUnit.getWeight()>weightbefore);
+			}			assertTrue(upgradeUnit.getToughness()>Toughnessbefore||upgradeUnit.getWeight()>weightbefore);
 			
 		}
 		

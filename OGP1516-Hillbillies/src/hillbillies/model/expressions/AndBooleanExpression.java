@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
 public class AndBooleanExpression extends BinaryBooleanExpression {

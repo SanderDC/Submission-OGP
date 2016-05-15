@@ -3,6 +3,7 @@ package hillbillies.model.expressions;
 import java.util.*;
 import java.util.NoSuchElementException;
 
+import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -41,5 +42,11 @@ public class NextToPositionExpression extends Expression implements PositionExpr
 	@Override
 	public NextToPositionExpression clone(){
 		return new NextToPositionExpression(target.clone(), getSourceLocation());
+	}
+	
+	@Override
+	public void addToTask(Task task) {
+		this.setTask(task);
+		this.target.addToTask(task);
 	}
 }

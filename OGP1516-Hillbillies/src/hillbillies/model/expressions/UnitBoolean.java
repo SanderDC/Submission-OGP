@@ -15,11 +15,12 @@ public abstract class UnitBoolean extends Expression implements BooleanExpressio
 	}
 	
 	private final UnitExpression target;
+	
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
 		target.addToTask(task);
-		
 	}
+	
 	public abstract UnitBoolean clone();
 }

@@ -68,7 +68,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		world.addUnit(unit);
+		world.addGameObject(unit);
 	}
 
 	@Override

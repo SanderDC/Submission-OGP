@@ -80,7 +80,7 @@ import ogp.framework.util.Util;
  * @author Bram Belpaire
  *
  */
-public class Unit {
+public class Unit extends GameObject {
 
 	/**
 	 * Initialize a new Unit with given parameters
@@ -205,8 +205,7 @@ public class Unit {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-
-		this.position = position;
+		super(position);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
 		this.setDistantTarget(null);
@@ -269,7 +268,7 @@ public class Unit {
 				"John",
 				new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
 				enableDefaultBehavior);
-		world.addUnit(this);
+		world.addGameObject(this);
 	}
 
 	/**
@@ -406,7 +405,7 @@ public class Unit {
 		if (enemy==null) {
 			return true;
 		}
-		if (enemy.isTerminated) {
+		if (enemy.isTerminated()) {
 			return false;
 		}
 		if( enemy.getFaction()==this.getFaction())
@@ -473,14 +472,6 @@ public class Unit {
 	private boolean sprinting;
 
 	/**
-	 * Return the position of this Unit.
-	 */
-	@Basic @Raw
-	public Vector getPosition() {
-		return this.position;
-	}
-
-	/**
 	 * Check whether the given position is a valid position for
 	 * any Unit.
 	 *  
@@ -493,7 +484,7 @@ public class Unit {
 	 *       |				(component >= MIN_COORDINATE) &&
 	 *       |				(component < MAX_COORDINATE)
 	 */
-	private boolean isValidPosition(Vector position) {
+	public boolean isValidPosition(Vector position) {
 		if (position == null)
 			return false;
 		if (!this.getWorld().isInsideWorld(position))
@@ -535,35 +526,14 @@ public class Unit {
 	}
 
 	/**
-	 * Set the position of this Unit to the given position.
-	 * 
-	 * @param  position
-	 *         The new position for this Unit.
-	 * @post   The position of this new Unit is equal to
-	 *         the given position.
-	 *       | new.getPosition() == position
-	 * @throws IllegalArgumentException
-	 *         The given position is not a valid position for any
-	 *         Unit.
-	 *       | ! isValidPosition(getPosition())
-	 */
-	@Raw
-	private void setPosition(Vector position) 
-			throws IllegalArgumentException {
-		if (! isValidPosition(position))
-			throw new IllegalArgumentException();
-		this.position = position;
-	}
-
-	/**
 	 * Variable registering the length of a cube.
 	 */
 	public static final double CUBELENGTH = 1;
 
-	/**
-	 * Variable registering the position of this Unit.
-	 */
-	private Vector position;
+//	/**
+//	 * Variable registering the position of this Unit.
+//	 */
+//	private Vector position;
 
 	/**
 	 * Return the speed of this Unit.
@@ -980,15 +950,6 @@ public class Unit {
 	private int strength;
 
 	/**
-	 * Return the weight of this Unit.
-	 */
-	@Basic
-	@Raw
-	public int getWeight() {
-		return this.weight;
-	}
-
-	/**
 	 *  
 	 * @return the weigh of the unit and the object it may be carrying
 	 */
@@ -1357,16 +1318,6 @@ public class Unit {
 	 */
 	private double orientation;
 
-
-	/**
-	 * Return the status of this Unit.
-	 */
-	@Basic
-	@Raw
-	Status getStatus() {
-		return this.status;
-	}
-
 	/**
 	 * Check whether this Unit can be interrupted by an activity represented by the given Status
 	 * @param status
@@ -1384,13 +1335,14 @@ public class Unit {
 	 * 			| then result == (status == Status.FALLING || status == Status.ATTACKING)
 	 */
 	private boolean canBeInterruptedBy(Status status) {
-		if (this.status==Status.FALLING) {
+		Status oldStatus = this.getStatus();
+		if (oldStatus==Status.FALLING) {
 			return false;
 		}
-		if (this.status==Status.ATTACKING) {
+		if (oldStatus==Status.ATTACKING) {
 			return status == Status.FALLING;
 		}
-		if (this.status==Status.RESTING) {
+		if (oldStatus==Status.RESTING) {
 			if (hasRestedEnough()) {
 				return true;
 			}
@@ -1401,19 +1353,19 @@ public class Unit {
 				return false;
 			}
 		}
-		if (this.status==Status.WORKING) {
+		if (oldStatus==Status.WORKING) {
 			return true;
 		}
-		if (this.status==Status.IDLE) {
+		if (oldStatus==Status.IDLE) {
 			return true;
 		}
-		if (this.status==Status.MOVINGADJACENT) {
+		if (oldStatus==Status.MOVINGADJACENT) {
 			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
 			}
 		}
 
-		if (this.status==Status.MOVINGDISTANT) {
+		if (oldStatus==Status.MOVINGDISTANT) {
 			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
 			}
@@ -1430,7 +1382,7 @@ public class Unit {
 	 *         | Status.RESTING) || (status == Status.MOVINGADJACENT) ||
 	 *         | (status == Status.IDLE) || (status == Status.MOVINGDISTANT)
 	 */
-	private static boolean isValidStatus(Status status) {
+	protected boolean isValidStatus(Status status) {
 		return (status == Status.WORKING) || (status == Status.RESTING) || (status == Status.MOVINGADJACENT)
 				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING)||(status==Status.FALLING);
 	}
@@ -1446,8 +1398,8 @@ public class Unit {
 	 *             The given status is not a valid status for any Unit. 
 	 *             | !isValidStatus(getStatus())
 	 */
-	@Raw
-	private void setStatus(Status status) throws IllegalArgumentException {
+	@Raw @Override
+	protected void setStatus(Status status) throws IllegalArgumentException {
 		if (!isValidStatus(status))
 			throw new IllegalArgumentException("This is an invalid status for a Unit");
 		if (status == Status.IDLE){
@@ -1458,13 +1410,8 @@ public class Unit {
 			this.setSpeed(new Vector(0,0,0));
 			this.setEnemy(null);
 		}			
-		this.status = status;
+		super.setStatus(status);
 	}
-
-	/**
-	 * Variable registering the status of this Unit.
-	 */
-	private Status status;
 
 	/**
 	 * Return the TimeUntilRest of this Unit.
@@ -1914,7 +1861,7 @@ public class Unit {
 		}
 		if (this.hasGameObject() && this.getWorld().isSolidGround(x, y, z))
 			throw new IllegalArgumentException("A Unit cannot put down an object at a solid cube");
-		if (this.hasGameObject() || this.getWorld().containsGameObject(x, y, z) || world.isSolidGround(x, y, z)){
+		if (this.hasGameObject() || this.getWorld().containsGameObject(x, y, z) || this.getWorld().isSolidGround(x, y, z)){
 			this.settingInitialResttimeOk();
 			this.setWorkposition(x, y, z);
 			this.setToWork();
@@ -2026,13 +1973,13 @@ public class Unit {
 	 * 		|	SetGameObject(LogObject)
 	 */
 	private void pickUpObject(Vector position){
-		for (GameObject object : world.getGameObjectsAt(position)) {
+		for (GameObject object : this.getWorld().getGameObjectsAt(position)) {
 			if (object instanceof Boulder){
 				setGameObject(object);
 				return;
 			}
 		}
-		for (GameObject object : world.getGameObjects()) {
+		for (GameObject object : this.getWorld().getGameObjects()) {
 			if (object instanceof Log){
 				setGameObject(object);
 				return;
@@ -2063,7 +2010,7 @@ public class Unit {
 		position = position.getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2));
 		GameObject oldObject = this.getGameObject();
 		this.setGameObject(null);
-		oldObject.addToWorld(getWorld());
+		this.getWorld().addGameObject(oldObject);
 		oldObject.setPosition(position);
 	}
 
@@ -2332,7 +2279,7 @@ public class Unit {
 	 */
 	public void advanceTime(double time) throws IllegalArgumentException{
 		//TODO
-		if (!isTerminated) {
+		if (!isTerminated()) {
 			if (time<0||time>0.2)
 				throw new IllegalArgumentException();
 			if (this.getTimeUntilRest() - time <= 0)
@@ -2716,7 +2663,7 @@ public class Unit {
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
-						newlist.addAll(world.getDirectlyAdjacentPositions(position));
+						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition()));
 						Collections.shuffle(newlist);
 						for (Vector vector : newlist) {
 							try {
@@ -2732,7 +2679,7 @@ public class Unit {
 				}
 				else {
 					List<Vector> newlist=new ArrayList<>();
-					newlist.addAll(world.getDirectlyAdjacentPositions(position)) ;
+					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition())) ;
 					Collections.shuffle(newlist);
 					for (Vector vector : newlist){
 						try {
@@ -2796,7 +2743,7 @@ public class Unit {
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
-						newlist.addAll(world.getDirectlyAdjacentPositions(position));
+						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition()));
 						Collections.shuffle(newlist);
 						for (Vector vector : newlist) {
 							try {
@@ -2812,7 +2759,7 @@ public class Unit {
 				}
 				else {
 					List<Vector> newlist=new ArrayList<>();
-					newlist.addAll(world.getDirectlyAdjacentPositions(position)) ;
+					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition())) ;
 					Collections.shuffle(newlist);
 					for (Vector vector : newlist){
 						try {
@@ -2993,7 +2940,7 @@ public class Unit {
 	private void falling(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
-		if ((this.getPosition().getCubeZ()==0)||world.isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){
+		if ((this.getPosition().getCubeZ()==0)||this.getWorld().isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){
 
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
 				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
@@ -3082,14 +3029,7 @@ public class Unit {
 	 * variable registering the experience points this unit has
 	 */
 	private int exp;
-
-	/**
-	 * Return a boolean reflecting whether the Unit has been terminated
-	 */
-	public boolean isTerminated(){
-		return this.isTerminated;
-	}
-
+	
 	/**
 	 * Terminate this Unit
 	 * @pre		This Unit's hitpoints have reached zero
@@ -3119,27 +3059,20 @@ public class Unit {
 	 * 			| if (this.hasGameObject())
 	 * 			| then this.dropObjectAt(this.getPosition())
 	 */
-	private void terminate(){
+	void terminate(){
 		assert (this.getHitpoints() == 0);
-		this.isTerminated=true;
-		this.setStatus(Status.IDLE);
 		this.setDefaultBehaviorBoolean(false);
 		if (hasGameObject()) {
 			dropObjectAt(this.getPosition());
 		}
+		super.terminate();
 		this.setDistantTarget(null);
 		this.setNearTarget(null);
 		this.setSpeed(new Vector(0,0,0));
 		this.setEnemy(null);
 		this.getPath().clear();
 		this.removeFromFaction();
-		this.removeFromWorld();
 	}
-
-	/**
-	 * Variable registering whether the Unit has died
-	 */
-	private boolean isTerminated=false;
 
 	/**
 	 * Return the faction this Unit belongs to.
@@ -3210,13 +3143,6 @@ public class Unit {
 	private Faction faction;
 
 	/**
-	 * Return the World this Unit lives in
-	 */
-	public World getWorld() {
-		return this.world;
-	}
-
-	/**
 	 * Return a boolean reflecting whether the given World is a valid World for this Unit
 	 * @param world
 	 * 			The World to be checked
@@ -3256,7 +3182,7 @@ public class Unit {
 	@Raw
 	void addToWorld(@Raw World world) throws IllegalStateException{
 		assert (world != null) && (world.hasAsUnit(this)) && this.canHaveAsWorld(world);
-		this.world = world;
+		this.setWorld(world);
 		if (!world.unitCanSpawnAt(this.getPosition())){
 			int index = new Random().nextInt(world.getSpawnablePositions().size());
 			Vector startPos = world.getSpawnablePositions().get(index);
@@ -3289,21 +3215,16 @@ public class Unit {
 	 * 			| !(new this.getWorld()).hasAsUnit(this)
 	 */
 	void removeFromWorld(){
-		assert (this.isTerminated());
+		assert (this.isTerminated() && !this.getWorld().hasAsGameObject(this));
 		World oldWorld = this.getWorld();
-		this.world = null;
+		this.setWorld(null);
 		for(Unit unit:oldWorld.getUnits()){
 			if (unit.getEnemy()==this) {
 				unit.setStatus(Status.IDLE);
 			}
 		}
-		oldWorld.removeUnit(this);
+//		oldWorld.removeGameObject(this);
 	}
-
-	/**
-	 * Variable registering the World this Unit lives in
-	 */
-	private World world;
 
 	/**
 	 * 
@@ -3395,7 +3316,7 @@ public class Unit {
 	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
-			gObject.removeFromWorld();
+			gObject.getWorld().removeGameObject(gObject);
 		}
 		if (hasGameObject()&&gObject==null) {
 			this.gameObject=null;

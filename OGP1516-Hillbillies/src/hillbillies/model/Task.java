@@ -573,6 +573,7 @@ public class Task implements Comparable<Task>{
 				try {
 					this.iterator.next().execute();
 				} catch (Exception e){
+					e.printStackTrace();
 					this.unAssignTaskofUnit(getUnit());
 					return;
 				}

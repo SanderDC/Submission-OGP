@@ -1027,6 +1027,7 @@ public class Unit extends GameObject {
 	 * 			| if (this.getStamina() > new.getmaxStamina())
 	 * 			| then new.getStamina() == new.getmaxStamina()
 	 */
+	
 	public void setWeight(int newWeight) {
 		if (newWeight < this.getMinWeight()) {
 			newWeight = this.getMinWeight();
@@ -2294,7 +2295,7 @@ public class Unit extends GameObject {
 
 
 			if (status==Status.FALLING) {
-				this.falling(time);
+				this.fall(time);
 			}
 			if (this.hasTask() && this.getStatus() == Status.IDLE){
 				this.getTask().advanceTask(time);
@@ -2937,7 +2938,8 @@ public class Unit extends GameObject {
 	 * @post	If the Unit would lose enough health to die, it will be terminated.
 	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
 	 */
-	private void falling(double time) {
+	
+	private void fall(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0)||this.getWorld().isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){
@@ -3152,6 +3154,7 @@ public class Unit extends GameObject {
 	 * 			| then result == (world == null)
 	 * 			
 	 */
+	@Override
 	public boolean canHaveAsWorld(World world) {
 		if (this.isTerminated())
 			return (world == null);
@@ -3179,7 +3182,7 @@ public class Unit extends GameObject {
 	 * 			The Unit is already part of a World
 	 * 			| this.getWorld() != null
 	 */
-	@Raw
+	@Raw@Override
 	void addToWorld(@Raw World world) throws IllegalStateException{
 		assert (world != null) && (world.hasAsUnit(this)) && this.canHaveAsWorld(world);
 		this.setWorld(world);
@@ -3214,6 +3217,7 @@ public class Unit extends GameObject {
 	 * 			| (new this).getWorld() == null
 	 * 			| !(new this.getWorld()).hasAsUnit(this)
 	 */
+	@Override
 	void removeFromWorld(){
 		assert (this.isTerminated() && !this.getWorld().hasAsGameObject(this));
 		World oldWorld = this.getWorld();

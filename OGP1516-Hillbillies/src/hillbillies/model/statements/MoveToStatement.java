@@ -29,7 +29,7 @@ public class MoveToStatement extends Statement {
 	}
 	@Override
 	public boolean check() {
-		if (!this.getUnit().isMoving()) {
+		if (this.getUnit().getPosition().getCubeX()==expression.evaluate().getCubeX()&&this.getUnit().getPosition().getCubeY()==expression.evaluate().getCubeY()&&this.getUnit().getPosition().getCubeZ()==expression.evaluate().getCubeZ()) {
 			this.setExecuted(true);
 			return true;
 		}

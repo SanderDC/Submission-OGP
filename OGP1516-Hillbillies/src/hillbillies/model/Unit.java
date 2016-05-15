@@ -2928,6 +2928,7 @@ public class Unit extends GameObject {
 		this.setSpeed(new Vector(0, 0, -3));
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
+		this.task.unAssignTaskofUnit(this);
 
 	}
 	/**
@@ -2954,6 +2955,7 @@ public class Unit extends GameObject {
 				this.setSpeed(new Vector(0,0,0));
 				this.setStatus(Status.IDLE);
 				this.setFallPosition(0);
+				
 			}
 			else{
 				setHitpoints(0);			
@@ -3078,6 +3080,7 @@ public class Unit extends GameObject {
 		this.setEnemy(null);
 		this.getPath().clear();
 		this.removeFromFaction();
+		this.task.unAssignTaskofUnit(this);
 	}
 
 	/**

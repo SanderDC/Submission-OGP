@@ -80,7 +80,14 @@ public class IfStatement extends Statement {
 		return false;
 	}
 	public IfStatement clone() {
-		return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
+		if (falseStatement!=null) {
+			return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
+
+		}
+		else {
+			return new IfStatement(expression.clone(), trueStatement.clone(), null);
+
+		}
 	}
 
 

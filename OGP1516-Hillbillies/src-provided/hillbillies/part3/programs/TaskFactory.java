@@ -173,8 +173,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createSelectedPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SelectedPositionExpression(sourceLocation);
 	}
 
 	@Override

@@ -80,7 +80,6 @@ public class IfStatement extends Statement {
 		return false;
 	}
 	public IfStatement clone() {
-<<<<<<< HEAD
 		if (falseStatement!=null) {
 			return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
 
@@ -89,12 +88,7 @@ public class IfStatement extends Statement {
 			return new IfStatement(expression.clone(), trueStatement.clone(), null);
 
 		}
-=======
-		if (this.falseStatement == null)
-			return new IfStatement(expression.clone(), trueStatement.clone(), null);
-		else
-			return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
->>>>>>> branch 'master' of https://github.com/SanderDC/Submission-OGP.git
+		
 	}
 
 

@@ -17,21 +17,22 @@ public class FollowStatement extends Statement {
 	private UnitExpression expression;
 
 	private Vector getfollowPositition(){
-		return	expression.evaluate().getPosition();
+		Vector position = expression.evaluate().getPosition();
+		return	position;
 	}
-	
+
 	public void execute(){
-				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
-
-			}
-			
-
+		Vector position = this.getfollowPositition();
+		this.getUnit().moveTo(position.getCubeX(),position.getCubeY(),position.getCubeZ());
+	}
 
 
-		
 
-	
-	
+
+
+
+
+
 	@Override
 	public void addToTask(Task task) {
 		this.setTask(task);
@@ -40,17 +41,17 @@ public class FollowStatement extends Statement {
 	}
 	@Override
 	public boolean check() {
-		
+
 		if( this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())){
 			this.setExecuted(true);
 			return true;}
 		else{
 			if (expression.evaluate().isMoving()||expression.evaluate().isFalling()) {
 				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
-				
+
 			}
 			return false;
-			
+
 		}
 	}
 
@@ -62,7 +63,7 @@ public class FollowStatement extends Statement {
 	@Override
 	public Iterator<Statement> iterator() {
 		return new Iterator<Statement>(){
-			
+
 			private boolean statementHandled = false;
 
 			@Override
@@ -78,10 +79,11 @@ public class FollowStatement extends Statement {
 			public Statement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
+				statementHandled = true;
 				return FollowStatement.this;
 			}
-			
+
 		};
 	}
-	
+
 }

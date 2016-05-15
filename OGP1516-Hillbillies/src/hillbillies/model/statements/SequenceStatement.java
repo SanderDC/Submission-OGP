@@ -64,10 +64,18 @@ public class SequenceStatement extends Statement {
 			private Iterator<Statement> nextStatements = statements.iterator();
 			
 			private Iterator<Statement> currentIterator;
+			
+			private int nbStatementsHandled = 0;
 
 			@Override
 			public boolean hasNext() {
-				return nextStatements.hasNext() || currentIterator.hasNext();
+				if (currentIterator != null && currentIterator.hasNext())
+					return true;
+				for (int i = nbStatementsHandled + 1; i < statements.size(); i++){
+					if (statements.get(i).iterator().hasNext())
+						return true;
+				}
+				return false;
 			}
 
 			@Override
@@ -76,8 +84,10 @@ public class SequenceStatement extends Statement {
 					throw new NoSuchElementException();
 				if (currentIterator == null)
 					currentIterator = nextStatements.next().iterator();
-				else if (!currentIterator.hasNext())
+				while(!currentIterator.hasNext()){
+					nbStatementsHandled += 1;
 					currentIterator = nextStatements.next().iterator();
+				}
 				return currentIterator.next();
 			}
 			

@@ -62,18 +62,19 @@ public class Task implements Comparable<Task>{
 
 	public void AssignTaskToUnit(Unit unit){
 
-		
+
 		if (this.unit==null) {
 			this.unit=unit;
 			unit.setTask(this);
 			this.inExecution=true;
+			this.iterator = this.statements.iterator();
 		}
-		
+
 	}
 	public void unAssignTaskofUnit(Unit unit){
 		unit.setTask(null);
 		this.unit=null;
-		this.getstatement().setExecuted(false);
+		//		this.getstatement().setExecuted(false);
 		this.inExecution=false;
 		this.setPriority(this.getPriority()-1);
 	}
@@ -425,7 +426,7 @@ public class Task implements Comparable<Task>{
 	 * Variable registering whether this person is terminated.
 	 */
 	private boolean isTerminated = false;
-	
+
 	/**
 	 * Initialize this new Task with given selectedPosition.
 	 *
@@ -486,14 +487,33 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the selectedPosition of this Task.
 	 */
 	private Vector selectedPosition;
-	
-	
-	
+
+	void advanceTask(double time){
+		if (!this.iterator.hasNext()){
+			this.unAssignTaskofUnit(getUnit());
+			this.terminate();
+			return;
+		}
+		int nbStatements = (int) Math.ceil(time/0.001);
+		for (int i = 0; i < nbStatements; i++){
+			if (this.getUnit().getStatus() == Status.IDLE)
+				try {
+					this.iterator.next().execute();
+				} catch (Exception e){
+					this.unAssignTaskofUnit(getUnit());
+					return;
+				}
+			if (!this.iterator.hasNext())
+				break;
+		}
+	}
+
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
 	private Statement statements;
-	
+
+	private Iterator<Statement> iterator;
 
 	/**
 	 * Return the Statement of the Task
@@ -501,49 +521,49 @@ public class Task implements Comparable<Task>{
 	public Statement getstatement(){
 		return this.statements;
 	}
-	
+
 	public void setStatement(Statement statement){
 		this.statements=statement;
 	}
-//	public int getNbStatements(){
-//		return this.getstatement().size();
-//	}
-//	
-//	
-//	/**
-//	 * Return an iterator delivering all tasks managed by this Scheduler
-//	 * in order of descending priority.
-//	 */
-//	public Iterator<Statement> iterator(){
-//		
-//		return new Iterator<Statement>(){
-//			
-//			private List<Statement> statements = Task.this.getstatement();
-//			
-//			private int nbItemsHandled = 0;
-//			
-//			@Override
-//			public boolean hasNext() {
-//				return nbItemsHandled < getNbStatements();
-//			}
-//
-//			@Override
-//			public Statement next() {
-//				Statement result = statements.get(nbItemsHandled);
-//				nbItemsHandled += 1;
-//				return result;
-//			}
-//			
-//		};
-//	}
-	
+	//	public int getNbStatements(){
+	//		return this.getstatement().size();
+	//	}
+	//	
+	//	
+	//	/**
+	//	 * Return an iterator delivering all tasks managed by this Scheduler
+	//	 * in order of descending priority.
+	//	 */
+	//	public Iterator<Statement> iterator(){
+	//		
+	//		return new Iterator<Statement>(){
+	//			
+	//			private List<Statement> statements = Task.this.getstatement();
+	//			
+	//			private int nbItemsHandled = 0;
+	//			
+	//			@Override
+	//			public boolean hasNext() {
+	//				return nbItemsHandled < getNbStatements();
+	//			}
+	//
+	//			@Override
+	//			public Statement next() {
+	//				Statement result = statements.get(nbItemsHandled);
+	//				nbItemsHandled += 1;
+	//				return result;
+	//			}
+	//			
+	//		};
+	//	}
+
 	public Expression getVariableExpression(String name){
 		return this.variables.get(name);
 	}
-	
+
 	public void storeVariableExpression(String name, Expression expression){
 		this.variables.put(name, expression);
 	}
-	
+
 	private HashMap<String,Expression> variables = new HashMap<>();
 }

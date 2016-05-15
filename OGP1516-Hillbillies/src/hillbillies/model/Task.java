@@ -74,6 +74,7 @@ public class Task implements Comparable<Task>{
 		unit.setTask(null);
 		this.unit=null;
 		this.getstatement().setExecuted(false);
+		this.inExecution=false;
 		this.setPriority(this.getPriority()-1);
 	}
 

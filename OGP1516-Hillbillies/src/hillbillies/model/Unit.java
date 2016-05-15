@@ -2369,15 +2369,7 @@ public class Unit {
 				if (hasTask()) {
 					if (!this.getTask().getstatement().getexecuted()) {
 						if (this.getTask().getstatement().check()) {
-							boolean allexecuted=true;
-							Iterator <Statement> iterator=this.getTask().getstatement().iterator();
-							while (iterator.hasNext()&&allexecuted) {
-								if (!iterator.next().getexecuted()) {
-									allexecuted=false;
-								}
-								
-							}
-								
+								this.getTask().terminate();							
 							}
 						}
 				}

@@ -96,12 +96,9 @@ public class World {
 //		}
 //		TerminatedUnits.clear();
 		
-		Set<Unit> units = new HashSet<>();
-		units.addAll(this.getUnits());
-		for (Unit unit:units){
-			unit.advanceTime(time);
-		}
-		for (GameObject gObject:this.getGameObjects()){
+		Set<GameObject> objects = new HashSet<>();
+		objects.addAll(this.getGameObjects());
+		for (GameObject gObject:objects){
 			gObject.advanceTime(time);
 		}
 	}
@@ -329,7 +326,7 @@ public class World {
 	@Basic
 	@Raw
 	public boolean hasAsUnit(@Raw Unit Unit) {
-		return Units.contains(Unit);
+		return this.gameObjects.contains(Unit);
 	}
 
 	/**
@@ -348,34 +345,38 @@ public class World {
 	private boolean canHaveAsUnit(Unit Unit) {
 		return (Unit != null) && (Unit.canHaveAsWorld(this));
 	}
-
-	/**
-	 * Check whether this World has proper Units attached to it.
-	 * 
-	 * @return True if and only if this World can have each of the
-	 *         Units attached to it as one of its Units,
-	 *         and if each of these Units references this World as
-	 *         the World to which they are attached.
-	 *       | for each Unit in Unit:
-	 *       |   if (hasAsUnit(Unit))
-	 *       |     then canHaveAsUnit(Unit) &&
-	 *       |          (Unit.getWorld() == this)
-	 */
-	public boolean hasProperUnits() {
-		for (Unit Unit : Units) {
-			if (!canHaveAsUnit(Unit))
-				return false;
-			if (Unit.getWorld() != this)
-				return false;
-		}
-		return true;
-	}
+//
+//	/**
+//	 * Check whether this World has proper Units attached to it.
+//	 * 
+//	 * @return True if and only if this World can have each of the
+//	 *         Units attached to it as one of its Units,
+//	 *         and if each of these Units references this World as
+//	 *         the World to which they are attached.
+//	 *       | for each Unit in Unit:
+//	 *       |   if (hasAsUnit(Unit))
+//	 *       |     then canHaveAsUnit(Unit) &&
+//	 *       |          (Unit.getWorld() == this)
+//	 */
+//	public boolean hasProperUnits() {
+//		for (Unit Unit : Units) {
+//			if (!canHaveAsUnit(Unit))
+//				return false;
+//			if (Unit.getWorld() != this)
+//				return false;
+//		}
+//		return true;
+//	}
 
 	/**
 	 * Return all Units currently living in this World.
 	 */
 	public Set<Unit> getUnits(){
-		return this.Units;
+		Set<Unit> result = new HashSet<>();
+		for (GameObject obj:this.getGameObjects())
+			if (obj instanceof Unit)
+				result.add((Unit) obj);
+		return result;
 	}
 
 	/**
@@ -386,64 +387,8 @@ public class World {
 	 *        |   card({Unit:Unit | hasAsUnit({Unit)})
 	 */
 	private int getNbUnits() {
-		return Units.size();
+		return this.getUnits().size();
 	}
-
-	/**
-	 * Add the given Unit to the set of Units of this World.
-	 * 
-	 * @param  Unit
-	 *         The Unit to be added.
-	 * @post   If this World has fewer than 100 Units, this World has the given Unit as one of its Units.
-	 * 		 | if (this.getNbUnits() < 100)
-	 *       | then new.hasAsUnit(Unit) && (new Unit).getWorld() == this
-	 * @throws IllegalArgumentException
-	 * 			The given Unit is the null reference or cannot have this World as its World
-	 */
-	public void addUnit(Unit Unit) throws IllegalArgumentException{
-		if (Unit == null || !Unit.canHaveAsWorld(this))
-			throw new IllegalArgumentException();
-		if (this.getNbUnits() >= 100)
-			return;
-		else {
-			Units.add(Unit);
-			Unit.addToWorld(this);
-		}
-	}
-
-	/**
-	 * Remove the given Unit from the set of Units of this World.
-	 * 
-	 * @param  Unit
-	 *         The Unit to be removed.
-	 * @pre    This World has the given Unit as one of
-	 *         its Units, and the given Unit does not
-	 *         reference any World.
-	 *       | this.hasAsUnit(Unit) &&
-	 *       | (Unit.getWorld() == null)
-	 * @post   This World no longer has the given Unit as
-	 *         one of its Units.
-	 *       | ! new.hasAsUnit(Unit)
-	 */
-	@Raw
-	void removeUnit(Unit Unit) {
-		assert this.hasAsUnit(Unit) && (Unit.getWorld() == null);
-		Units.remove(Unit);
-	}
-
-	/**
-	 * Variable referencing a set collecting all the Units
-	 * of this World.
-	 * 
-	 * @invar  The referenced set is effective.
-	 *       | Units != null
-	 * @invar  Each Unit registered in the referenced list is
-	 *         effective and not yet terminated.
-	 *       | for each Unit in Units:
-	 *       |   ( (Unit != null) &&
-	 *       |     (! Unit.isTerminated()) )
-	 */
-	private final Set<Unit> Units = new HashSet<Unit>();
 
 	/**
 	 * Check whether this World has the given Faction as one of its
@@ -584,7 +529,7 @@ public class World {
 	 */
 	@Basic
 	@Raw
-	private boolean hasAsGameObject(@Raw GameObject gameObject) {
+	boolean hasAsGameObject(@Raw GameObject gameObject) {
 		return gameObjects.contains(gameObject);
 	}
 
@@ -750,9 +695,14 @@ public class World {
 	 * @post   This World has the given GameObject as one of its GameObjects.
 	 *       | new.hasAsGameObject(gameObject)
 	 */
-	void addGameObject(@Raw GameObject gameObject) {
-		assert (gameObject != null) && (gameObject.getWorld() == this);
+	public void addGameObject(GameObject gameObject) {
+		if (gameObject == null || !gameObject.canHaveAsWorld(this))
+			throw new IllegalArgumentException();
+		if (gameObject instanceof Unit)
+			if (this.getNbUnits() >= 100)
+				return;
 		gameObjects.add(gameObject);
+		gameObject.addToWorld(this);
 	}
 
 	/**
@@ -771,8 +721,9 @@ public class World {
 	 */
 	@Raw
 	void removeGameObject(GameObject gameObject) {
-		assert this.hasAsGameObject(gameObject) && (gameObject.getWorld() == null);
+		assert this.hasAsGameObject(gameObject);
 		gameObjects.remove(gameObject);
+		gameObject.removeFromWorld();
 	}
 
 	/**

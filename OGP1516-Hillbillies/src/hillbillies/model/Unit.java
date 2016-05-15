@@ -530,10 +530,10 @@ public class Unit extends GameObject {
 	 */
 	public static final double CUBELENGTH = 1;
 
-	/**
-	 * Variable registering the position of this Unit.
-	 */
-	private Vector position;
+//	/**
+//	 * Variable registering the position of this Unit.
+//	 */
+//	private Vector position;
 
 	/**
 	 * Return the speed of this Unit.
@@ -2010,7 +2010,7 @@ public class Unit extends GameObject {
 		position = position.getCubePosition().add(new Vector(CUBELENGTH/2,CUBELENGTH/2,CUBELENGTH/2));
 		GameObject oldObject = this.getGameObject();
 		this.setGameObject(null);
-		oldObject.addToWorld(getWorld());
+		this.getWorld().addGameObject(oldObject);
 		oldObject.setPosition(position);
 	}
 
@@ -2663,7 +2663,7 @@ public class Unit extends GameObject {
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
-						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(position));
+						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition()));
 						Collections.shuffle(newlist);
 						for (Vector vector : newlist) {
 							try {
@@ -2679,7 +2679,7 @@ public class Unit extends GameObject {
 				}
 				else {
 					List<Vector> newlist=new ArrayList<>();
-					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(position)) ;
+					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition())) ;
 					Collections.shuffle(newlist);
 					for (Vector vector : newlist){
 						try {
@@ -2743,7 +2743,7 @@ public class Unit extends GameObject {
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
-						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(position));
+						newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition()));
 						Collections.shuffle(newlist);
 						for (Vector vector : newlist) {
 							try {
@@ -2759,7 +2759,7 @@ public class Unit extends GameObject {
 				}
 				else {
 					List<Vector> newlist=new ArrayList<>();
-					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(position)) ;
+					newlist.addAll(this.getWorld().getDirectlyAdjacentPositions(this.getPosition())) ;
 					Collections.shuffle(newlist);
 					for (Vector vector : newlist){
 						try {
@@ -3065,13 +3065,13 @@ public class Unit extends GameObject {
 		if (hasGameObject()) {
 			dropObjectAt(this.getPosition());
 		}
+		super.terminate();
 		this.setDistantTarget(null);
 		this.setNearTarget(null);
 		this.setSpeed(new Vector(0,0,0));
 		this.setEnemy(null);
 		this.getPath().clear();
 		this.removeFromFaction();
-		super.terminate();
 	}
 
 	/**
@@ -3215,7 +3215,7 @@ public class Unit extends GameObject {
 	 * 			| !(new this.getWorld()).hasAsUnit(this)
 	 */
 	void removeFromWorld(){
-		assert (this.isTerminated());
+		assert (this.isTerminated() && !this.getWorld().hasAsGameObject(this));
 		World oldWorld = this.getWorld();
 		this.setWorld(null);
 		for(Unit unit:oldWorld.getUnits()){
@@ -3223,7 +3223,7 @@ public class Unit extends GameObject {
 				unit.setStatus(Status.IDLE);
 			}
 		}
-		oldWorld.removeGameObject(this);
+//		oldWorld.removeGameObject(this);
 	}
 
 	/**
@@ -3316,7 +3316,7 @@ public class Unit extends GameObject {
 	void setGameObject(GameObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
-			gObject.removeFromWorld();
+			gObject.getWorld().removeGameObject(gObject);
 		}
 		if (hasGameObject()&&gObject==null) {
 			this.gameObject=null;

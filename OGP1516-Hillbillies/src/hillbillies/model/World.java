@@ -96,12 +96,9 @@ public class World {
 //		}
 //		TerminatedUnits.clear();
 		
-		Set<Unit> units = new HashSet<>();
-		units.addAll(this.getUnits());
-		for (Unit unit:units){
-			unit.advanceTime(time);
-		}
-		for (GameObject gObject:this.getGameObjects()){
+		Set<GameObject> objects = new HashSet<>();
+		objects.addAll(this.getGameObjects());
+		for (GameObject gObject:objects){
 			gObject.advanceTime(time);
 		}
 	}

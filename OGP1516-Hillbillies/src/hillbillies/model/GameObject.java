@@ -30,7 +30,7 @@ public abstract class GameObject {
 	 *         	the given position.
 	 */
 	public GameObject(Vector position, World world) throws IllegalArgumentException{
-		this.addToWorld(world);
+		world.addGameObject(this);
 		this.setPosition(position);
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;
@@ -181,9 +181,8 @@ public abstract class GameObject {
 	 * @post	This GameObject has been added to the given World's GameObjects
 	 */
 	void addToWorld(World world){
-		assert (this.canHaveAsWorld(world));
+		assert (world != null && world.hasAsGameObject(this));
 		this.setWorld(world);
-		world.addGameObject(this);
 	}
 
 	/**
@@ -265,14 +264,16 @@ public abstract class GameObject {
 	 */
 	public void advanceTime(double time){
 
-		if (!( (this.getPosition().getCubeZ()==0) || world.isSolidGround(this.position.getCubeX(),this.position.getCubeY(),this.position.getCubeZ()-1))) {
-			setStatus(Status.FALLING);
-			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
-					this.getPosition().getCubeY()+World.CUBELENGTH/2,
-					this.getPosition().getZ()));
-		}
-		if (status==Status.FALLING) {
-			fall(time);
+		if (!this.isTerminated() && this.getWorld() != null) {
+			if (!((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
+					this.position.getCubeY(), this.position.getCubeZ() - 1))) {
+				setStatus(Status.FALLING);
+				this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
+						this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
+			}
+			if (status == Status.FALLING) {
+				fall(time);
+			}
 		}
 	}
 	

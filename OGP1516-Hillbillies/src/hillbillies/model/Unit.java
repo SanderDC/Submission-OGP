@@ -1728,26 +1728,22 @@ public class Unit {
 	 * 			|then setPosition(selectDodgePosition(new.position))
 	 */
 	private void dodge() {
-
-
 		List<Integer> dataList = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++) {
 			dataList.add(i);
 		}
 		Collections.shuffle(dataList);
 		int j;
+		Random random=new Random();
 		for (int i = 0; i < dataList.size(); i++) {
 			j = dataList.get(i);
-			Random randomnumber=new Random();
-			randomnumber.nextFloat();
-			if (isValidPosition(selectDodgePosition(j,randomnumber.nextFloat()))) {
-				setPosition(selectDodgePosition(j,randomnumber.nextFloat()));
+			float randomnumber = random.nextFloat();
+			Vector position = selectDodgePosition(j,randomnumber);
+			if (isValidPosition(position)) {
+				setPosition(position);
 				i=dataList.size();
 			}
 		}
-		
-
-
 	}
 	/**
 	 * @param int i

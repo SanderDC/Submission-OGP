@@ -1,0 +1,4 @@
+name: "follow any"
+priority : 10
+activities : u := any;
+	follow u;

@@ -23,12 +23,12 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 		
 		 List<Task> tasklist= new ArrayList<>();
 		if (selectedCubes.size()!=0) {
-			for (int i[] : selectedCubes) {
-				tasklist.add(new Task(name, priority, activity));
+			for (int[] i : selectedCubes) {
+				tasklist.add(new Task(name, priority, activity.clone(), new Vector(i[0],i[1],i[2])));
 			}
 		}
 		else {
-			tasklist.add(new Task(name, priority, activity));
+			tasklist.add(new Task(name, priority, activity.clone()));
 		}
 		
 		return tasklist;

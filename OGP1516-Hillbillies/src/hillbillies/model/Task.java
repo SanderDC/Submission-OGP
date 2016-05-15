@@ -34,6 +34,7 @@ public class Task implements Comparable<Task>{
 	 * @param  name
 	 *         The name for this new Task.
 	 * @param activitylist
+	 * 	  	   The statement to be executed in this Task
 	 * @param  priority
 	 *         The priority for this new Task.
 	 * @effect The priority of this new Task is set to
@@ -51,6 +52,52 @@ public class Task implements Comparable<Task>{
 		this.setName(name);
 		this.statements=activitylist;
 		this.statements.addToTask(this);
+		this.selectedPosition = null;
+	}
+
+	/**
+	 * Initialize this new Task with given selectedPosition.
+	 * 
+	 * @param  selectedPosition
+	 *         The selectedPosition for this new Task.
+	 * @param  name
+	 *         The name for this new Task.
+	 * @param  activitylist
+	 * 		   The statement to be executed in this Task
+	 * @param  priority
+	 *         The priority for this new Task.
+	 * @effect The priority of this new Task is set to
+	 *         the given priority.
+	 *       | this.setPriority(priority)
+	 * @effect The name of this new Task is set to
+	 *         the given name.
+	 *       | this.setName(name)
+	 * @post   This new Task has no Schedulers yet.
+	 *       | new.getNbSchedulers() == 0
+	 * @post   If the given selectedPosition is a valid selectedPosition for any Task,
+	 *         the selectedPosition of this new Task is equal to the given
+	 *         selectedPosition. Otherwise, the selectedPosition of this new Task is equal
+	 *         to new Vector(0,0,0).
+	 *       | if (isValidSelectedPosition(selectedPosition))
+	 *       |   then new.getSelectedPosition() == selectedPosition
+	 *       |   else for each component in new.getSelectedPosition():
+	 *       |									(component >= 0)
+	 */
+	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) {
+		this.setPriority(priority);
+		this.setName(name);
+		this.statements=activitylist;
+		this.statements.addToTask(this);
+		if (canHaveAsSelectedPosition(selectedPosition))
+			this.selectedPosition = selectedPosition;
+		else {
+			double[] components = selectedPosition.toArray();
+			for (int i = 0; i < 3; i++){
+				if (components[i] < 0)
+					components[i] = 0;
+			}
+			this.selectedPosition = new Vector(components[0], components[1], components[2]);
+		}
 	}
 
 	/**
@@ -428,94 +475,6 @@ public class Task implements Comparable<Task>{
 	private boolean isTerminated = false;
 
 	/**
-	 * Initialize this new Task with given selectedPosition.
-	 *
-	 * @param  selectedPosition
-	 *         The selectedPosition for this new Task.
-	 * @effect The selectedPosition of this new Task is set to
-	 *         the given selectedPosition.
-	 *       | this.setSelectedPosition(selectedPosition)
-	 */
-	public Task(Vector selectedPosition)
-			throws IllegalArgumentException {
-		this.setSelectedPosition(selectedPosition);
-	}
-
-	/**
-	 * Return the selectedPosition of this Task.
-	 */
-	@Basic @Raw
-	public Vector getSelectedPosition() {
-		return this.selectedPosition;
-	}
-
-	/**
-	 * Check whether the given selectedPosition is a valid selectedPosition for
-	 * any Task.
-	 *  
-	 * @param  selectedPosition
-	 *         The selectedPosition to check.
-	 * @return 
-	 *       | result == 
-	 */
-	public static boolean isValidSelectedPosition(Vector selectedPosition) {
-		return false;
-	}
-
-	/**
-	 * Set the selectedPosition of this Task to the given selectedPosition.
-	 * 
-	 * @param  selectedPosition
-	 *         The new selectedPosition for this Task.
-	 * @post   The selectedPosition of this new Task is equal to
-	 *         the given selectedPosition.
-	 *       | new.getSelectedPosition() == selectedPosition
-	 * @throws IllegalArgumentException
-	 *         The given selectedPosition is not a valid selectedPosition for any
-	 *         Task.
-	 *       | ! isValidSelectedPosition(getSelectedPosition())
-	 */
-	@Raw
-	public void setSelectedPosition(Vector selectedPosition) 
-			throws IllegalArgumentException {
-		if (! isValidSelectedPosition(selectedPosition))
-			throw new IllegalArgumentException();
-		this.selectedPosition = selectedPosition;
-	}
-
-	/**
-	 * Variable registering the selectedPosition of this Task.
-	 */
-	private Vector selectedPosition;
-
-	void advanceTask(double time){
-		if (!this.iterator.hasNext()){
-			this.unAssignTaskofUnit(getUnit());
-			this.terminate();
-			return;
-		}
-		int nbStatements = (int) Math.ceil(time/0.001);
-		for (int i = 0; i < nbStatements; i++){
-			if (this.getUnit().getStatus() == Status.IDLE)
-				try {
-					this.iterator.next().execute();
-				} catch (Exception e){
-					this.unAssignTaskofUnit(getUnit());
-					return;
-				}
-			if (!this.iterator.hasNext())
-				break;
-		}
-	}
-
-	/**
-	 * Variable registering the Statement of this Task.
-	 */
-	private Statement statements;
-
-	private Iterator<Statement> iterator;
-
-	/**
 	 * Return the Statement of the Task
 	 */
 	public Statement getstatement(){
@@ -566,4 +525,67 @@ public class Task implements Comparable<Task>{
 	}
 
 	private HashMap<String,Expression> variables = new HashMap<>();
+
+	/**
+	 * @invar  Each Task can have its selectedPosition as selectedPosition .
+	 *       | canHaveAsSelectedPosition(this.getSelectedPosition())
+	 */
+
+	/**
+	 * Return the selectedPosition of this Task.
+	 */
+	@Basic @Raw @Immutable
+	public Vector getSelectedPosition() {
+		return this.selectedPosition;
+	}
+
+	/**
+	 * Check whether this Task can have the given selectedPosition as its selectedPosition.
+	 *  
+	 * @param  selectedPosition
+	 *         The selectedPosition to check.
+	 * @return 
+	 *       | result == for each component in selectedPosition.toArray():
+	 *       |												(component >= 0)
+	 */
+	@Raw
+	public boolean canHaveAsSelectedPosition(Vector selectedPosition) {
+		for (double comp:selectedPosition.toArray())
+			if (comp < 0)
+				return false;
+		return true;
+	}
+
+	/**
+	 * Variable registering the selectedPosition of this Task.
+	 */
+	private Vector selectedPosition;
+
+	void advanceTask(double time){
+		if (!this.iterator.hasNext()){
+			this.unAssignTaskofUnit(getUnit());
+			this.terminate();
+			return;
+		}
+		int nbStatements = (int) Math.ceil(time/0.001);
+		for (int i = 0; i < nbStatements; i++){
+			if (this.getUnit().getStatus() == Status.IDLE)
+				try {
+					this.iterator.next().execute();
+				} catch (Exception e){
+					this.unAssignTaskofUnit(getUnit());
+					return;
+				}
+			if (!this.iterator.hasNext())
+				break;
+		}
+	}
+
+	/**
+	 * Variable registering the Statement of this Task.
+	 */
+	private Statement statements;
+
+	private Iterator<Statement> iterator;
+
 }

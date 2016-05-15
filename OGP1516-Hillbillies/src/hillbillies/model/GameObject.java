@@ -15,6 +15,11 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar  The World of each GameObject must be a valid World for that GameObject
  */
 public abstract class GameObject {
+	
+	public GameObject(Vector position){
+		this.position = position;
+		this.weight = new Random().nextInt(41) + 10;
+	}
 
 	/**
 	 * Initialize this new GameObject with given position and random weight.
@@ -52,8 +57,8 @@ public abstract class GameObject {
 	 * @throws IllegalArgumentException
 	 * 			The given Status is not a valid Status for any GameObject
 	 */
-	private void setStatus(Status status) throws IllegalArgumentException{
-		if (!isValidStatus(status))
+	protected void setStatus(Status status) throws IllegalArgumentException{
+		if (!this.isValidStatus(status))
 			throw new IllegalArgumentException();
 		this.status = status;
 	}
@@ -62,7 +67,7 @@ public abstract class GameObject {
 	 * Check whether the given Status is a valid Status for any GameObject
 	 * @return true if the given Status is either falling or idle.
 	 */
-	private boolean isValidStatus (Status status) {
+	protected boolean isValidStatus (Status status) {
 		if (status==Status.FALLING||status==Status.IDLE) {
 			return true;
 		}
@@ -163,7 +168,7 @@ public abstract class GameObject {
 	 * Return the World this GameObject currently exists in.
 	 */
 	@Basic @Raw
-	World getWorld(){
+	public World getWorld(){
 		return this.world;
 	}
 
@@ -189,7 +194,7 @@ public abstract class GameObject {
 	 * @post	This GameObject's World is the given World.
 	 */
 	@Raw
-	private void setWorld(World world){
+	protected void setWorld(World world){
 		assert (this.canHaveAsWorld(world));
 		this.world = world;
 	}
@@ -204,10 +209,8 @@ public abstract class GameObject {
 	 * 			| !(this.getWorld()).hasAsGameObject(this)
 	 */
 	void removeFromWorld(){
-		assert (this.getWorld() != null);
-		World oldWorld = this.getWorld();
+		assert (this.getWorld() != null && !this.getWorld().hasAsGameObject(this));
 		this.setWorld(null);
-		oldWorld.removeGameObject(this);
 		this.setPosition(null);
 	}
 
@@ -220,7 +223,7 @@ public abstract class GameObject {
 	 * Return a boolean reflecting whether this GameObject has been terminated.
 	 */
 	@Basic
-	boolean isTerminated(){
+	public boolean isTerminated(){
 		return this.isTerminated;
 	}
 
@@ -237,9 +240,8 @@ public abstract class GameObject {
 
 	void terminate(){
 		this.isTerminated=true;
-		World oldWorld= this.world;
-		this.world=null;
-		oldWorld.removeGameObject(this);
+		this.setStatus(Status.IDLE);
+		this.getWorld().removeGameObject(this);
 	}
 
 	/**

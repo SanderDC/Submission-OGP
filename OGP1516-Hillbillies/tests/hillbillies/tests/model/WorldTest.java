@@ -62,7 +62,7 @@ public class WorldTest {
 			new Unit(world3, false);
 		}
 		Unit test = new Unit(new Vector(0.5,0.5,0.5), 100,100,100,"John",100,false);
-		world3.addUnit(test);
+		world3.addGameObject(test);
 		assertFalse(world3.hasAsUnit(test));
 	}
 	

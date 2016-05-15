@@ -33,11 +33,11 @@ public class UnitTest {
 	@Before
 	public void setUp() throws Exception {
 		distantUnit = new Unit(new Vector(10.5,10.5,10.5), 50, 50, 50, "James", 50, false);
-		world.addUnit(distantUnit);
+		world.addGameObject(distantUnit);
 		idleUnit = new Unit(new Vector(5.5,5.5,5.5), 50, 50, 50, "Idle", 50, false);
-		world.addUnit(idleUnit);
+		world.addGameObject(idleUnit);
 		adjacentUnit = new Unit(new Vector(6.5,5.5,5.5), 50, 50, 50, "Adjacent to Idle", 50, false);
-		world.addUnit(adjacentUnit);
+		world.addGameObject(adjacentUnit);
 	}
 
 	@After

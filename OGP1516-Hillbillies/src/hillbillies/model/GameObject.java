@@ -16,7 +16,7 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public abstract class GameObject {
 	
-	public GameObject(Vector position){
+	protected GameObject(Vector position){
 		this.position = position;
 		this.weight = new Random().nextInt(41) + 10;
 	}
@@ -139,15 +139,41 @@ public abstract class GameObject {
 	/**
 	 * Return this GameObject's weight
 	 */
-	@Basic @Raw @Immutable
+	@Basic @Raw
 	public int getWeight() {
 		return this.weight;
+	}
+	
+	/**
+	 * Check whether the given weight is a valid weight for this GameObject
+	 * @param weight
+	 * 			The weight to check
+	 * @return true if the given weight lies between 10 and 50, inclusive
+	 */
+	public boolean canHaveAsWeight(int weight){
+		if (weight >= 10 && weight <= 50)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Set this GameObject's weight to the given weight
+	 * TODO: documentatie
+	 */
+	@Raw
+	protected void setWeight(int weight){
+		if (this.canHaveAsWeight(weight))
+			this.weight = weight;
+		else if (weight < 10)
+			this.weight = 10;
+		else
+			this.weight = 50;
 	}
 
 	/**
 	 * Variable registering this GameObject's weight
 	 */
-	private final int weight;
+	private int weight;
 
 	/**
 	 * Check whether the given World is a valid World for this GameObject

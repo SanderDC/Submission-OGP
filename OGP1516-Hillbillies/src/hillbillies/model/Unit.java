@@ -232,7 +232,7 @@ public class Unit extends GameObject {
 			weight = this.getMinWeight();
 		if (weight > MAX_INITIAL_WEIGHT)
 			weight = MAX_INITIAL_WEIGHT;
-		this.weight = weight;
+		this.setWeight(weight);
 
 		this.setName(name);
 		this.setMaxHitpoints();
@@ -955,7 +955,7 @@ public class Unit extends GameObject {
 	 */
 
 	public int getTotalWeight(){
-		return this.weight+this.weightGameObject();
+		return this.getWeight()+this.weightGameObject();
 	}
 	/**
 	 * Check whether the given weight is a valid weight for this Unit.
@@ -966,9 +966,19 @@ public class Unit extends GameObject {
 	 * 			the maximum weight for any Unit.
 	 * 			| result == (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT)
 	 */
-	private boolean canHaveAsWeight(int weight) {
+	public boolean canHaveAsWeight(int weight) {
 		return (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT);
 	}
+	
+//	protected void setWeight(int weight){
+//		if (this.canHaveAsWeight(weight))
+//			super.setWeight(weight);
+//		else if (weight < this.getMinWeight())
+//			super.setWeight(getMinWeight());
+//		else
+//			super.setWeight(200);
+//		
+//	}
 
 	/**
 	 * Returns the smallest legal value for this Unit's weight
@@ -1034,7 +1044,7 @@ public class Unit extends GameObject {
 		} else if (newWeight > MAX_WEIGHT) {
 			newWeight = MAX_WEIGHT;
 		}
-		this.weight = newWeight;
+		super.setWeight(newWeight);
 		this.setMaxHitpoints();
 		this.setMaxStamina();
 		if (this.getHitpoints() > this.getmaxHitpoints())
@@ -1042,11 +1052,6 @@ public class Unit extends GameObject {
 		if  (this.getStamina() > this.getmaxStamina())
 			this.setStamina(this.getmaxStamina());
 	}
-
-	/**
-	 * Variable registering the weight of this Unit.
-	 */
-	private int weight;
 
 	/**
 	 * Return the name of this Unit.

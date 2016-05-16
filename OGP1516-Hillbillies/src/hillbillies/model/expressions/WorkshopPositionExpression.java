@@ -20,7 +20,7 @@ public class WorkshopPositionExpression extends Expression implements PositionEx
 		double distance = 0;
 		for (int x = 0; x <= world.maxCoordinates()[0]; x++){
 			for (int y = 0; y <= world.maxCoordinates()[1]; y++){
-				for (int z = 0; z <= world.maxCoordinates()[2]; y++){
+				for (int z = 0; z <= world.maxCoordinates()[2]; z++){
 					if (world.getCubeType(x, y, z) == 3){
 						if (result == null){
 							result = new int[]{x,y,z};

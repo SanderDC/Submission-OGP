@@ -1644,7 +1644,10 @@ public class Unit extends GameObject {
 		if (Math.random() <= 0.20 * this.getAgility() / attacker.getAgility()) {
 			this.dodge();
 			this.setExp(this.getExp()+20);
-			this.task.unAssignTaskofUnit(this);
+			if (hasTask()) {
+				this.task.unAssignTaskofUnit(this);
+			}
+			
 		} else if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
 			this.setExp(this.getExp()+20);
@@ -2573,6 +2576,7 @@ public class Unit extends GameObject {
 	private void hasToRest(){
 		if ((this.getTimeUntilRest()<=0)&&(!isAttacking())&&(!isResting())&&(!isMoving())&&(!isFalling())){
 			this.resting();
+			if(hasTask())
 			this.task.unAssignTaskofUnit(this);
 		}
 	}

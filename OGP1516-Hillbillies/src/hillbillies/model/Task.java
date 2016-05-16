@@ -133,12 +133,15 @@ public class Task implements Comparable<Task>{
 	 * @effect	the Unit's task will be set null and this Task's Unit will also be set to null
 	 * 			it will no longer be flagged as being executed and its priority will be reduced by 1
 	 * 			|unit.setTask(null)
-	 * 			|new.getunit==null
+	 * 			|new.getUnit()==null
 	 * 			|this.inexecution==false
-	 * 			|new.getPriority==oldpriority-1
+	 * 			|new.getPriority()==oldpriority-1
 	 * 		
 	 */
-	public void unAssignTaskofUnit(Unit unit){
+	public void unAssignTaskofUnit(Unit unit)throws IllegalStateException{
+		if (unit==null || !this.isBeingExecuted()) {
+			throw new IllegalStateException();
+		}
 		unit.setTask(null);
 		this.unit=null;
 		//		this.getstatement().setExecuted(false);
@@ -146,26 +149,7 @@ public class Task implements Comparable<Task>{
 		this.setPriority(this.getPriority()-1);
 	}
 
-	/**
-	 * Interrupt this Task
-	 * @post	This Task is no longer being executed
-	 * 			| ! new.isBeingExecuted()
-	 * @post	This Task is removed from its Unit
-	 * 			| (new this.getUnit()).getTask() == null
-	 * @post	This Task's Unit is the null reference
-	 * 			| new.getUnit() == null
-	 * @post	This Task's priority has been decremented by 1
-	 * 			| new.getPriority() == this.getPriority() - 1
-	 * @throws IllegalStateException
-	 */
-	void interrupt() throws IllegalStateException{
-		if (!this.isBeingExecuted())
-			throw new IllegalStateException();
-		this.getUnit().setTask(null);
-		this.inExecution = false;
-		this.setUnit(null);
-		this.setPriority(getPriority()-1);
-	}
+	
 
 	/**
 	 * Variable registering whether this Task is currently being executed
@@ -610,5 +594,10 @@ public class Task implements Comparable<Task>{
 	 * variable registering the iterator this task is using
 	 */
 	private Iterator<Statement> iterator;
+	
+	
+		
+		
+	
 
 }

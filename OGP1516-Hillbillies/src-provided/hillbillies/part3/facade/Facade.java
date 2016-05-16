@@ -389,7 +389,6 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
-		// TODO Auto-generated method stub
 		return scheduler.hasAsTasks(tasks);
 	}
 

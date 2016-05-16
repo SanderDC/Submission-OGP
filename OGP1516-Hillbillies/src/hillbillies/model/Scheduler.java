@@ -263,7 +263,7 @@ public class Scheduler implements Iterable<Task>{
 		if (!this.hasAsTask(oldTask) || !this.canHaveAsTask(newTask))
 			throw new IllegalArgumentException();
 		if (oldTask.isBeingExecuted())
-			oldTask.interrupt();
+			oldTask.unAssignTaskofUnit(oldTask.getUnit());
 		int index = this.tasks.indexOf(oldTask);
 		this.removeTasks(oldTask);
 		this.tasks.add(index, newTask);

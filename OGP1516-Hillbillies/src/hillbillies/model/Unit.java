@@ -2583,14 +2583,14 @@ public class Unit extends GameObject {
 
 	/**
 	 * if a Unit is idle and it has defaultbehavior enabled, it will choose an activity at random
-	 * @post	if thhe Scheduler of the Unit's faction has a Task that is valid for execution, it
+	 * @post	if the Scheduler of the Unit's faction has a Task that is valid for execution, it
 	 * 			will assign the Task to this Unit 
-	 * @post	if no attackableUnits are in range then
+	 * @post	if no attackableUnits are in range and no tasks are available then 
 	 * 			With a chance of one in three, movement to a random cube in the gameworld is initiated.
 	 * 			With a chance of one in two, sprinting will be enabled.
 	 * 			With a chance of one in three, the Unit starts working.
 	 * 			With a chance of one in three, the Unit starts resting.
-	 * @post 	if an attackable Unit is in range then
+	 * @post 	if an attackable Unit is in range and no tasks are available then
 	 * 			With a chance of one in four, movement to a random cube in the gameworld is initiated.
 	 * 			With a chance of one in two, sprinting will be enabled.
 	 * 			With a chance of one in four, the Unit starts working.

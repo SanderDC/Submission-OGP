@@ -1,11 +1,14 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.Set;
 
-
-
-import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.statements.Statement;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import ogp.framework.util.Util;
 
 /**
@@ -1415,7 +1418,7 @@ public class Unit extends GameObject {
 			this.setDistantTarget(null);
 			this.setSpeed(new Vector(0,0,0));
 			this.setEnemy(null);
-		}			
+		}
 		super.setStatus(status);
 	}
 
@@ -1598,7 +1601,8 @@ public class Unit extends GameObject {
 		if (this.getActivityTime()>=1){
 			other.defend(this);
 			other.updatePosition(this);
-			this.setStatus(Status.IDLE);
+			if (this.hasTask() && this.getTask().isFinished())
+				this.getTask().terminate();
 			if (this.getDistantTarget() != null){
 				Vector target = this.getDistantTarget();
 				try {
@@ -1607,7 +1611,8 @@ public class Unit extends GameObject {
 					this.setDistantTarget(null);
 					this.setStatus(Status.IDLE);
 				}
-			}
+			} else
+				this.setStatus(Status.IDLE);
 			this.setEnemy(null);
 		}
 	}
@@ -1934,6 +1939,8 @@ public class Unit extends GameObject {
 		if (this.getActivityTime() - time <= 0){
 			this.setActivityTime(0);
 			this.setStatus(Status.IDLE);
+			if (this.hasTask() && this.getTask().isFinished())
+				this.getTask().terminate();
 			if (this.hasGameObject()){
 				this.dropObjectAt(this.getWorkposition());
 				this.setExp(this.getExp()+10);
@@ -2396,11 +2403,9 @@ public class Unit extends GameObject {
 					this.moveToNextCube();
 				}
 			} else{
-				this.setNearTarget(null);
-				this.setDistantTarget(null);
-				this.setSpeed(new Vector(0,0,0));
-				this.setSprinting(false);
 				this.setStatus(Status.IDLE);
+				if (this.hasTask() && this.getTask().isFinished())
+					this.getTask().terminate();					
 			}				
 		} else
 			this.setPosition(new_pos);
@@ -3552,7 +3557,7 @@ public class Unit extends GameObject {
 	private void setTask(Task task){
 		if (task==null) {
 			this.task=null;
-			this.setStatus(Status.IDLE);
+//			this.setStatus(Status.IDLE);
 		}
 		else {
 			if (!hasTask()&&this.IsValidTask(task)) {

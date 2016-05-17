@@ -123,15 +123,6 @@ public class Task implements Comparable<Task>{
 		this.setUnit(unit);
 		unit.assignTask(this);
 		this.iterator = this.statements.iterator();
-		
-
-//		if (this.unit==null) {
-//			this.unit=unit;
-//			unit.setTask(this);
-//			this.inExecution=true;
-//			this.iterator = this.statements.iterator();
-//		}
-
 	}
 	/**
 	 * 
@@ -584,11 +575,21 @@ public class Task implements Comparable<Task>{
 				break;
 		}
 	}
+	
+	/**
+	 * Check whether the current Task has been completed.
+	 * @return true if and only if this Task's iterator has no next Statement
+	 * 		  | result == !(this.iterator.hasNext())
+	 */
+	public boolean isFinished(){
+		return !this.iterator.hasNext();
+	}
 
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
 	private Statement statements;
+	
 	/**
 	 * variable registering the iterator this task is using
 	 */

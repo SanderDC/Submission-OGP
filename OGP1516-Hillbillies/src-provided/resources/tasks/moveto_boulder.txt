@@ -1,4 +1,1 @@
-name: "goto boulder"
-priority : 5
-activities : 
-	moveTo boulder;
+name: "goto boulder"	priority : 5	activities : moveTo boulder;

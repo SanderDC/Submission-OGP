@@ -3,13 +3,9 @@ import hillbillies.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
-import hillbillies.model.Boulder;
-import hillbillies.model.Log;
 import hillbillies.model.Task;
 import hillbillies.model.statements.*;
 import hillbillies.model.expressions.*;
@@ -158,12 +154,12 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createLogPosition(SourceLocation sourceLocation) {
-		return new GameObjectPositionExpression<Log>(sourceLocation);
+		return new LogPositionExpression(sourceLocation);
 	}
 
 	@Override
 	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		return new GameObjectPositionExpression<Boulder>(sourceLocation);
+		return new BoulderPositionExpression(sourceLocation);
 	}
 
 	@Override

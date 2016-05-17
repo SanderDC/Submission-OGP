@@ -51,7 +51,7 @@ public class MoveToStatement extends Statement {
 
 			@Override
 			public boolean hasNext() {
-				return !statementHandled;
+				return !statementHandled || !getUnit().getPosition().getCubePosition().equals(expression.evaluate().getCubePosition());
 			}
 
 			@Override

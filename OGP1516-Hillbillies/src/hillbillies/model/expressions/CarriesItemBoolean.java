@@ -1,6 +1,5 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 

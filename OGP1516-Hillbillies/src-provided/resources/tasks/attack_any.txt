@@ -1,0 +1,1 @@
+name: "attack any"	priority : 10	activities : follow enemy;	attack enemy;

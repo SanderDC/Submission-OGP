@@ -1,10 +1,10 @@
 package hillbillies.model.expressions;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.Set;
 
 import hillbillies.model.Unit;
+import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class AnyUnitExpression extends Expression implements UnitExpression {
@@ -15,12 +15,9 @@ public class AnyUnitExpression extends Expression implements UnitExpression {
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {
-		int index = new Random().nextInt(this.getUnit().getWorld().getUnits().size());
-		Iterator<Unit> iter = this.getUnit().getWorld().getUnits().iterator();
-		for (int i = 0; i < index; i++) {
-		    iter.next();
-		}
-		return iter.next();
+		Set<Unit> units = this.getUnit().getWorld().getUnits();
+		units.remove(getUnit());
+		return World.getNearestObject(units, getUnit());
 	}
 	
 	@Override

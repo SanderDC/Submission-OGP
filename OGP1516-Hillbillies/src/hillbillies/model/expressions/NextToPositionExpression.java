@@ -1,6 +1,8 @@
 package hillbillies.model.expressions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;

@@ -580,7 +580,7 @@ public class World {
 	 * 			The given position is outside of the World
 	 * 			| isInsideWorld(position)
 	 */
-	Set<GameObject> getGameObjectsAt(Vector position) throws IllegalArgumentException{
+	public Set<GameObject> getGameObjectsAt(Vector position) throws IllegalArgumentException{
 		if (!isInsideWorld(position))
 			throw new IllegalArgumentException();
 		position = position.getCubePosition();
@@ -1021,4 +1021,49 @@ public class World {
 		}
 		return validpositions;
 	}
+	
+	/**
+	 * TODO: documentatie
+	 * @param coll
+	 * @param unit
+	 * @return
+	 */
+	public static <T extends GameObject> T getNearestObject(Collection<T> coll, Unit unit){
+		Heap<Node> open = new Heap<>();
+		List<Node> closed = new ArrayList<>();
+		Node start = new Node(unit.getPosition());
+		open.add(start);
+		while (open.size() > 0){
+			Node current = open.pop();
+			closed.add(current);
+			for (T object : coll){
+				if (object != unit)
+					if (object.getPosition().getCubePosition().equals(current.getCubeCoordinates()))
+						return object;
+			}
+			for (Node neighbour:current.getNeighbouringNodes()){
+				if (!unit.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
+						closed.contains(neighbour))
+					continue;
+				neighbour.setGCost(current.getGCost()+Node.calculateDistance(current, neighbour));
+				neighbour.setHCost(0);
+				if (!open.contains(neighbour)){
+					open.add(neighbour);
+				}
+				else {
+					int index = open.getIndex(neighbour);
+					if (neighbour.compareTo(open.get(index)) < 0){
+						open.replace(index, neighbour);
+					}
+				}
+			}
+		}
+		throw new NoSuchElementException();
+	}
+	
+	
+	
+	
+	
+	
 }

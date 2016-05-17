@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
-import hillbillies.model.expressions.AnyUnitExpression;
 import hillbillies.model.expressions.UnitExpression;
 
 public class FollowStatement extends Statement {
@@ -25,13 +24,6 @@ public class FollowStatement extends Statement {
 		Vector position = this.getfollowPositition();
 		this.getUnit().moveTo(position.getCubeX(),position.getCubeY(),position.getCubeZ());
 	}
-
-
-
-
-
-
-
 
 	@Override
 	public void addToTask(Task task) {

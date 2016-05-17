@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
 
-public class AssignmentStatement extends Statement implements ExecutableStatement {
+public class AssignmentStatement extends Statement implements IExecutableStatement {
 	
 	public AssignmentStatement(Expression expression, String variableName) {
 		this.expression = expression;
@@ -34,8 +34,8 @@ public class AssignmentStatement extends Statement implements ExecutableStatemen
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 			
 			private boolean statementHandled = false;
 
@@ -45,7 +45,7 @@ public class AssignmentStatement extends Statement implements ExecutableStatemen
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;
@@ -54,10 +54,4 @@ public class AssignmentStatement extends Statement implements ExecutableStatemen
 			
 		};
 	}
-
-	@Override
-	public boolean check() {
-		return true;
-	}
-	
 }

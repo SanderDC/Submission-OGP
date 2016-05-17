@@ -1,6 +1,9 @@
 package hillbillies.model.statements;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 
@@ -26,29 +29,7 @@ public class SequenceStatement extends Statement {
 	}
 	
 	private List<Statement> statements = new ArrayList<>();
-
-//	@Override
-//	public void execute() {
-//		for (Statement statement : statements) {
-//			if (!statement.executed) {
-//				statement.execute();
-//				return;
-//			}
-//		}
-//		}
-//		
 	
-
-	@Override
-	public boolean check() {
-		for (Statement statement : statements) {
-			if (!statement.executed) {
-				statement.check();
-				return false;
-			}
-		}
-		return true;
-	}
 	public SequenceStatement clone() {
 		List<Statement> cloned = new ArrayList<>();
 		for (Statement statement:this.statements){
@@ -58,12 +39,12 @@ public class SequenceStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 			
 			private Iterator<Statement> nextStatements = statements.iterator();
 			
-			private Iterator<ExecutableStatement> currentIterator;
+			private Iterator<IExecutableStatement> currentIterator;
 			
 			private int nbStatementsHandled = 0;
 
@@ -79,7 +60,7 @@ public class SequenceStatement extends Statement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				if (currentIterator == null)

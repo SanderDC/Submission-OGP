@@ -4,11 +4,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.LiteralPositionExpression;
 import hillbillies.model.expressions.PositionExpression;
-import javafx.geometry.Pos;
 
-public class MoveToStatement extends Statement implements ExecutableStatement {
+public class MoveToStatement extends Statement implements IExecutableStatement {
 	
 	public MoveToStatement(PositionExpression expression) {
 		this.expression=expression;
@@ -26,17 +24,7 @@ public class MoveToStatement extends Statement implements ExecutableStatement {
 	@Override
 	public void execute(){
 		this.getUnit().moveTo(expression.evaluate().getCubeX(),expression.evaluate().getCubeY(),expression.evaluate().getCubeZ());
-	}
-	@Override
-	public boolean check() {
-		if (this.getUnit().getPosition().getCubeX()==expression.evaluate().getCubeX()&&this.getUnit().getPosition().getCubeY()==expression.evaluate().getCubeY()&&this.getUnit().getPosition().getCubeZ()==expression.evaluate().getCubeZ()) {
-			this.setExecuted(true);
-			return true;
-		}
-		return false;
-	}
-	
-	
+	}	
 
 	@Override
 	public MoveToStatement clone() {
@@ -44,8 +32,8 @@ public class MoveToStatement extends Statement implements ExecutableStatement {
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -55,7 +43,7 @@ public class MoveToStatement extends Statement implements ExecutableStatement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

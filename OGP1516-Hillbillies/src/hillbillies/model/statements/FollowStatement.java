@@ -7,7 +7,7 @@ import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.model.expressions.UnitExpression;
 
-public class FollowStatement extends Statement implements ExecutableStatement {
+public class FollowStatement extends Statement implements IExecutableStatement {
 
 	public FollowStatement( UnitExpression expression){
 		this.expression=expression;
@@ -31,21 +31,6 @@ public class FollowStatement extends Statement implements ExecutableStatement {
 		this.expression.addToTask(task);
 
 	}
-	@Override
-	public boolean check() {
-
-		if( this.getUnit().isAdjacentPosition(expression.evaluate().getPosition())){
-			this.setExecuted(true);
-			return true;}
-		else{
-			if (expression.evaluate().isMoving()||expression.evaluate().isFalling()) {
-				this.getUnit().moveTo(getfollowPositition().getCubeX(),getfollowPositition().getCubeY(),getfollowPositition().getCubeZ());
-
-			}
-			return false;
-
-		}
-	}
 
 	@Override
 	public FollowStatement clone() {
@@ -53,8 +38,8 @@ public class FollowStatement extends Statement implements ExecutableStatement {
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -68,7 +53,7 @@ public class FollowStatement extends Statement implements ExecutableStatement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

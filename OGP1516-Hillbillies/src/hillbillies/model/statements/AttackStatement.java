@@ -2,12 +2,10 @@ package hillbillies.model.statements;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
 import hillbillies.model.Task;
 import hillbillies.model.expressions.EnemyUnitExpression;
-import hillbillies.model.expressions.Expression;
 
-public class AttackStatement extends Statement implements ExecutableStatement {
+public class AttackStatement extends Statement implements IExecutableStatement {
 
 	public  AttackStatement(EnemyUnitExpression expression) {
 		this.expression=expression;
@@ -32,8 +30,8 @@ public class AttackStatement extends Statement implements ExecutableStatement {
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -43,7 +41,7 @@ public class AttackStatement extends Statement implements ExecutableStatement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;
@@ -52,14 +50,4 @@ public class AttackStatement extends Statement implements ExecutableStatement {
 
 		};
 	}
-
-	@Override
-	public boolean check() {
-		if (!this.getUnit().isAttacking()) {
-			
-			return true;
-		}
-		return false;
-	}
-
 }

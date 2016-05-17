@@ -588,7 +588,7 @@ public class Task implements Comparable<Task>{
 	/**
 	 * variable registering the iterator this task is using
 	 */
-	private Iterator<ExecutableStatement> iterator;
+	private Iterator<IExecutableStatement> iterator;
 	
 	
 		

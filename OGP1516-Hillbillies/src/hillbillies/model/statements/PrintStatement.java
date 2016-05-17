@@ -5,9 +5,8 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
-import hillbillies.model.expressions.ReadVariable;
 
-public class PrintStatement extends Statement implements ExecutableStatement {
+public class PrintStatement extends Statement implements IExecutableStatement {
 
 	public  PrintStatement(Expression value) {
 		this.expression=value;
@@ -38,8 +37,8 @@ public class PrintStatement extends Statement implements ExecutableStatement {
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -49,18 +48,12 @@ public class PrintStatement extends Statement implements ExecutableStatement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;
 				return PrintStatement.this;
 			}
 		};
-	}
-
-	@Override
-	public boolean check() {
-		
-		return true;
 	}
 }

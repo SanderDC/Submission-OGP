@@ -4,10 +4,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.LiteralPositionExpression;
 import hillbillies.model.expressions.PositionExpression;
 
-public class WorkStatement extends Statement implements ExecutableStatement {
+public class WorkStatement extends Statement implements IExecutableStatement {
 	
 	public WorkStatement(PositionExpression expression){
 		this.expression=expression;
@@ -26,28 +25,15 @@ public class WorkStatement extends Statement implements ExecutableStatement {
 		this.expression.addToTask(task);
 
 	}
-
-
-
-	@Override
-	public boolean check() {
-		if ( !this.getUnit().isWorking()) {
-			this.setExecuted(true);
-			return true;
-		}
-		else
-			return false;
-			
-		
-	}
+	
 	@Override
 	public Statement clone() {
 		return new WorkStatement(expression.clone());
 	}
 
 	@Override
-	public Iterator<ExecutableStatement> iterator() {
-		return new Iterator<ExecutableStatement>(){
+	public Iterator<IExecutableStatement> iterator() {
+		return new Iterator<IExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -57,7 +43,7 @@ public class WorkStatement extends Statement implements ExecutableStatement {
 			}
 
 			@Override
-			public ExecutableStatement next() throws NoSuchElementException {
+			public IExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

@@ -1,6 +1,6 @@
 package hillbillies.model.statements;
 
-public interface ExecutableStatement {
+public interface IExecutableStatement {
 	
 	public void execute();
 	

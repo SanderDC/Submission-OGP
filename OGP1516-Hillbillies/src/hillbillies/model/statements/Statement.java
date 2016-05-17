@@ -2,7 +2,8 @@ package hillbillies.model.statements;
 
 import java.util.Iterator;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 
@@ -12,7 +13,7 @@ import hillbillies.model.Unit;
  * @author Bram Belpaire
  *
  */
-public abstract class Statement implements Iterable<ExecutableStatement> {
+public abstract class Statement implements Iterable<IExecutableStatement> {
 
 	public abstract void addToTask(Task task);
 
@@ -46,7 +47,7 @@ public abstract class Statement implements Iterable<ExecutableStatement> {
 	public void setExecuted(boolean e){
 		this.executed=e;
 	}
-	public abstract boolean check();
+
 	protected Statement getParentStatement(){
 		return this.parentStatement;
 	}
@@ -55,12 +56,10 @@ public abstract class Statement implements Iterable<ExecutableStatement> {
 		this.parentStatement = statement;
 	}
 	
-	public abstract Iterator<ExecutableStatement> iterator();
+	public abstract Iterator<IExecutableStatement> iterator();
 	
 	private Statement parentStatement;
-	
-//	public abstract void execute();
-	
+		
 	public WhileStatement getWhileStatement() {
 		if (this.getParentStatement() instanceof WhileStatement)
 			return (WhileStatement) this.getParentStatement();

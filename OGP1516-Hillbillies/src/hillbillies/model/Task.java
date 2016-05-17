@@ -304,11 +304,6 @@ public class Task implements Comparable<Task>{
 	private String name;
 
 	/**
-	 * Variable registering the activities for this Task
-	 */
-	List<Activity> activities = new ArrayList<>();
-
-	/**
 	 * 
 	 * @param other
 	 * @return

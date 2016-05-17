@@ -7,7 +7,7 @@ import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.ReadVariable;
 
-public class PrintStatement extends Statement {
+public class PrintStatement extends Statement implements ExecutableStatement {
 
 	public  PrintStatement(Expression value) {
 		this.expression=value;
@@ -38,8 +38,8 @@ public class PrintStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -49,7 +49,7 @@ public class PrintStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

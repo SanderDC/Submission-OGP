@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 
-public class BreakStatement  extends Statement{
+public class BreakStatement  extends Statement implements ExecutableStatement {
 
 	@Override
 	public void addToTask(Task task) {
@@ -23,8 +23,8 @@ public class BreakStatement  extends Statement{
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -34,7 +34,7 @@ public class BreakStatement  extends Statement{
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

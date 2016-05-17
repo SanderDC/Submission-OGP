@@ -12,7 +12,7 @@ import hillbillies.model.Unit;
  * @author Bram Belpaire
  *
  */
-public abstract class Statement implements Iterable<Statement> {
+public abstract class Statement implements Iterable<ExecutableStatement> {
 
 	public abstract void addToTask(Task task);
 
@@ -55,11 +55,11 @@ public abstract class Statement implements Iterable<Statement> {
 		this.parentStatement = statement;
 	}
 	
-	public abstract Iterator<Statement> iterator();
+	public abstract Iterator<ExecutableStatement> iterator();
 	
 	private Statement parentStatement;
 	
-	public abstract void execute();
+//	public abstract void execute();
 	
 	public WhileStatement getWhileStatement() {
 		if (this.getParentStatement() instanceof WhileStatement)

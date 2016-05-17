@@ -7,7 +7,7 @@ import hillbillies.model.Task;
 import hillbillies.model.expressions.EnemyUnitExpression;
 import hillbillies.model.expressions.Expression;
 
-public class AttackStatement extends Statement {
+public class AttackStatement extends Statement implements ExecutableStatement {
 
 	public  AttackStatement(EnemyUnitExpression expression) {
 		this.expression=expression;
@@ -32,8 +32,8 @@ public class AttackStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -43,7 +43,7 @@ public class AttackStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

@@ -8,7 +8,7 @@ import hillbillies.model.expressions.LiteralPositionExpression;
 import hillbillies.model.expressions.PositionExpression;
 import javafx.geometry.Pos;
 
-public class MoveToStatement extends Statement {
+public class MoveToStatement extends Statement implements ExecutableStatement {
 	
 	public MoveToStatement(PositionExpression expression) {
 		this.expression=expression;
@@ -44,8 +44,8 @@ public class MoveToStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -55,7 +55,7 @@ public class MoveToStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

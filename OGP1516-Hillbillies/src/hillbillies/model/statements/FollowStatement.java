@@ -7,7 +7,7 @@ import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.model.expressions.UnitExpression;
 
-public class FollowStatement extends Statement {
+public class FollowStatement extends Statement implements ExecutableStatement {
 
 	public FollowStatement( UnitExpression expression){
 		this.expression=expression;
@@ -53,8 +53,8 @@ public class FollowStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean statementHandled = false;
 
@@ -68,7 +68,7 @@ public class FollowStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				statementHandled = true;

@@ -20,13 +20,13 @@ public class WhileStatement extends Statement {
 	
 	private Statement body;
 
-	@Override
-	public void execute() {
-		if(expression.evaluate()){
-			body.execute();
-		}
-
-	}
+//	@Override
+//	public void execute() {
+//		if(expression.evaluate()){
+//			body.execute();
+//		}
+//
+//	}
 
 	@Override
 	public void addToTask(Task task) {
@@ -51,13 +51,13 @@ public class WhileStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>() {
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>() {
 			
-			Iterator<Statement> subIterator = body.iterator();
+			Iterator<ExecutableStatement> subIterator = body.iterator();
 			
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (subIterator.hasNext())
 					return subIterator.next();
 				else if (expression.evaluate()){
@@ -83,7 +83,7 @@ public class WhileStatement extends Statement {
 @Override
 public void   setExecuted(boolean e) {
 	this.executed=e;
-	Iterator<Statement> itr= this.iterator();
+	Iterator<ExecutableStatement> itr= this.iterator();
 	body.setExecuted(e);
 		
 	

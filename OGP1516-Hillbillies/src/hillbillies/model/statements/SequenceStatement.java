@@ -27,16 +27,16 @@ public class SequenceStatement extends Statement {
 	
 	private List<Statement> statements = new ArrayList<>();
 
-	@Override
-	public void execute() {
-		for (Statement statement : statements) {
-			if (!statement.executed) {
-				statement.execute();
-				return;
-			}
-		}
-		}
-		
+//	@Override
+//	public void execute() {
+//		for (Statement statement : statements) {
+//			if (!statement.executed) {
+//				statement.execute();
+//				return;
+//			}
+//		}
+//		}
+//		
 	
 
 	@Override
@@ -58,12 +58,12 @@ public class SequenceStatement extends Statement {
 	}
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 			
 			private Iterator<Statement> nextStatements = statements.iterator();
 			
-			private Iterator<Statement> currentIterator;
+			private Iterator<ExecutableStatement> currentIterator;
 			
 			private int nbStatementsHandled = 0;
 
@@ -79,7 +79,7 @@ public class SequenceStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				if (currentIterator == null)

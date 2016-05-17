@@ -33,23 +33,22 @@ public class IfStatement extends Statement {
 
 	private int trueorfalse=0;
 	
-	@Override
-	public void execute(){
-		
-			if (expression.evaluate()) {
-				trueorfalse=1;
-				trueStatement.execute();
-			}
-			else {
-				trueorfalse=2;
-				if (!hasElseStatement()) {
-					return;
-				}
-				falseStatement.execute();
-			}
-		
-		
-	}
+//	public void execute(){
+//		
+//			if (expression.evaluate()) {
+//				trueorfalse=1;
+//				trueStatement.execute();
+//			}
+//			else {
+//				trueorfalse=2;
+//				if (!hasElseStatement()) {
+//					return;
+//				}
+//				falseStatement.execute();
+//			}
+//		
+//		
+//	}
 
 
 	@Override
@@ -93,12 +92,12 @@ public class IfStatement extends Statement {
 
 
 	@Override
-	public Iterator<Statement> iterator() {
-		return new Iterator<Statement>(){
+	public Iterator<ExecutableStatement> iterator() {
+		return new Iterator<ExecutableStatement>(){
 
 			private boolean firstCall = true;
 
-			private Iterator<Statement> subIterator;
+			private Iterator<ExecutableStatement> subIterator;
 
 			@Override
 			public boolean hasNext() {
@@ -112,7 +111,7 @@ public class IfStatement extends Statement {
 			}
 
 			@Override
-			public Statement next() throws NoSuchElementException {
+			public ExecutableStatement next() throws NoSuchElementException {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				if (firstCall){

@@ -5,7 +5,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsEnemyBoolean extends UnitBoolean {
 
-	public IsEnemyBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+	public IsEnemyBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
 

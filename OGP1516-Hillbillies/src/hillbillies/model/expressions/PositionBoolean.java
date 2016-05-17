@@ -3,14 +3,14 @@ package hillbillies.model.expressions;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class PositionBoolean extends Expression implements BooleanExpression {
+public abstract class PositionBoolean extends Expression implements IBooleanExpression {
 
-	public PositionBoolean(PositionExpression position, SourceLocation sourceLocation) {
+	public PositionBoolean(IPositionExpression position, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.target = position;
 	}
 	
-	protected PositionExpression getTarget(){
+	protected IPositionExpression getTarget(){
 		return this.target;
 	}
 	@Override
@@ -19,7 +19,7 @@ public abstract class PositionBoolean extends Expression implements BooleanExpre
 		target.addToTask(task);
 		
 	}
-	private final PositionExpression target;
+	private final IPositionExpression target;
 	
 	public abstract PositionBoolean clone();
 }

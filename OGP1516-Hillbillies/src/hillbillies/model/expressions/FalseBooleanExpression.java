@@ -2,7 +2,7 @@ package hillbillies.model.expressions;
 
 import hillbillies.part3.programs.SourceLocation;
 
-public class FalseBooleanExpression extends Expression implements BooleanExpression {
+public class FalseBooleanExpression extends Expression implements IBooleanExpression {
 
 	public FalseBooleanExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

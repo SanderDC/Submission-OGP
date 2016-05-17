@@ -4,7 +4,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsFriendBoolean extends UnitBoolean {
 
-	public IsFriendBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+	public IsFriendBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
 

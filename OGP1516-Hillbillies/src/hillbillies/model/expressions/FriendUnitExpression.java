@@ -7,7 +7,7 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class FriendUnitExpression extends Expression implements UnitExpression {
+public class FriendUnitExpression extends Expression implements IUnitExpression {
 
 	public FriendUnitExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

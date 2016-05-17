@@ -9,9 +9,9 @@ import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.part3.programs.SourceLocation;
 
-public class NextToPositionExpression extends Expression implements PositionExpression {
+public class NextToPositionExpression extends Expression implements IPositionExpression {
 	
-	public NextToPositionExpression(PositionExpression position, SourceLocation sourceLocation) {
+	public NextToPositionExpression(IPositionExpression position, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.target = position;
 	}
@@ -39,7 +39,7 @@ public class NextToPositionExpression extends Expression implements PositionExpr
 		throw new NoSuchElementException();
 	}
 	
-	private final PositionExpression target;
+	private final IPositionExpression target;
 	
 	@Override
 	public NextToPositionExpression clone(){

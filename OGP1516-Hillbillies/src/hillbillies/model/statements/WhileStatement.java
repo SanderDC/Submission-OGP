@@ -4,18 +4,18 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.BooleanExpression;
+import hillbillies.model.expressions.IBooleanExpression;
 
 public class WhileStatement extends Statement {
 
-	public WhileStatement(BooleanExpression condition, Statement body){
+	public WhileStatement(IBooleanExpression condition, Statement body){
 		this.expression=condition;
 		this.body=body;
 		this.body.setParentStatement(this);
 		this.broken = false;
 	}
 
-	private BooleanExpression expression;
+	private IBooleanExpression expression;
 
 	private Statement body;
 

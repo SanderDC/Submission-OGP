@@ -43,13 +43,13 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		return new WhileStatement((BooleanExpression) condition, body);
+		return new WhileStatement((IBooleanExpression) condition, body);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		return  new IfStatement((BooleanExpression) condition, ifBody, elseBody);
+		return  new IfStatement((IBooleanExpression) condition, ifBody, elseBody);
 	}
 
 	@Override
@@ -69,17 +69,17 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		return new MoveToStatement( (PositionExpression) position);
+		return new MoveToStatement( (IPositionExpression) position);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return new WorkStatement((PositionExpression) position);
+		return new WorkStatement((IPositionExpression) position);
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		return new FollowStatement((UnitExpression) unit);
+		return new FollowStatement((IUnitExpression) unit);
 	}
 
 	@Override
@@ -92,11 +92,11 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	public Expression createReadVariable(String variableName, SourceLocation sourceLocation) {
 		if (!types.containsKey(variableName))
 			return null;
-		else if (PositionExpression.class.isAssignableFrom(types.get(variableName)))
+		else if (IPositionExpression.class.isAssignableFrom(types.get(variableName)))
 			return new ReadPositionExpression(variableName, sourceLocation);
-		else if (BooleanExpression.class.isAssignableFrom(types.get(variableName)))
+		else if (IBooleanExpression.class.isAssignableFrom(types.get(variableName)))
 			return new ReadBooleanExpression(variableName, sourceLocation);
-		else if (UnitExpression.class.isAssignableFrom(types.get(variableName)))
+		else if (IUnitExpression.class.isAssignableFrom(types.get(variableName)))
 			return new ReadUnitExpression(variableName, sourceLocation);
 		else
 			return null;
@@ -104,47 +104,47 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		return new IsSolidBoolean((PositionExpression) position, sourceLocation);
+		return new IsSolidBoolean((IPositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		return new IsPassableBoolean((PositionExpression) position, sourceLocation);
+		return new IsPassableBoolean((IPositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		return new IsFriendBoolean((UnitExpression) unit, sourceLocation);
+		return new IsFriendBoolean((IUnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		return new IsEnemyBoolean((UnitExpression) unit, sourceLocation);
+		return new IsEnemyBoolean((IUnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		return new IsAliveBoolean((UnitExpression) unit, sourceLocation);
+		return new IsAliveBoolean((IUnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		return new CarriesItemBoolean((UnitExpression) unit, sourceLocation);
+		return new CarriesItemBoolean((IUnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		return new NotBooleanExpression((BooleanExpression) expression, sourceLocation);
+		return new NotBooleanExpression((IBooleanExpression) expression, sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new AndBooleanExpression((BooleanExpression) left, (BooleanExpression) right, sourceLocation);
+		return new AndBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new OrBooleanExpression((BooleanExpression) left, (BooleanExpression) right, sourceLocation);
+		return new OrBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		return new NextToPositionExpression((PositionExpression) position, sourceLocation);
+		return new NextToPositionExpression((IPositionExpression) position, sourceLocation);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		return new PositionOfExpression((UnitExpression) unit, sourceLocation);
+		return new PositionOfExpression((IUnitExpression) unit, sourceLocation);
 	}
 
 }

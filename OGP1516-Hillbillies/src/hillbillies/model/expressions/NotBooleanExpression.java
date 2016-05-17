@@ -3,9 +3,9 @@ package hillbillies.model.expressions;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
-public class NotBooleanExpression extends Expression implements BooleanExpression {
+public class NotBooleanExpression extends Expression implements IBooleanExpression {
 
-	public NotBooleanExpression(BooleanExpression expression, SourceLocation sourceLocation) {
+	public NotBooleanExpression(IBooleanExpression expression, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.target = expression;
 	}
@@ -15,11 +15,11 @@ public class NotBooleanExpression extends Expression implements BooleanExpressio
 		return !(this.getTarget().evaluate());
 	}
 	
-	protected BooleanExpression getTarget(){
+	protected IBooleanExpression getTarget(){
 		return this.target;
 	}
 	
-	private BooleanExpression target;
+	private IBooleanExpression target;
 	
 	@Override
 	public NotBooleanExpression clone(){

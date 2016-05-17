@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Vector;
 import hillbillies.part3.programs.SourceLocation;
 
-public class LiteralPositionExpression extends Expression implements PositionExpression {
+public class LiteralPositionExpression extends Expression implements IPositionExpression {
 	
 	public LiteralPositionExpression(int x, int y, int z, SourceLocation sourceLocation) {
 		super(sourceLocation);

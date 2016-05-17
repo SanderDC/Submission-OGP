@@ -232,6 +232,7 @@ public class Faction {
 	 * @throws	IllegalArgumentException
 	 * 			The given game World is not a valid game World for this Faction
 	 */
+	@Raw
 	void addToWorld(World world) throws IllegalArgumentException{
 		if (! this.canHaveAsWorld(world))
 			throw new IllegalArgumentException("This is not a valid gameworld!");

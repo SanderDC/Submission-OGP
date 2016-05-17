@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public class ThisUnitExpression extends Expression implements UnitExpression {
+public class ThisUnitExpression extends Expression implements IUnitExpression {
 
 	public ThisUnitExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

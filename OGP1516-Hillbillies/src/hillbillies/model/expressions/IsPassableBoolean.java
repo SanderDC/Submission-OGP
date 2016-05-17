@@ -4,7 +4,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsPassableBoolean extends PositionBoolean {
 
-	public IsPassableBoolean(PositionExpression position, SourceLocation sourceLocation) {
+	public IsPassableBoolean(IPositionExpression position, SourceLocation sourceLocation) {
 		super(position, sourceLocation);
 	}
 

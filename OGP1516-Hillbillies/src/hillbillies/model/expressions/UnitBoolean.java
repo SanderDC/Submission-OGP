@@ -3,18 +3,18 @@ package hillbillies.model.expressions;
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
-public abstract class UnitBoolean extends Expression implements BooleanExpression {
+public abstract class UnitBoolean extends Expression implements IBooleanExpression {
 	
-	public UnitBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+	public UnitBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.target = unit;
 	}
 	
-	protected UnitExpression getTarget(){
+	protected IUnitExpression getTarget(){
 		return this.target;
 	}
 	
-	private final UnitExpression target;
+	private final IUnitExpression target;
 	
 	@Override
 	public void addToTask(Task task) {

@@ -4,7 +4,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsAliveBoolean extends UnitBoolean {
 
-	public IsAliveBoolean(UnitExpression unit, SourceLocation sourceLocation) {
+	public IsAliveBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
 		super(unit, sourceLocation);
 	}
 

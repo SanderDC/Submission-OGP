@@ -6,7 +6,7 @@ import hillbillies.model.Vector;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class BoulderPositionExpression extends Expression implements PositionExpression {
+public class BoulderPositionExpression extends Expression implements IPositionExpression {
 
 	public BoulderPositionExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

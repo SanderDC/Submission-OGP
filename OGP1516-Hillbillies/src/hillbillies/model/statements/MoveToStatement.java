@@ -4,15 +4,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.PositionExpression;
+import hillbillies.model.expressions.IPositionExpression;
 
 public class MoveToStatement extends Statement implements IExecutableStatement {
 	
-	public MoveToStatement(PositionExpression expression) {
+	public MoveToStatement(IPositionExpression expression) {
 		this.expression=expression;
 	}
 	
-	private PositionExpression expression;
+	private IPositionExpression expression;
 	
 	@Override
 	public void addToTask(Task task) {
@@ -39,7 +39,7 @@ public class MoveToStatement extends Statement implements IExecutableStatement {
 
 			@Override
 			public boolean hasNext() {
-				return !statementHandled || !getUnit().getPosition().getCubePosition().equals(expression.evaluate().getCubePosition());
+				return !statementHandled;
 			}
 
 			@Override

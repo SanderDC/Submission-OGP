@@ -5,11 +5,11 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
 
-public interface PositionExpression {
+public interface IPositionExpression {
 	
 	public Vector evaluate() throws NoSuchElementException;
 	
 	public void addToTask(Task task);
 	
-	public PositionExpression clone();
+	public IPositionExpression clone();
 }

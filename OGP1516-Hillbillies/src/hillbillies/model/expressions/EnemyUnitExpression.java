@@ -7,7 +7,7 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
-public class EnemyUnitExpression extends Expression implements UnitExpression {
+public class EnemyUnitExpression extends Expression implements IUnitExpression {
 
 	public EnemyUnitExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);

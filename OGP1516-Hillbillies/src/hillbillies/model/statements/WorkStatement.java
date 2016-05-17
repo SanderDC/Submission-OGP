@@ -4,15 +4,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.PositionExpression;
+import hillbillies.model.expressions.IPositionExpression;
 
 public class WorkStatement extends Statement implements IExecutableStatement {
 	
-	public WorkStatement(PositionExpression expression){
+	public WorkStatement(IPositionExpression expression){
 		this.expression=expression;
 	}
 	
-	private PositionExpression expression;
+	private IPositionExpression expression;
 
 	@Override
 	public void execute(){

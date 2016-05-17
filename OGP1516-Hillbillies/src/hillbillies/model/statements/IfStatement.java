@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.BooleanExpression;
+import hillbillies.model.expressions.IBooleanExpression;
 
 public class IfStatement extends Statement {
 
-	public  IfStatement(BooleanExpression expression, Statement lStatement, Statement rStatement) {
+	public  IfStatement(IBooleanExpression expression, Statement lStatement, Statement rStatement) {
 		this.expression=expression;
 		this.trueStatement=lStatement;
 		this.trueStatement.setParentStatement(this);
@@ -19,7 +19,7 @@ public class IfStatement extends Statement {
 	}
 
 
-	private BooleanExpression expression;
+	private IBooleanExpression expression;
 
 	private Statement trueStatement;
 	

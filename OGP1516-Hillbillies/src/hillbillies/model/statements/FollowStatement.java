@@ -5,15 +5,15 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
-import hillbillies.model.expressions.UnitExpression;
+import hillbillies.model.expressions.IUnitExpression;
 
 public class FollowStatement extends Statement implements IExecutableStatement {
 
-	public FollowStatement( UnitExpression expression){
+	public FollowStatement( IUnitExpression expression){
 		this.expression=expression;
 	}
 
-	private UnitExpression expression;
+	private IUnitExpression expression;
 
 	private Vector getfollowPositition(){
 		Vector position = expression.evaluate().getPosition();

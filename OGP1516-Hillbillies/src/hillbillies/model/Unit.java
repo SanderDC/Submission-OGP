@@ -530,10 +530,10 @@ public class Unit extends GameObject {
 	 */
 	public static final double CUBELENGTH = 1;
 
-//	/**
-//	 * Variable registering the position of this Unit.
-//	 */
-//	private Vector position;
+	//	/**
+	//	 * Variable registering the position of this Unit.
+	//	 */
+	//	private Vector position;
 
 	/**
 	 * Return the speed of this Unit.
@@ -969,16 +969,16 @@ public class Unit extends GameObject {
 	public boolean canHaveAsWeight(int weight) {
 		return (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT);
 	}
-	
-//	protected void setWeight(int weight){
-//		if (this.canHaveAsWeight(weight))
-//			super.setWeight(weight);
-//		else if (weight < this.getMinWeight())
-//			super.setWeight(getMinWeight());
-//		else
-//			super.setWeight(200);
-//		
-//	}
+
+	//	protected void setWeight(int weight){
+	//		if (this.canHaveAsWeight(weight))
+	//			super.setWeight(weight);
+	//		else if (weight < this.getMinWeight())
+	//			super.setWeight(getMinWeight());
+	//		else
+	//			super.setWeight(200);
+	//		
+	//	}
 
 	/**
 	 * Returns the smallest legal value for this Unit's weight
@@ -1037,7 +1037,7 @@ public class Unit extends GameObject {
 	 * 			| if (this.getStamina() > new.getmaxStamina())
 	 * 			| then new.getStamina() == new.getmaxStamina()
 	 */
-	
+
 	public void setWeight(int newWeight) {
 		if (newWeight < this.getMinWeight()) {
 			newWeight = this.getMinWeight();
@@ -1645,9 +1645,10 @@ public class Unit extends GameObject {
 			this.dodge();
 			this.setExp(this.getExp()+20);
 			if (hasTask()) {
-				this.task.unAssignTaskofUnit(this);
+				this.task.removeFromUnit();
+				this.setStatus(Status.IDLE);
 			}
-			
+
 		} else if (Math.random() <= 0.25 * (this.getStrength() + this.getAgility())
 				/ (attacker.getStrength() + attacker.getAgility())) {
 			this.setExp(this.getExp()+20);
@@ -1719,7 +1720,7 @@ public class Unit extends GameObject {
 	 * 		|result==new Vector.newposition
 	 */
 	private Vector selectDodgePosition(int randomnumber,float distance)throws IllegalArgumentException{
-		
+
 
 		if (randomnumber==0) {
 			return new Vector(this.getPosition().getX()-distance, this.getPosition().getY(), this.getPosition().getZ());
@@ -2289,8 +2290,9 @@ public class Unit extends GameObject {
 	 * 			The given time is an illegal time.
 	 * 			| (time < 0) || (time > 0.2)
 	 */
+	@Override
 	public void advanceTime(double time) throws IllegalArgumentException{
-		//TODO
+		//TODO: iets
 		if (!isTerminated()) {
 			if (time<0||time>0.2)
 				throw new IllegalArgumentException();
@@ -2307,6 +2309,7 @@ public class Unit extends GameObject {
 
 			if (status==Status.FALLING) {
 				this.fall(time);
+				return;
 			}
 			if (this.hasTask() && this.getStatus() == Status.IDLE){
 				this.getTask().advanceTask(time);
@@ -2324,17 +2327,17 @@ public class Unit extends GameObject {
 			if (status == Status.IDLE){
 				if (getdefaultbehaviorboolean()){
 					defaultbehavior();
-//					if (hasTask()) {
-//
-//						try {
-//							task.getstatement().execute();
-//							hasexecutedonce=true;
-//						} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
-//							e.printStackTrace();
-//							task.unAssignTaskofUnit(this);
-//							hasexecutedonce=false;
-//						}
-//					}
+					//					if (hasTask()) {
+					//
+					//						try {
+					//							task.getstatement().execute();
+					//							hasexecutedonce=true;
+					//						} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
+					//							e.printStackTrace();
+					//							task.unAssignTaskofUnit(this);
+					//							hasexecutedonce=false;
+					//						}
+					//					}
 				}
 
 			}
@@ -2432,7 +2435,7 @@ public class Unit extends GameObject {
 	 * 			The Unit is currently conducting an activity that cannot be interrupted by resting
 	 * 			| (!this.canBeInterruptedBy(Status.RESTING))
 	 */
-	public void resting()throws IllegalStateException{
+	public void resting() throws IllegalStateException {
 		if (! this.canBeInterruptedBy(Status.RESTING))
 			throw new IllegalStateException("This Unit cannot start resting at this moment");
 		if (this.getStatus() == Status.MOVINGADJACENT)
@@ -2577,7 +2580,7 @@ public class Unit extends GameObject {
 		if ((this.getTimeUntilRest()<=0)&&(!isAttacking())&&(!isResting())&&(!isMoving())&&(!isFalling())){
 			this.resting();
 			if(hasTask())
-			this.task.unAssignTaskofUnit(this);
+				this.task.removeFromUnit();
 		}
 	}
 
@@ -2940,9 +2943,9 @@ public class Unit extends GameObject {
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
 		if (hasTask()) {
-			this.task.unAssignTaskofUnit(this);
+			this.task.removeFromUnit();
 		}
-		
+
 
 	}
 	/**
@@ -2957,7 +2960,7 @@ public class Unit extends GameObject {
 	 * @post	If the Unit would lose enough health to die, it will be terminated.
 	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
 	 */
-	
+
 	private void fall(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
@@ -2969,7 +2972,7 @@ public class Unit extends GameObject {
 				this.setSpeed(new Vector(0,0,0));
 				this.setStatus(Status.IDLE);
 				this.setFallPosition(0);
-				
+
 			}
 			else{
 				setHitpoints(0);			
@@ -3051,7 +3054,7 @@ public class Unit extends GameObject {
 	 * variable registering the experience points this unit has
 	 */
 	private int exp;
-	
+
 	/**
 	 * Terminate this Unit
 	 * @pre		This Unit's hitpoints have reached zero
@@ -3095,7 +3098,7 @@ public class Unit extends GameObject {
 		this.getPath().clear();
 		this.removeFromFaction();
 		if (hasTask()) {
-			this.task.unAssignTaskofUnit(this);
+			this.task.removeFromUnit();
 
 		}
 	}
@@ -3251,7 +3254,7 @@ public class Unit extends GameObject {
 				unit.setStatus(Status.IDLE);
 			}
 		}
-//		oldWorld.removeGameObject(this);
+		//		oldWorld.removeGameObject(this);
 	}
 
 	/**
@@ -3495,7 +3498,7 @@ public class Unit extends GameObject {
 	 * variable registering the Target of the Unit
 	 */
 	private Task task=null;
-	
+
 	/**
 	 * 
 	 * @return returns the task of this unit
@@ -3504,6 +3507,34 @@ public class Unit extends GameObject {
 	public Task getTask() {
 		return this.task;
 	}
+
+	/**
+	 * Assign the given Task to this Unit.
+	 * @param task
+	 * 			The Task to be assigned to this Unit.
+	 * @pre	  The given Task is effective and already references this Unit.
+	 * 		 | (task != null && task.getUnit() == this)
+	 * @post  This Unit references the given Task.
+	 * 		 | new.getTask() == task
+	 */
+	public void assignTask(Task task){
+		assert (task != null && task.getUnit() == this);
+		this.setTask(task);
+	}
+	
+	/**
+	 * Removes this Unit's current Task
+	 * @pre	  This Unit references a task and this Unit's Task no longer
+	 * 		  references a Unit
+	 * 		 | (this.getTask() != null && this.getTask().getUnit() == null)
+	 * @post  This Unit no longer references a Task
+	 * 		 | new.getTask() == null
+	 */
+	public void removeTask(){
+		assert (this.getTask() != null && this.getTask().getUnit() == null);
+		this.setTask(null);
+	}
+
 	/**
 	 * 
 	 * @param task
@@ -3518,7 +3549,7 @@ public class Unit extends GameObject {
 	 * 			|new.getTask==task
 	 * 		
 	 */
-	public void setTask(Task task){
+	private void setTask(Task task){
 		if (task==null) {
 			this.task=null;
 			this.setStatus(Status.IDLE);
@@ -3529,18 +3560,19 @@ public class Unit extends GameObject {
 
 
 			}
-		}}
-	
+		}
+	}
+
 	/**
 	 * 
 	 * @return returns whether the unit has a task to execute
 	 * 		|result==ths.task!==null
 	 */
-	
+
 	private	boolean hasTask(){
 		return this.task!=null;
 	}
-	
+
 	/**
 	 * 
 	 * @param task

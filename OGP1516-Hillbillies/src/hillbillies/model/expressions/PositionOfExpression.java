@@ -6,9 +6,9 @@ import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.part3.programs.SourceLocation;
 
-public class PositionOfExpression extends Expression implements PositionExpression {
+public class PositionOfExpression extends Expression implements IPositionExpression {
 	
-	public PositionOfExpression(UnitExpression target, SourceLocation sourceLocation) {
+	public PositionOfExpression(IUnitExpression target, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		this.target = target;
 	}
@@ -18,7 +18,7 @@ public class PositionOfExpression extends Expression implements PositionExpressi
 		return target.evaluate().getPosition();
 	}
 	
-	private final UnitExpression target;
+	private final IUnitExpression target;
 	
 	@Override
 	public PositionOfExpression clone(){

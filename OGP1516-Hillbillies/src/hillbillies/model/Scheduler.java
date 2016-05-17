@@ -2,9 +2,9 @@ package hillbillies.model;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,7 +19,6 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar   Each Scheduler must have proper Tasks.
  *        | hasProperTasks()
  */
-import javafx.collections.transformation.SortedList;
 public class Scheduler implements Iterable<Task>{
 
 	/**
@@ -69,21 +68,12 @@ public class Scheduler implements Iterable<Task>{
 	 * 			|			task.isBeingExecuted()
 	 */
 	public Task getTopPriorityTask() throws NoSuchElementException{
-		Task result = null;
-		for (Task task:this.tasks){
-			if (result == null){
-				if (!task.isBeingExecuted()){
-					result = task;
-				}
-			} else {
-				if (!task.isBeingExecuted() && task.getPriority() > result.getPriority()){
-					result = task;
-				}
-			}
-		}
-		if (result == null)
+		Optional<Task> result = this.tasks.stream().filter((Task t) -> !t.isBeingExecuted())
+				.max((Task t1, Task t2) -> t1.compareTo(t2));
+		if (result.isPresent())
+			return result.get();
+		else
 			throw new NoSuchElementException();
-		return result;
 	}
 
 	/**
@@ -261,21 +251,10 @@ public class Scheduler implements Iterable<Task>{
 		if (!this.hasAsTask(oldTask) || !this.canHaveAsTask(newTask))
 			throw new IllegalArgumentException();
 		if (oldTask.isBeingExecuted())
-			oldTask.unAssignTaskofUnit(oldTask.getUnit());
+			oldTask.removeFromUnit();
 		int index = this.tasks.indexOf(oldTask);
 		this.removeTasks(oldTask);
 		this.tasks.add(index, newTask);
-	}
-
-	/**
-	 * Return a new list containing all Tasks currently managed by this Scheduler,
-	 * ordered by descending priority
-	 */
-	private List<Task> getTasksSorted(){
-		List<Task> result = new ArrayList<>();
-		result.addAll(tasks);
-		result.sort((Task t1, Task t2)->-1*t1.compareTo(t2));
-		return result;
 	}
 
 	/**
@@ -299,20 +278,14 @@ public class Scheduler implements Iterable<Task>{
 
 	public void AssignTaskToUnit(Unit unit, Task task){
 		if (!task.isBeingExecuted()) {
-			task.AssignTaskToUnit(unit);
+			task.assignToUnit(unit);
 //			unit.setTask(task);
 		}
 
 	}
 	public void unAssignTaskOfUnit(Unit unit) {
-		unit.getTask().AssignTaskToUnit(null);
-		unit.setTask(null);
-
+		unit.getTask().removeFromUnit();
 	}
-
-//	public List<Task> getConditionalTask(){
-//		return null;
-//	}
 
 	Faction getFaction(){
 		return this.faction;

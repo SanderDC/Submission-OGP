@@ -2,7 +2,7 @@ package hillbillies.model.expressions;
 
 import hillbillies.part3.programs.SourceLocation;
 
-public class ReadBooleanExpression extends ReadVariable implements BooleanExpression {
+public class ReadBooleanExpression extends ReadVariable implements IBooleanExpression {
 
 	public ReadBooleanExpression(String variableName, SourceLocation sourceLocation) {
 		super(variableName, sourceLocation);
@@ -10,7 +10,7 @@ public class ReadBooleanExpression extends ReadVariable implements BooleanExpres
 
 	@Override
 	public Boolean evaluate() {
-		return ((BooleanExpression) this.getExpression()).evaluate();
+		return ((IBooleanExpression) this.getExpression()).evaluate();
 	}
 	
 	@Override

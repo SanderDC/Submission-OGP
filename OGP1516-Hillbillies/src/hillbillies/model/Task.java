@@ -116,20 +116,25 @@ public class Task implements Comparable<Task>{
 	 * 			|isBeingexecuted==true
 	 * 			|new.getiterator==this.statements.iterator()
 	 */
-	public void AssignTaskToUnit(Unit unit){
+	public void assignToUnit(Unit unit){
+		if (this.isBeingExecuted() || unit.getTask() != null)
+			throw new IllegalStateException();
+		this.inExecution = true;
+		this.setUnit(unit);
+		unit.assignTask(this);
+		this.iterator = this.statements.iterator();
+		
 
-
-		if (this.unit==null) {
-			this.unit=unit;
-			unit.setTask(this);
-			this.inExecution=true;
-			this.iterator = this.statements.iterator();
-		}
+//		if (this.unit==null) {
+//			this.unit=unit;
+//			unit.setTask(this);
+//			this.inExecution=true;
+//			this.iterator = this.statements.iterator();
+//		}
 
 	}
 	/**
 	 * 
-	 * @param unit
 	 * @effect	the Unit's task will be set null and this Task's Unit will also be set to null
 	 * 			it will no longer be flagged as being executed and its priority will be reduced by 1
 	 * 			|unit.setTask(null)
@@ -138,14 +143,14 @@ public class Task implements Comparable<Task>{
 	 * 			|new.getPriority()==oldpriority-1
 	 * 		
 	 */
-	public void unAssignTaskofUnit(Unit unit)throws IllegalStateException{
-		if (unit==null || !this.isBeingExecuted()) {
+	public void removeFromUnit()throws IllegalStateException{
+		if (!this.isBeingExecuted()) {
 			throw new IllegalStateException();
 		}
-		unit.setTask(null);
-		this.unit=null;
-		//		this.getstatement().setExecuted(false);
-		this.inExecution=false;
+		this.inExecution = false;
+		Unit oldUnit = this.getUnit();
+		this.setUnit(null);
+		oldUnit.removeTask();
 		this.setPriority(this.getPriority()-1);
 	}
 
@@ -244,7 +249,7 @@ public class Task implements Comparable<Task>{
 	 *       | ! isValidUnit(getUnit())
 	 */
 	@Raw
-	public void setUnit(Unit unit) 
+	private void setUnit(Unit unit) 
 			throws IllegalArgumentException {
 		if (! canHaveAsUnit(unit))
 			throw new IllegalArgumentException();
@@ -452,8 +457,7 @@ public class Task implements Comparable<Task>{
 		for (Scheduler scheduler:this.schedulers)
 			scheduler.removeTasks(this);
 		if (this.getUnit() != null) {
-			this.getUnit().setTask(null);
-			this.unit=null;
+			this.removeFromUnit();
 		}
 		this.inExecution = false;
 		this.isTerminated = true;
@@ -562,7 +566,7 @@ public class Task implements Comparable<Task>{
 
 	void advanceTask(double time){
 		if (!this.iterator.hasNext()){
-			this.unAssignTaskofUnit(getUnit());
+			this.removeFromUnit();
 			this.terminate();
 			return;
 		}
@@ -572,8 +576,8 @@ public class Task implements Comparable<Task>{
 				try {
 					this.iterator.next().execute();
 				} catch (Exception e){
-					e.printStackTrace();
-					this.unAssignTaskofUnit(getUnit());
+//					e.printStackTrace();
+					this.removeFromUnit();
 					return;
 				}
 			if (!this.iterator.hasNext())

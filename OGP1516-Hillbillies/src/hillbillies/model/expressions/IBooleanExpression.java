@@ -2,12 +2,12 @@ package hillbillies.model.expressions;
 
 import hillbillies.model.Task;
 
-public interface BooleanExpression{
+public interface IBooleanExpression{
 	
 	public Boolean evaluate();
 	
 	public void addToTask(Task task);
 	
-	public BooleanExpression clone();
+	public IBooleanExpression clone();
 
 }

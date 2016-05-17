@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import hillbillies.model.Unit;
 import hillbillies.part3.programs.SourceLocation;
 
-public class ReadUnitExpression extends ReadVariable implements UnitExpression {
+public class ReadUnitExpression extends ReadVariable implements IUnitExpression {
 
 	public ReadUnitExpression(String variableName, SourceLocation sourceLocation) {
 		super(variableName, sourceLocation);
@@ -13,7 +13,7 @@ public class ReadUnitExpression extends ReadVariable implements UnitExpression {
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {
-		return ((UnitExpression) this.getExpression()).evaluate();
+		return ((IUnitExpression) this.getExpression()).evaluate();
 	}
 	
 	@Override

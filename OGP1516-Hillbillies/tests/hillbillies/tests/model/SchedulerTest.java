@@ -3,6 +3,7 @@ package hillbillies.tests.model;
 import static org.junit.Assert.*;
 
 import hillbillies.model.*;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,10 +15,24 @@ public class SchedulerTest {
 	
 	private static Scheduler scheduler1;
 	private static Task task,task1,task2,task3;
+	private static Unit unit;
+	private static World world;
+	
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		int [][][] coordinates=new int[5][5][5];
+		coordinates[1][1][1]=1;
+		coordinates[1][1][2]=1;
+		coordinates[0][0][0]=1;
+		coordinates[1][2][2]=1;
+		coordinates[1][3][2]=1;
+		coordinates[1][1][3]=1;
+		coordinates[3][1][2]=1;
+		coordinates[2][1][2]=1;
+		coordinates[0][1][0]=1;
 		
+		world= new World(coordinates, new DefaultTerrainChangeListener());
 	}
 
 	@AfterClass
@@ -31,6 +46,9 @@ public class SchedulerTest {
 		task1 = new Task("test", 0, null);
 		task2 = new Task("test", 0, null);
 		task3 = new Task("test", 0, null);
+		unit= new Unit(world, false);
+		
+		
 	}
 
 	@After
@@ -62,5 +80,17 @@ public class SchedulerTest {
 		assertFalse(scheduler1.hasAsTask(task));
 		assertFalse(task.hasAsScheduler(scheduler1));
 	}
-
+	@Test
+	public void assignTask_Illegal(){
+		task1.terminate();
+		unit.assignTask(task1);
+		assertFalse(unit.getTask()==task1);
+	}
+	@Test
+	public void assignTask(){
+		unit.assignTask(task1);
+		assertTrue(unit.getTask()==task1);
+		
+	}
+	
 }

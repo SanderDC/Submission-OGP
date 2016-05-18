@@ -56,7 +56,10 @@ public class Task implements Comparable<Task>{
 		this.setPriority(priority);
 		this.setName(name);
 		this.statements=activitylist;
-		this.statements.addToTask(this);
+		if (activitylist!=null) {
+			this.statements.addToTask(this);
+		}
+		
 		this.selectedPosition = null;
 	}
 
@@ -91,8 +94,11 @@ public class Task implements Comparable<Task>{
 	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) {
 		this.setPriority(priority);
 		this.setName(name);
+		
 		this.statements=activitylist;
-		this.statements.addToTask(this);
+		if (activitylist!=null) {
+			this.statements.addToTask(this);
+		}
 		if (canHaveAsSelectedPosition(selectedPosition))
 			this.selectedPosition = selectedPosition;
 		else {

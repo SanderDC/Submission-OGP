@@ -32,18 +32,13 @@ public class UnitTest {
 
 	@Before
 	public void setUp() throws Exception {
-		distantUnit = new Unit(new Vector(10.5,0.5,0.5), 50, 50, 50, "James", 50, false);
+		distantUnit = new Unit(world, false);
 		world.addGameObject(distantUnit);
 		idleUnit = new Unit(new Vector(1.5,1.5,0.5), 50, 50, 50, "Idle", 50, false);
-		
-		
 		world.addGameObject(idleUnit);
-		adjacentUnit = new Unit(new Vector(1.5,2.5,0.5), 50, 50, 50, "Adjacent to Idle", 50, false);
-		world.addGameObject(adjacentUnit);
-		movingDistantUnit= new Unit(new Vector(1.5,2.5,0.5), 50, 50, 50, "Adjacent to Idle", 50, false);
-		world.addGameObject(movingDistantUnit);
-		movingAdjacentUnit= new Unit(new Vector(1.5,2.5,0.5), 50, 50, 50, "Adjacent to Idle", 50, false);
-		world.addGameObject(movingAdjacentUnit);
+		adjacentUnit = new Unit(world, false);
+		movingDistantUnit= new Unit(world, false);
+		movingAdjacentUnit= new Unit(world, false);
 		
 		
 		
@@ -297,8 +292,8 @@ public class UnitTest {
 	}
 	@Test
 	public void moveTo_legalcase() {
-		idleUnit.moveTo(0,5, 0);
-		assertTrue(idleUnit.isMoving());
+		movingDistantUnit.moveTo(0,5, 0);
+		assertTrue(movingDistantUnit.isMoving());
 	}
 	
 		@Test(expected = IllegalStateException.class)
@@ -308,13 +303,9 @@ public class UnitTest {
 	}
 	@Test(expected = IllegalArgumentException.class)
 	public void movingAdjacent_whilenotvalidargument(){
-		idleUnit.moveToAdjacent(0, 0, -1);
+		movingAdjacentUnit.moveToAdjacent(0, 0, -1);
 	}
-	@Test(expected = IllegalStateException.class)
-	public void moveto_whileFighting(){
-		idleUnit.startAttack(adjacentUnit);
-		idleUnit.moveTo(5, 6, 0);
-	}
+	
 	@Test(expected = IllegalStateException.class)
 	public void moveTo_whilenotrestingenough(){
 		idleUnit.resting();
@@ -322,7 +313,7 @@ public class UnitTest {
 		}
 	@Test(expected = IllegalArgumentException.class)
 	public void moveTo_whilenotvalidargument(){
-		idleUnit.moveTo(0,100, 0);
+		movingDistantUnit.moveTo(0,100, 0);
 		}
 	
 	@Test
@@ -335,24 +326,24 @@ public class UnitTest {
 		idleUnit.setSprinting(true);}
 	@Test
 	public void sprinting_legalcase(){
-		idleUnit.moveTo(0,0, 0);
-		idleUnit.setSprinting(true);
-		assertTrue(idleUnit.getSprinting());
+		movingDistantUnit.moveTo(0,0, 0);
+		movingDistantUnit.setSprinting(true);
+		assertTrue(movingDistantUnit.getSprinting());
 	}
 	@Test
 	public void defaultbehaviorsettings_legalcase(){
-		idleUnit.setDefaultBehaviorBoolean(true);
-		assertTrue(idleUnit.getdefaultbehaviorboolean());
+		movingDistantUnit.setDefaultBehaviorBoolean(true);
+		assertTrue(movingDistantUnit.getdefaultbehaviorboolean());
 	}
 	@Test(expected = IllegalStateException.class)
 	public void behavior_whilenotIdle(){
-	idleUnit.moveTo(0,0, 0);
-		idleUnit.setDefaultBehaviorBoolean(true);
+		movingDistantUnit.moveTo(0,0, 0);
+		movingDistantUnit.setDefaultBehaviorBoolean(true);
 		}
 	@Test
 	public void defaultbehavior_works(){
-		idleUnit.setDefaultBehaviorBoolean(true);
-		idleUnit.advanceTime(0.1);
-		assertFalse(idleUnit.isIdle());
+		movingDistantUnit.setDefaultBehaviorBoolean(true);
+		movingDistantUnit.advanceTime(0.1);
+		assertFalse(movingDistantUnit.isIdle());
 	}
 }

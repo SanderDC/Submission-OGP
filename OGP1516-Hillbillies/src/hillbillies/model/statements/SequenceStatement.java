@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 
@@ -92,6 +93,14 @@ public class SequenceStatement extends Statement {
 		}
 		return list;
 		
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		for (Statement statement : this.statements)
+			if (!statement.isWellFormed(variables))
+				return false;
+		return true;
 	}
 		
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IBooleanExpression;
@@ -85,5 +86,10 @@ public class WhileStatement extends Statement {
 		List<Statement>list=new ArrayList<Statement>();
 		list.add(body);
 		return list;
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.expression.isWellFormed(variables) && this.body.isWellFormed(variables);
 	}
 }

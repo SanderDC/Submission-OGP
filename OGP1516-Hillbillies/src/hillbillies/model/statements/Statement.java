@@ -2,6 +2,7 @@ package hillbillies.model.statements;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -79,5 +80,8 @@ public abstract class Statement implements Iterable<IExecutableStatement> {
 		}
 		return this.getParentStatement().checkIfInWhile();
 	}
+	
 	public abstract List< Statement> getStatements();
+	
+	public abstract boolean isWellFormed(Set<String> variables);
 }

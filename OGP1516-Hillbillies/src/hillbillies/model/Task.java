@@ -1,12 +1,16 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-
-import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.expressions.Expression;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.expressions.IExpression;
-import hillbillies.model.statements.*;
+import hillbillies.model.statements.IExecutableStatement;
+import hillbillies.model.statements.Statement;
 
 /**
  * 
@@ -598,7 +602,7 @@ public class Task implements Comparable<Task>{
 	
 	
 	public boolean wellformed(){
-		return false;
+		return this.statements.isWellFormed(new HashSet<String>());
 //		Set<String> assignedVariables = new HashSet<>();
 //		for (Statement statement : this.getstatement().getStatements()) {
 //			if (statement instanceof BreakStatement) {

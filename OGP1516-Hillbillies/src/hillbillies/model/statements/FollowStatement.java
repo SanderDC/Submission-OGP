@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
 import hillbillies.model.expressions.IUnitExpression;
 
 public class FollowStatement extends Statement implements IExecutableStatement {
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.expression.isWellFormed(variables);
+	}
 
 	public FollowStatement( IUnitExpression expression){
 		this.expression=expression;

@@ -21,6 +21,7 @@ public class UnitTest2 {
 
 	
 		private static Unit Idleunit;
+		private static World world7;
 		private static World world6;
 		private static World world5;
 		private static World world4;
@@ -71,6 +72,7 @@ public class UnitTest2 {
 			world5=new World(coordinates5, new DefaultTerrainChangeListener());
 			int [][][] coordinates6=new int[1][1][1];
 			world6=new World(coordinates6, new DefaultTerrainChangeListener());
+			world7=new World(coordinates6, new DefaultTerrainChangeListener());
 			
 		}
 

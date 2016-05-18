@@ -22,7 +22,7 @@ public class UnitTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		int[][][] coordinates = new int[60][60][60];
+		int[][][] coordinates = new int[10][10][10];
 		world = new World(coordinates, new DefaultTerrainChangeListener());
 	}
 
@@ -32,6 +32,8 @@ public class UnitTest {
 
 	@Before
 	public void setUp() throws Exception {
+		int[][][] coordinates = new int[10][10][10];
+		world = new World(coordinates, new DefaultTerrainChangeListener());
 		distantUnit = new Unit(world, false);
 		world.addGameObject(distantUnit);
 		idleUnit = new Unit(new Vector(1.5,1.5,0.5), 50, 50, 50, "Idle", 50, false);
@@ -326,7 +328,15 @@ public class UnitTest {
 		idleUnit.setSprinting(true);}
 	@Test
 	public void sprinting_legalcase(){
-		movingDistantUnit.moveTo(0,0, 0);
+		for(int j = -1; j <= 1; j++){
+			for (int i = -1; i <= 1; i++) {
+				if (!(i==0&&j==0)) {
+					if (world.unitCanStandAt((new Vector(movingDistantUnit.getPosition().getX()+j, movingDistantUnit.getPosition().getY()+i, movingDistantUnit.getPosition().getZ())))) {
+						movingDistantUnit.moveTo(movingDistantUnit.getPosition().getCubeX()+j,movingDistantUnit.getPosition().getCubeY()+i, movingDistantUnit.getPosition().getCubeZ());
+				}
+					
+				}
+			}}
 		movingDistantUnit.setSprinting(true);
 		assertTrue(movingDistantUnit.getSprinting());
 	}
@@ -337,7 +347,16 @@ public class UnitTest {
 	}
 	@Test(expected = IllegalStateException.class)
 	public void behavior_whilenotIdle(){
-		movingDistantUnit.moveTo(0,0, 0);
+		for(int j = -1; j <= 1; j++){
+			for (int i = -1; i <= 1; i++) {
+				if (!(i==0&&j==0)) {
+					if (world.unitCanStandAt((new Vector(movingDistantUnit.getPosition().getX()+j, movingDistantUnit.getPosition().getY()+i, movingDistantUnit.getPosition().getZ())))) {
+						movingDistantUnit.moveTo(movingDistantUnit.getPosition().getCubeX()+j,movingDistantUnit.getPosition().getCubeY()+i, movingDistantUnit.getPosition().getCubeZ());
+				}
+					
+				}
+			}}
+		
 		movingDistantUnit.setDefaultBehaviorBoolean(true);
 		}
 	@Test

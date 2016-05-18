@@ -1,11 +1,16 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-
-import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.expressions.Expression;
-import hillbillies.model.statements.*;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.expressions.IExpression;
+import hillbillies.model.statements.IExecutableStatement;
+import hillbillies.model.statements.Statement;
 
 /**
  * 
@@ -510,15 +515,15 @@ public class Task implements Comparable<Task>{
 	//		};
 	//	}
 	
-	public Expression getVariableExpression(String name){
+	public IExpression getVariableExpression(String name){
 		return this.variables.get(name);
 	}
 
-	public void storeVariableExpression(String name, Expression expression){
+	public void storeVariableExpression(String name, IExpression expression){
 		this.variables.put(name, expression);
 	}
 
-	private HashMap<String,Expression> variables = new HashMap<>();
+	private HashMap<String,IExpression> variables = new HashMap<>();
 
 	/**
 	 * @invar  Each Task can have its selectedPosition as selectedPosition .
@@ -597,18 +602,23 @@ public class Task implements Comparable<Task>{
 	
 	
 	public boolean wellformed(){
-		for (Statement statement : this.getstatement().getStatements()) {
-			if (statement instanceof BreakStatement) {
-				if (!statement.checkIfInWhile()) {
-					return false;
-				}
-			}
-			if (statement instanceof AssignmentStatement) {
-				
-			}
-		}
-	
-	return true;
+		return this.statements.isWellFormed(new HashSet<String>());
+//		Set<String> assignedVariables = new HashSet<>();
+//		for (Statement statement : this.getstatement().getStatements()) {
+//			if (statement instanceof BreakStatement) {
+//				if (!statement.checkIfInWhile()) {
+//					return false;
+//				}
+//			}
+//			if (statement instanceof AssignmentStatement) {
+//				if (!assignedVariables.contains(((AssignmentStatement) statement).getVariableName()))
+//					assignedVariables.add(((AssignmentStatement) statement).getVariableName());
+//			}
+//			if (statement instanceof )
+//		}
+//	
+//	return true;
+		
 	}
 	
 		

@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 
 public class PrintStatement extends Statement implements IExecutableStatement {
 
-	public  PrintStatement(Expression value) {
+	public  PrintStatement(IExpression value) {
 		this.expression=value;
 	}
 
-	private Expression expression;
+	private IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {
@@ -63,5 +64,10 @@ public class PrintStatement extends Statement implements IExecutableStatement {
 		List<Statement>list=new ArrayList<Statement>();
 		list.add(this);
 		return list;
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return true;
 	}
 }

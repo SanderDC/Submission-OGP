@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IPositionExpression;
@@ -59,5 +60,10 @@ public class WorkStatement extends Statement implements IExecutableStatement {
 		List<Statement>list=new ArrayList<Statement>();
 		list.add(this);
 		return list;
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.expression.isWellFormed(variables);
 	}
 }

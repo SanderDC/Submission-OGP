@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IBooleanExpression;
@@ -96,6 +97,15 @@ public class IfStatement extends Statement {
 			}
 
 		};
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		if (this.hasElseStatement())
+			return (this.expression.isWellFormed(variables) && this.trueStatement.isWellFormed(variables)
+					&& this.falseStatement.isWellFormed(variables));
+		else
+			return (this.expression.isWellFormed(variables) && this.trueStatement.isWellFormed(variables));
 	}
 
 }

@@ -4,20 +4,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 
 public class AssignmentStatement extends Statement implements IExecutableStatement {
 	
-	public AssignmentStatement(Expression expression, String variableName) {
+	public AssignmentStatement(IExpression expression, String variableName) {
 		this.expression = expression;
 		this.variableName = variableName;
 	}
 	
+	public String getVariableName(){
+		return this.variableName;
+	}
+	
 	private String variableName;
 	
-	private Expression expression;
+	private IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {
@@ -62,5 +68,11 @@ public class AssignmentStatement extends Statement implements IExecutableStateme
 		List<Statement>list=new ArrayList<Statement>();
 		list.add(this);
 		return list;
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		variables.add(this.getVariableName());
+		return true;
 	}
 }

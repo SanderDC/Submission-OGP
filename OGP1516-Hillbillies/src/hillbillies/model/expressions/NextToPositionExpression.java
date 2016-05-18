@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
@@ -50,5 +51,10 @@ public class NextToPositionExpression extends Expression implements IPositionExp
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.target.addToTask(task);
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.target.isWellFormed(variables);
 	}
 }

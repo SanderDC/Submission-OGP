@@ -1,14 +1,17 @@
 package hillbillies.model.expressions;
 
+import java.util.Set;
+
 import hillbillies.part3.programs.SourceLocation;
 
 public abstract class ReadVariable extends Expression {
+	
 	public  ReadVariable(String variableName, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.variableName=variableName;
 	}
 	
-	protected Expression getExpression(){
+	protected IExpression getExpression(){
 		return this.getTask().getVariableExpression(this.variableName);
 	}
 	
@@ -17,5 +20,10 @@ public abstract class ReadVariable extends Expression {
 	}
 
 	private String variableName;
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return (variables.contains(this.getVariableName()));
+	}
 
 }

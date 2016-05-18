@@ -1,6 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
@@ -61,6 +63,12 @@ public class FollowStatement extends Statement implements IExecutableStatement {
 			}
 
 		};
+	}
+	@Override
+	public List<Statement> getStatements() {
+		List<Statement>list=new ArrayList<Statement>();
+		list.add(this);
+		return list;
 	}
 
 }

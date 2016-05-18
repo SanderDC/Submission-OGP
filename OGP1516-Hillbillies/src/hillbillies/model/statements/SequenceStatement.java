@@ -83,6 +83,16 @@ public class SequenceStatement extends Statement {
 		}
 			 
 		}
+
+	@Override
+	public List<Statement> getStatements() {
+		List<Statement> list= new ArrayList<>();
+		for (Statement statement : getSequence()) {
+			list.addAll(statement.getStatements());
+		}
+		return list;
+		
+	}
 		
 	
 	

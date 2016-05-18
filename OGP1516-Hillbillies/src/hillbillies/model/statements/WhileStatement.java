@@ -1,6 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
@@ -77,5 +79,11 @@ public class WhileStatement extends Statement {
 				return false;
 			}
 		};
+	}
+	@Override
+	public List<Statement> getStatements() {
+		List<Statement>list=new ArrayList<Statement>();
+		list.add(body);
+		return list;
 	}
 }

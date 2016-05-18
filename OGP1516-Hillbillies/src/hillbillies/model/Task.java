@@ -596,7 +596,21 @@ public class Task implements Comparable<Task>{
 	private Iterator<IExecutableStatement> iterator;
 	
 	
-		
+	public boolean wellformed(){
+		for (Statement statement : this.getstatement().getStatements()) {
+			if (statement instanceof BreakStatement) {
+				if (!statement.checkIfInWhile()) {
+					return false;
+				}
+			}
+			if (statement instanceof AssignmentStatement) {
+				
+			}
+		}
+	
+	return true;
+	}
+	
 		
 	
 

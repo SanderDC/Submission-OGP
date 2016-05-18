@@ -1,6 +1,7 @@
 package hillbillies.model.statements;
 
 import java.util.Iterator;
+import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -69,4 +70,14 @@ public abstract class Statement implements Iterable<IExecutableStatement> {
 	
 	public abstract Statement clone();	
 	
+	public boolean checkIfInWhile(){
+		if (this.getParentStatement() instanceof WhileStatement) {
+			return true;
+		}
+		if (this.getParentStatement() == null) {
+			return false;
+		}
+		return this.getParentStatement().checkIfInWhile();
+	}
+	public abstract List< Statement> getStatements();
 }

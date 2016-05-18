@@ -1,6 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
@@ -49,7 +51,16 @@ public class IfStatement extends Statement {
 		}
 		
 	}
-
+	
+	
+	public List<Statement>  getStatements(){
+		List<Statement>list=new ArrayList<Statement>();
+		list.add(trueStatement);
+		if (hasElseStatement()) {
+			list.add(falseStatement);
+		}
+		return list;
+	}
 
 	@Override
 	public Iterator<IExecutableStatement> iterator() {

@@ -1,6 +1,8 @@
 package hillbillies.model.statements;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
@@ -55,5 +57,11 @@ public class PrintStatement extends Statement implements IExecutableStatement {
 				return PrintStatement.this;
 			}
 		};
+	}
+	@Override
+	public List<Statement> getStatements() {
+		List<Statement>list=new ArrayList<Statement>();
+		list.add(this);
+		return list;
 	}
 }

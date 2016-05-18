@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.Set;
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -22,4 +24,9 @@ public abstract class PositionBoolean extends Expression implements IBooleanExpr
 	private final IPositionExpression target;
 	
 	public abstract PositionBoolean clone();
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.target.isWellFormed(variables);
+	}
 }

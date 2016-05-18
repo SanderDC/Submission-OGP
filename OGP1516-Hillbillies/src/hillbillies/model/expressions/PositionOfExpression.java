@@ -1,6 +1,7 @@
 package hillbillies.model.expressions;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.Vector;
@@ -29,5 +30,10 @@ public class PositionOfExpression extends Expression implements IPositionExpress
 	public void addToTask(Task task) {
 		this.setTask(task);
 		this.target.addToTask(task);
+	}
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.target.isWellFormed(variables);
 	}
 }

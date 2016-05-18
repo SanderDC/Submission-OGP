@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.Set;
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -23,4 +25,9 @@ public abstract class UnitBoolean extends Expression implements IBooleanExpressi
 	}
 	
 	public abstract UnitBoolean clone();
+
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.target.isWellFormed(variables);
+	}
 }

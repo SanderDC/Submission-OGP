@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 
 public class PrintStatement extends Statement implements IExecutableStatement {
 
-	public  PrintStatement(Expression value) {
+	public  PrintStatement(IExpression value) {
 		this.expression=value;
 	}
 
-	private Expression expression;
+	private IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {

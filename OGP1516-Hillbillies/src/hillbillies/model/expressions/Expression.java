@@ -12,7 +12,7 @@ import hillbillies.part3.programs.SourceLocation;
  * @author Bram Belpaire
  *
  */
-public abstract class Expression {
+public abstract class Expression implements IExpression {
 	
 	public Expression(SourceLocation sourceLocation){
 		this.sourceLocation = sourceLocation;
@@ -43,8 +43,6 @@ public abstract class Expression {
 	}
 	
 	private final SourceLocation sourceLocation;
-	
-	public abstract Object evaluate();
 	
 	public abstract Expression clone();
 }

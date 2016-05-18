@@ -7,17 +7,22 @@ import java.util.NoSuchElementException;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 
 public class AssignmentStatement extends Statement implements IExecutableStatement {
 	
-	public AssignmentStatement(Expression expression, String variableName) {
+	public AssignmentStatement(IExpression expression, String variableName) {
 		this.expression = expression;
 		this.variableName = variableName;
 	}
 	
+	public String getVariableName(){
+		return this.variableName;
+	}
+	
 	private String variableName;
 	
-	private Expression expression;
+	private IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {

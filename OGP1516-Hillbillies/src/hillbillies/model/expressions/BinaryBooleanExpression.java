@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.Set;
+
 import hillbillies.model.Task;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -31,4 +33,8 @@ public abstract class BinaryBooleanExpression extends Expression implements IBoo
 	private IBooleanExpression rightExpression;
 	
 	public abstract BinaryBooleanExpression clone();
+	
+	public boolean isWellFormed(Set<String> variables){
+		return (this.leftExpression.isWellFormed(variables) && this.rightExpression.isWellFormed(variables));
+	}
 }

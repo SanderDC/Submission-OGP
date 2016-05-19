@@ -22,7 +22,7 @@ public abstract class ReadVariable extends Expression {
 		return this.variableName;
 	}
 
-	private String variableName;
+	private final String variableName;
 
 	@Override
 	public boolean isWellFormed(Set<String> variables) {

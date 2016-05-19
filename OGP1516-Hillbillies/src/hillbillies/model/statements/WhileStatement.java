@@ -15,7 +15,7 @@ public class WhileStatement extends Statement {
 	public WhileStatement(IBooleanExpression condition, Statement body, SourceLocation sourceLocation) 
 			throws IllegalArgumentException {
 		super(sourceLocation);
-		if (expression == null || body == null)
+		if (condition == null || body == null)
 			throw new IllegalArgumentException();
 		this.expression=condition;
 		this.body=body;
@@ -23,9 +23,9 @@ public class WhileStatement extends Statement {
 		this.broken = false;
 	}
 
-	private IBooleanExpression expression;
+	private final IBooleanExpression expression;
 
-	private Statement body;
+	private final Statement body;
 
 	//	@Override
 	//	public void execute() {

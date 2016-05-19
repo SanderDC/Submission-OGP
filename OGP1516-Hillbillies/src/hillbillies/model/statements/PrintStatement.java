@@ -20,7 +20,7 @@ public class PrintStatement extends Statement implements IExecutableStatement {
 		this.expression=value;
 	}
 
-	private IExpression expression;
+	private final IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {

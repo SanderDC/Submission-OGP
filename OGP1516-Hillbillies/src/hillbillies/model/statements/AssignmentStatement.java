@@ -25,9 +25,9 @@ public class AssignmentStatement extends Statement implements IExecutableStateme
 		return this.variableName;
 	}
 	
-	private String variableName;
+	private final String variableName;
 	
-	private IExpression expression;
+	private final IExpression expression;
 
 	@Override
 	public void addToTask(Task task) {

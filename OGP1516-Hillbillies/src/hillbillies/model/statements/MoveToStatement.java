@@ -20,7 +20,7 @@ public class MoveToStatement extends Statement implements IExecutableStatement {
 		this.expression=expression;
 	}
 	
-	private IPositionExpression expression;
+	private final IPositionExpression expression;
 	
 	@Override
 	public void addToTask(Task task) {

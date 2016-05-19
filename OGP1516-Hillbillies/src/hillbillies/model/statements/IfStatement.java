@@ -23,19 +23,20 @@ public class IfStatement extends Statement {
 		if (rStatement != null) {
 			this.falseStatement = rStatement;
 			this.falseStatement.setParentStatement(this);
-		}
+		} else
+			this.falseStatement = null;
 	}
 
 
-	private IBooleanExpression expression;
+	private final IBooleanExpression expression;
 
-	private Statement trueStatement;
+	private final Statement trueStatement;
 	
 	boolean hasElseStatement(){
 		return this.falseStatement != null;
 	}
 
-	private Statement falseStatement;
+	private final Statement falseStatement;
 
 	@Override
 	public void addToTask(Task task) {

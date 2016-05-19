@@ -19,7 +19,7 @@ public class AttackStatement extends Statement implements IExecutableStatement {
 		this.expression=expression;
 	}
 
-	private IUnitExpression expression;
+	private final IUnitExpression expression;
 
 	@Override
 	public void execute(){

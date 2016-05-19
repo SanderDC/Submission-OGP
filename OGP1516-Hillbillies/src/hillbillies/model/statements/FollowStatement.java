@@ -23,7 +23,7 @@ public class FollowStatement extends Statement implements IExecutableStatement {
 		this.unit = null;
 	}
 
-	private IUnitExpression expression;
+	private final IUnitExpression expression;
 	
 	private Unit unit;
 

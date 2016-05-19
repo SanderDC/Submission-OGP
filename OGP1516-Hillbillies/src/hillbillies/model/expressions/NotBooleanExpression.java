@@ -10,7 +10,7 @@ public class NotBooleanExpression extends Expression implements IBooleanExpressi
 	public NotBooleanExpression(IBooleanExpression expression, SourceLocation sourceLocation) 
 			throws IllegalArgumentException {
 		super(sourceLocation);
-		if (target == null)
+		if (expression == null)
 			throw new IllegalArgumentException();
 		this.target = expression;
 	}
@@ -24,7 +24,7 @@ public class NotBooleanExpression extends Expression implements IBooleanExpressi
 		return this.target;
 	}
 	
-	private IBooleanExpression target;
+	private final IBooleanExpression target;
 	
 	@Override
 	public NotBooleanExpression clone(){

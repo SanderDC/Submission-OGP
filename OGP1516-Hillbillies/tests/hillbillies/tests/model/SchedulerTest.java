@@ -50,10 +50,10 @@ public class SchedulerTest {
 	public void setUp() throws Exception {
 		scheduler1 = new Scheduler();
 		SourceLocation testLocation = new SourceLocation(1, 1);
-		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
-		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
-		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
-		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
+		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
 		unit= new Unit(world, false);
 		
 		

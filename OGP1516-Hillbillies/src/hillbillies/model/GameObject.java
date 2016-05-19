@@ -9,11 +9,13 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 
  * @author Sander Declercq 
  *
- * @invar  The position of each GameObject must be a valid position for that
- *         GameObject.
- * @invar  The status of each GameObject must be a valid status for any GameObject.
- * @invar  The weight of each GameObject must be a valid weight for any GameObject.
- * @invar  The World of each GameObject must be a valid World for that GameObject
+ * @invar  	The position of each GameObject must be a valid position for that
+ *         	GameObject.
+ * @invar  	The status of each GameObject must be a valid status for any GameObject.
+ * @invar  	The weight of each GameObject must be a valid weight for any GameObject.
+ * @invar  	The World of each GameObject must be a valid World for that GameObject
+ * @invar  	The speed of each Unit must be a valid speed for any
+ *         	Unit.
  */
 public abstract class GameObject {
 	
@@ -25,11 +27,11 @@ public abstract class GameObject {
 	 * @post	This GameObject has a random weight
 	 * @post	This GameObject has the nullvector as its speed
 	 */
-	protected GameObject(){
-		this.setPosition(null);
+	protected GameObject(Vector position){
+		this.world = null;
+		this.setPosition(position);
 		this.setSpeed(new Vector(0,0,0));
 		this.setWeight(new Random().nextInt());
-		this.world = null;
 	}
 
 	/**
@@ -101,11 +103,11 @@ public abstract class GameObject {
 	 *         The position to check.
 	 * @return if the GameObject is currently in a World, true if the given position is effective,
 	 * 		   inside that World and not in solid ground.
-	 * 		   if the GameObject is not part of a World, true if the given position is the null reference
+	 * @return true if this GameObject is not currently part of a World
 	 */
 	public boolean isValidPosition(Vector position) {
 		if (this.getWorld() == null){
-			return position == null;
+			return true;
 		} else {
 			if (position == null)
 				return false;

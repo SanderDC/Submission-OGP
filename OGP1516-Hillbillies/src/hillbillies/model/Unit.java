@@ -45,9 +45,6 @@ import ogp.framework.util.Util;
  * @invar  	The name of each Unit must be a valid name for any
  *         	Unit.
  *        	| isValidName(getName())
- * @invar  	The speed of each Unit must be a valid speed for any
- *         	Unit.
- *       	| isValidSpeed(getSpeed())
  * @invar  	The nearTarget of each Unit must be a valid nearTarget for any
  *         	Unit.
  *       	| isValidNearTarget(getNearTarget())
@@ -98,18 +95,8 @@ public class Unit extends GameObject {
 	 *            The weight of the new unit
 	 * @param name
 	 *            The name of the new unit
-	 * @param hitpoints
-	 *            The hitpoints of the new unit
-	 * @param stamina
-	 *            The stamina of the new unit
 	 * @param toughness
 	 *            The toughness of the new unit
-	 * @param maxHitpoint
-	 *            The maximum amount of hitpoints of the new unit
-	 * @param maxStamina
-	 *            The maximum amount of stamina of the new unit
-	 * @param orientation
-	 *            The orientation of the new unit
 	 * @param defaultbehavior
 	 * 			  Boolean reflecting whether the Unit's default behavior should be enabled
 	 * 
@@ -180,8 +167,6 @@ public class Unit extends GameObject {
 	 * 			| new.getOrientation() == Math.PI
 	 * @post	The new Unit is not sprinting
 	 * 			| new.getSprinting() == false
-	 * @post	This new Unit's default behavior is disabled
-	 * 			| new.getdefaultbehaviorboolean() == false
 	 * @post	The new Unit's progress to recovering a hitpoint or stamina point equals zero
 	 * 			| new.getProgress() == 0
 	 * @post	The new Unit's progress to losing a stamina point equals zero
@@ -194,6 +179,8 @@ public class Unit extends GameObject {
 	 * @effect 	The position of this new Unit is set to
 	 *         	the given position.
 	 *       	| this.setPosition(position)   
+	 * @post	This Unit is not part of a World
+	 * 			| new.getWorld() == null
 	 * @effect 	The name of the new unit is set to the given name 
 	 * 		   	| this.setName(name)
 	 * @post 	The maximum amount of hitpoints for this Unit is set according to its stats. 
@@ -208,7 +195,7 @@ public class Unit extends GameObject {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-		//super(position);
+		super(position);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
 		this.setDistantTarget(null);
@@ -261,6 +248,17 @@ public class Unit extends GameObject {
 	 * 			The World in which to create this new Unit
 	 * @param enableDefaultBehavior
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
+	 * @effect This new Unit is create with random attributes and with a position in the middle
+	 * 		   of the cube at the origin of the world
+	 * 		   | this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
+	 *		   | new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
+	 *		   | new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
+	 *		   | new Random().nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT,
+	 *		   | "John",
+	 *		   | new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
+	 *		   | enableDefaultBehavior)
+	 * @effect This Unit is added to the given World
+	 * 		 | world.addGameObject(this)
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
@@ -478,7 +476,7 @@ public class Unit extends GameObject {
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
 	 * @param 	position
 	 * 			The position vector to be checked
-	 * @return	true if the given position is not null and
+	 * @return	true if the given position is effective and
 	 * 			the difference between the respective floored coordinates does not exceed 1.
 	 * 			| if (position != null)
 	 * 			| then result == (Math.abs(this.getPosition().getCubeX() - Math.floor(position.getX())) <= 1) &&
@@ -501,67 +499,6 @@ public class Unit extends GameObject {
 	 * Variable registering the length of a cube.
 	 */
 	public static final double CUBELENGTH = 1;
-
-	//	/**
-	//	 * Variable registering the position of this Unit.
-	//	 */
-	//	private Vector position;
-
-//	/**
-//	 * Return the speed of this Unit.
-//	 */
-//	@Basic @Raw
-//	public Vector getSpeed() {
-//		return this.speed;
-//	}
-//
-//	/**
-//	 * Check whether the given speed is a valid speed for
-//	 * any Unit.
-//	 *  
-//	 * @param  	speed
-//	 *         	The speed to check.
-//	 * @return 	true if no component of the Vector equals positive or negative infinity.
-//	 *       	| if (speed != null)
-//	 *       	| then result == for each component in speed.toArray():
-//	 *       	|				(component != Double.POSITIVE_INFINITY) &&
-//	 *       	|				(component != Double.NEGATIVE_INFINITY)	
-//	 */
-//	private static boolean isValidSpeed(Vector speed) {
-//		if (speed == null)
-//			return false;
-//		for (double component:speed.toArray()){
-//			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
-//				return false;
-//		}
-//		return true;
-//	}
-//
-//	/**
-//	 * Set the speed of this Unit to the given speed.
-//	 * 
-//	 * @param  speed
-//	 *         The new speed for this Unit.
-//	 * @post   The speed of this new Unit is equal to
-//	 *         the given speed.
-//	 *       | new.getSpeed() == speed
-//	 * @throws IllegalArgumentException
-//	 *         The given speed is not a valid speed for any
-//	 *         Unit.
-//	 *       | ! isValidSpeed(getSpeed())
-//	 */
-//	@Raw
-//	private void setSpeed(Vector speed) 
-//			throws IllegalArgumentException {
-//		if (! isValidSpeed(speed))
-//			throw new IllegalArgumentException("This is an invalid speed for this Unit");
-//		this.speed = speed;
-//	}
-//
-//	/**
-//	 * Variable registering the speed of this Unit.
-//	 */
-//	private Vector speed;
 
 	/**
 	 * Return the nearTarget of this Unit.

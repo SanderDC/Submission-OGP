@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IExpression;
 
 public class AssignmentStatement extends Statement implements IExecutableStatement {

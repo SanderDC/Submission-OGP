@@ -538,61 +538,61 @@ public class Unit extends GameObject {
 	//	 */
 	//	private Vector position;
 
-	/**
-	 * Return the speed of this Unit.
-	 */
-	@Basic @Raw
-	public Vector getSpeed() {
-		return this.speed;
-	}
-
-	/**
-	 * Check whether the given speed is a valid speed for
-	 * any Unit.
-	 *  
-	 * @param  	speed
-	 *         	The speed to check.
-	 * @return 	true if no component of the Vector equals positive or negative infinity.
-	 *       	| if (speed != null)
-	 *       	| then result == for each component in speed.toArray():
-	 *       	|				(component != Double.POSITIVE_INFINITY) &&
-	 *       	|				(component != Double.NEGATIVE_INFINITY)	
-	 */
-	private static boolean isValidSpeed(Vector speed) {
-		if (speed == null)
-			return false;
-		for (double component:speed.toArray()){
-			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
-				return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Set the speed of this Unit to the given speed.
-	 * 
-	 * @param  speed
-	 *         The new speed for this Unit.
-	 * @post   The speed of this new Unit is equal to
-	 *         the given speed.
-	 *       | new.getSpeed() == speed
-	 * @throws IllegalArgumentException
-	 *         The given speed is not a valid speed for any
-	 *         Unit.
-	 *       | ! isValidSpeed(getSpeed())
-	 */
-	@Raw
-	private void setSpeed(Vector speed) 
-			throws IllegalArgumentException {
-		if (! isValidSpeed(speed))
-			throw new IllegalArgumentException("This is an invalid speed for this Unit");
-		this.speed = speed;
-	}
-
-	/**
-	 * Variable registering the speed of this Unit.
-	 */
-	private Vector speed;
+//	/**
+//	 * Return the speed of this Unit.
+//	 */
+//	@Basic @Raw
+//	public Vector getSpeed() {
+//		return this.speed;
+//	}
+//
+//	/**
+//	 * Check whether the given speed is a valid speed for
+//	 * any Unit.
+//	 *  
+//	 * @param  	speed
+//	 *         	The speed to check.
+//	 * @return 	true if no component of the Vector equals positive or negative infinity.
+//	 *       	| if (speed != null)
+//	 *       	| then result == for each component in speed.toArray():
+//	 *       	|				(component != Double.POSITIVE_INFINITY) &&
+//	 *       	|				(component != Double.NEGATIVE_INFINITY)	
+//	 */
+//	private static boolean isValidSpeed(Vector speed) {
+//		if (speed == null)
+//			return false;
+//		for (double component:speed.toArray()){
+//			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
+//				return false;
+//		}
+//		return true;
+//	}
+//
+//	/**
+//	 * Set the speed of this Unit to the given speed.
+//	 * 
+//	 * @param  speed
+//	 *         The new speed for this Unit.
+//	 * @post   The speed of this new Unit is equal to
+//	 *         the given speed.
+//	 *       | new.getSpeed() == speed
+//	 * @throws IllegalArgumentException
+//	 *         The given speed is not a valid speed for any
+//	 *         Unit.
+//	 *       | ! isValidSpeed(getSpeed())
+//	 */
+//	@Raw
+//	private void setSpeed(Vector speed) 
+//			throws IllegalArgumentException {
+//		if (! isValidSpeed(speed))
+//			throw new IllegalArgumentException("This is an invalid speed for this Unit");
+//		this.speed = speed;
+//	}
+//
+//	/**
+//	 * Variable registering the speed of this Unit.
+//	 */
+//	private Vector speed;
 
 	/**
 	 * Return the nearTarget of this Unit.
@@ -2307,8 +2307,8 @@ public class Unit extends GameObject {
 				this.setTimeUntilRest(0);
 			else
 				this.setTimeUntilRest(this.getTimeUntilRest()-time);
-			if (this.Fallcheck()&&!isFalling()) {
-				this.UnitFalls();
+			if (this.hasToFall() && !isFalling()) {
+				this.startFall();
 			}
 			this.hasToRest();
 			Status status = this.getStatus();
@@ -2927,32 +2927,49 @@ public class Unit extends GameObject {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Check whether this Unit has to start falling
+	 * @return returns true if the unit is in a position where one has to fall
+	 * 			| result == (for each position in this.getWorld().getDirectlyAdjacentPositions(this.getPosition()):
+	 * 			|				! isSolidGround(position)) &&
+	 * 			|			this.getPosition().getCubeZ() != 0
+	 */
+	@Override
+	public boolean hasToFall(){
+		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * method to initiate falling
-	 * @post	If the Unit is not yet falling, the Unit's falling
-	 * 			is set to Status.Falling 			
-	 * 			| new.getStatus() == Status.Resting
-	 * @effect	units speed is set to the vector(0,0,-3)
-	 * 			| this.setSpeed(new Vector(0,0,-3))
-	 * @effect	the Unit is standing in the middle of the cube
-	 * 			|this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
-
+	 * @pre		This Unit has to start falling
+	 * 		   	| this.hasToFall() && !this.isFalling()
+	 * @post	This Unit's status is FALLING		
+	 * 			| new.getStatus() == Status.FALLING
+	 * @post	units speed is set to the FALLSPEED
+	 * 			| new.getSpeed() == FALLSPEED
+	 * @post	the Unit is standing in the middle of the cube
+	 * 			|new.getPosition() == new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ());
 	 * @post	Sets the Fallposition the cube it is in			
-	 * 			| then new.getFallposition=this.getPosition().getcubeZ()
+	 * 			| new.getFallposition() == this.getPosition().getcubeZ()
+	 * @effect	If this Unit was executing a Task, that Task is interrupted
+	 * 			| if (this.hasTask())
+	 * 			| then this.getTask().removeFromUnit();
 	 */
-	private void UnitFalls() {
+	void startFall() {
+		assert (this.hasToFall() && !this.isFalling());
 		this.setStatus(Status.FALLING);
-		this.setSpeed(new Vector(0, 0, -3));
+		this.setSpeed(FALLSPEED);
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
 		if (hasTask()) {
-			this.task.removeFromUnit();
+			this.getTask().removeFromUnit();
 		}
-
-
 	}
+	
 	/**
 	 * Update the Unit's position as it is falling
 	 * @param time
@@ -2966,7 +2983,7 @@ public class Unit extends GameObject {
 	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
 	 */
 
-	private void fall(double time) {
+	protected void fall(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0)||this.getWorld().isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){

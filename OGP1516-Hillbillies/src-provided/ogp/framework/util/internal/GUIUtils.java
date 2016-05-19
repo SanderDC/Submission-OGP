@@ -5,7 +5,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import ogp.framework.util.internal.ResourceUtils;
 
 public class GUIUtils {
 

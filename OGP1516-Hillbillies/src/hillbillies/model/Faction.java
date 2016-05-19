@@ -3,7 +3,8 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class implementing factions that Units in the game Hillbillies can belong to.

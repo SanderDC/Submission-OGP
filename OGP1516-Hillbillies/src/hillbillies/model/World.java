@@ -1,8 +1,14 @@
 package hillbillies.model;
 
-import java.util.*;
-import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.Vector;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 

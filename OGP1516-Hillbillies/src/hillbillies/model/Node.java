@@ -1,8 +1,9 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
 
 /**
  * A Class of Nodes for use with the A* pathfinding algorithm

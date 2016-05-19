@@ -2,7 +2,8 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
@@ -291,8 +292,7 @@ public abstract class GameObject {
 	public void advanceTime(double time){
 
 		if (!this.isTerminated() && this.getWorld() != null) {
-			if (!((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
-					this.position.getCubeY(), this.position.getCubeZ() - 1))) {
+			if (this.hasToFall() && this.getStatus() != Status.FALLING) {
 				setStatus(Status.FALLING);
 				this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
 						this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
@@ -301,6 +301,26 @@ public abstract class GameObject {
 				fall(time);
 			}
 		}
+	}
+	
+	public boolean hasToFall(){
+		return !((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
+				this.position.getCubeY(), this.position.getCubeZ() - 1));
+	}
+	
+	/**
+	 * Make this GameObject start falling
+	 * @pre		This GameObject has to start falling
+	 * @post	This GameObject's speed is the FALLSPEED
+	 * @post	This GameObject's status is FALLING
+	 * @post	This GameObject is in the center of its cube
+	 */
+	void startFall(){
+		assert (this.hasToFall() && this.getStatus() != Status.FALLING);
+		this.setStatus(Status.FALLING);
+		this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
+				this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
+		this.setSpeed(FALLSPEED);
 	}
 	
 	/**
@@ -312,8 +332,8 @@ public abstract class GameObject {
 	 * @post	If the GameObject is arriving at or surpassing a valid position,
 	 * 			its position is set to the valid position, and its status will be set to IDLE
 	 */
-	private void fall(double time){
-		Vector displacement = fallspeed.scalarMultiply(time);
+	protected void fall(double time){
+		Vector displacement = FALLSPEED.scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0) || world.isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)){
 			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
@@ -329,9 +349,65 @@ public abstract class GameObject {
 		}
 
 	}
+	
+	/**
+	 * Return the speed of this Unit.
+	 */
+	@Basic @Raw
+	public Vector getSpeed() {
+		return this.speed;
+	}
 
 	/**
-	 * the speed this GameObject will fall
+	 * Check whether the given speed is a valid speed for
+	 * any Unit.
+	 *  
+	 * @param  	speed
+	 *         	The speed to check.
+	 * @return 	true if no component of the Vector equals positive or negative infinity.
+	 *       	| if (speed != null)
+	 *       	| then result == for each component in speed.toArray():
+	 *       	|				(component != Double.POSITIVE_INFINITY) &&
+	 *       	|				(component != Double.NEGATIVE_INFINITY)	
 	 */
-	private final Vector fallspeed=new Vector(0, 0, -3);
+	public static boolean isValidSpeed(Vector speed) {
+		if (speed == null)
+			return false;
+		for (double component:speed.toArray()){
+			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Set the speed of this Unit to the given speed.
+	 * 
+	 * @param  speed
+	 *         The new speed for this Unit.
+	 * @post   The speed of this new Unit is equal to
+	 *         the given speed.
+	 *       | new.getSpeed() == speed
+	 * @throws IllegalArgumentException
+	 *         The given speed is not a valid speed for any
+	 *         Unit.
+	 *       | ! isValidSpeed(getSpeed())
+	 */
+	@Raw
+	protected void setSpeed(Vector speed) 
+			throws IllegalArgumentException {
+		if (! isValidSpeed(speed))
+			throw new IllegalArgumentException("This is an invalid speed for this Unit");
+		this.speed = speed;
+	}
+
+	/**
+	 * Variable registering the speed of this Unit.
+	 */
+	private Vector speed;
+
+	/**
+	 * the speed GameObjects will fall
+	 */
+	public static final Vector FALLSPEED = new Vector(0, 0, -3);
 }

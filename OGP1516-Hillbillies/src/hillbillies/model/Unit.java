@@ -1307,8 +1307,18 @@ public class Unit extends GameObject {
 	 * 
 	 * @param status
 	 *            The new status for this Unit.
-	 * @post The status of this new Unit is equal to the given status. 
-	 * 		| new.getStatus() == status
+	 * @post 	The status of this new Unit is equal to the given status. 
+	 * 			| new.getStatus() == status
+	 * @effect	If the given status equals Status.IDLE, this Unit's nearTarget, distantTarget and enemy
+	 * 			are set to null, and its speed is set to the zero vector
+	 * 			| if (status == Status.IDLE)
+	 * 			| then this.setNearTarget(null)
+	 * 			| 		this.setDistantTarget(null)
+	 * 			|		this.setSpeed(new Vector(0,0,0)
+	 * @effect	If the given status equals Status.IDLE and the Unit is currently moving,
+	 * 			its sprinting is disabled
+	 * 			| if (this.isMoving())
+	 * 			| then this.setSprinting(false)
 	 * @throws IllegalArgumentException
 	 *             The given status is not a valid status for any Unit. 
 	 *             | !isValidStatus(getStatus())
@@ -1456,7 +1466,7 @@ public class Unit extends GameObject {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
-
+		//TODO: documentatiecheck verderzetten vanaf hier
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!canHaveAsEnemy(other))
@@ -1590,6 +1600,7 @@ public class Unit extends GameObject {
 			}
 		}			
 	}
+	
 	/**
 	 * sets this Unit's position to a valid position
 	 * @effect

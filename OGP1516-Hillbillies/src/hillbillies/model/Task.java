@@ -51,15 +51,14 @@ public class Task implements Comparable<Task>{
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 */
-	public Task(String name, int priority,Statement activitylist)
+	public Task(String name, int priority,	Statement activitylist)
 			throws IllegalArgumentException {
+		if (activitylist == null)
+			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
 		this.statements=activitylist;
-		if (activitylist!=null) {
-			this.statements.addToTask(this);
-		}
-		
+		this.statements.addToTask(this);
 		this.selectedPosition = null;
 	}
 
@@ -91,14 +90,14 @@ public class Task implements Comparable<Task>{
 	 *       |   else for each component in new.getSelectedPosition():
 	 *       |									(component >= 0)
 	 */
-	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) {
+	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) 
+			throws IllegalArgumentException {
+		if (activitylist == null)
+			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
-		
 		this.statements=activitylist;
-		if (activitylist!=null) {
-			this.statements.addToTask(this);
-		}
+		this.statements.addToTask(this);
 		if (canHaveAsSelectedPosition(selectedPosition))
 			this.selectedPosition = selectedPosition;
 		else {
@@ -150,6 +149,8 @@ public class Task implements Comparable<Task>{
 			throw new IllegalStateException();
 		}
 		this.inExecution = false;
+		this.variables.clear();
+		this.statements.reset();
 		Unit oldUnit = this.getUnit();
 		this.setUnit(null);
 		oldUnit.removeTask();
@@ -486,9 +487,9 @@ public class Task implements Comparable<Task>{
 		return this.statements;
 	}
 
-	public void setStatement(Statement statement){
-		this.statements=statement;
-	}
+//	public void setStatement(Statement statement){
+//		this.statements=statement;
+//	}
 	//	public int getNbStatements(){
 	//		return this.getstatement().size();
 	//	}
@@ -599,7 +600,7 @@ public class Task implements Comparable<Task>{
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
-	private Statement statements;
+	private final Statement statements;
 	
 	/**
 	 * variable registering the iterator this task is using

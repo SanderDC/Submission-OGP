@@ -16,6 +16,7 @@ import hillbillies.model.World;
 import hillbillies.model.expressions.HerePositionExpression;
 import hillbillies.model.statements.MoveToStatement;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.part3.programs.SourceLocation;
 
 public class SchedulerTest {
 	
@@ -48,10 +49,11 @@ public class SchedulerTest {
 	@Before
 	public void setUp() throws Exception {
 		scheduler1 = new Scheduler();
-		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
-		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
-		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
-		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
+		SourceLocation testLocation = new SourceLocation(1, 1);
+		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
+		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
+		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
+		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null), testLocation));
 		unit= new Unit(world, false);
 		
 		

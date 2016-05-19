@@ -8,10 +8,15 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class PrintStatement extends Statement implements IExecutableStatement {
 
-	public  PrintStatement(IExpression value) {
+	public  PrintStatement(IExpression value, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (value == null)
+			throw new IllegalArgumentException();
 		this.expression=value;
 	}
 
@@ -36,7 +41,7 @@ public class PrintStatement extends Statement implements IExecutableStatement {
 
 	@Override
 	public Statement clone() {
-		return new PrintStatement(expression.clone());
+		return new PrintStatement(expression.clone(), getSourceLocation());
 	}
 
 	@Override

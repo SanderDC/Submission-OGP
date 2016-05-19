@@ -4,7 +4,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ReadBooleanExpression extends ReadVariable implements IBooleanExpression {
 
-	public ReadBooleanExpression(String variableName, SourceLocation sourceLocation) {
+	public ReadBooleanExpression(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(variableName, sourceLocation);
 	}
 

@@ -8,6 +8,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
+import hillbillies.part3.programs.SourceLocation;
 
 /**
  * 
@@ -16,6 +17,18 @@ import hillbillies.model.Unit;
  *
  */
 public abstract class Statement implements Iterable<IExecutableStatement> {
+	
+	public Statement(SourceLocation sourceLocation) throws IllegalArgumentException {
+		if (sourceLocation == null)
+			throw new IllegalArgumentException();
+		this.sourceLocation = sourceLocation;
+	}
+	
+	protected SourceLocation getSourceLocation(){
+		return this.sourceLocation;
+	}
+	
+	private final SourceLocation sourceLocation;
 
 	public abstract void addToTask(Task task);
 
@@ -84,4 +97,8 @@ public abstract class Statement implements Iterable<IExecutableStatement> {
 	public abstract List< Statement> getStatements();
 	
 	public abstract boolean isWellFormed(Set<String> variables);
+	
+	public void reset(){
+		
+	}
 }

@@ -7,7 +7,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ThisUnitExpression extends Expression implements IUnitExpression {
 
-	public ThisUnitExpression(SourceLocation sourceLocation) {
+	public ThisUnitExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

@@ -8,10 +8,15 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class AssignmentStatement extends Statement implements IExecutableStatement {
 	
-	public AssignmentStatement(IExpression expression, String variableName) {
+	public AssignmentStatement(IExpression expression, String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (expression == null || variableName == null || variableName.length() == 0)
+			throw new IllegalArgumentException();
 		this.expression = expression;
 		this.variableName = variableName;
 	}
@@ -37,7 +42,7 @@ public class AssignmentStatement extends Statement implements IExecutableStateme
 
 	@Override
 	public Statement clone() {
-		return new AssignmentStatement(expression.clone(), variableName);
+		return new AssignmentStatement(expression.clone(), variableName, getSourceLocation());
 	}
 
 	@Override

@@ -4,7 +4,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class AndBooleanExpression extends BinaryBooleanExpression {
 
-	public AndBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) {
+	public AndBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(leftExpression, rightExpression, sourceLocation);
 	}
 

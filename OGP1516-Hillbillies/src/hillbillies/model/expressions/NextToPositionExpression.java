@@ -12,8 +12,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class NextToPositionExpression extends Expression implements IPositionExpression {
 	
-	public NextToPositionExpression(IPositionExpression position, SourceLocation sourceLocation) {
+	public NextToPositionExpression(IPositionExpression position, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (position == null)
+			throw new IllegalArgumentException();
 		this.target = position;
 	}
 

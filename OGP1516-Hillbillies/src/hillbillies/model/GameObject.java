@@ -172,16 +172,17 @@ public abstract class GameObject {
 	
 	/**
 	 * Set this GameObject's weight to the given weight
-	 * TODO: documentatie
+	 * @post 	If this GameObject can have the given weight as its weight,
+	 * 		  	this GameObject's new weight equals the given weight
+	 * @post	If this GameObject cannot have the given weight as its weight,
+	 * 			this GameObject's new weight equals 1
 	 */
 	@Raw
 	protected void setWeight(int weight){
 		if (this.canHaveAsWeight(weight))
 			this.weight = weight;
-		else if (weight < 10)
-			this.weight = 10;
 		else
-			this.weight = 50;
+			this.weight = 1;
 	}
 
 	/**

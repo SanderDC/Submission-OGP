@@ -7,8 +7,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public abstract class BinaryBooleanExpression extends Expression implements IBooleanExpression {
 
-	public BinaryBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) {
+	public BinaryBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (leftExpression == null || rightExpression == null)
+			throw new IllegalArgumentException();
 		this.leftExpression = leftExpression;
 		this.rightExpression = rightExpression;
 	}

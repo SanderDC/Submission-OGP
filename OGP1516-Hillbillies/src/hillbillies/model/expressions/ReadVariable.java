@@ -6,8 +6,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public abstract class ReadVariable extends Expression {
 	
-	public  ReadVariable(String variableName, SourceLocation sourceLocation){
+	public  ReadVariable(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (variableName == null || variableName.length() == 0)
+			throw new IllegalArgumentException();
 		this.variableName=variableName;
 	}
 	

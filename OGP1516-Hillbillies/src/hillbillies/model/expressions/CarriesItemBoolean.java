@@ -5,7 +5,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class CarriesItemBoolean extends UnitBoolean {
 
-	public CarriesItemBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
+	public CarriesItemBoolean(IUnitExpression unit, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(unit, sourceLocation);
 	}
 

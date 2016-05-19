@@ -7,8 +7,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class NotBooleanExpression extends Expression implements IBooleanExpression {
 
-	public NotBooleanExpression(IBooleanExpression expression, SourceLocation sourceLocation) {
+	public NotBooleanExpression(IBooleanExpression expression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (target == null)
+			throw new IllegalArgumentException();
 		this.target = expression;
 	}
 

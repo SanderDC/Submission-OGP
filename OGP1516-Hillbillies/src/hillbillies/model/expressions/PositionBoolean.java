@@ -7,8 +7,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public abstract class PositionBoolean extends Expression implements IBooleanExpression {
 
-	public PositionBoolean(IPositionExpression position, SourceLocation sourceLocation) {
+	public PositionBoolean(IPositionExpression position, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (position == null)
+			throw new IllegalArgumentException();
 		this.target = position;
 	}
 	

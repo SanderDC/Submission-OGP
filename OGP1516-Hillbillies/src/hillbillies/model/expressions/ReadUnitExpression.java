@@ -7,7 +7,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ReadUnitExpression extends ReadVariable implements IUnitExpression {
 
-	public ReadUnitExpression(String variableName, SourceLocation sourceLocation) {
+	public ReadUnitExpression(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(variableName, sourceLocation);
 	}
 

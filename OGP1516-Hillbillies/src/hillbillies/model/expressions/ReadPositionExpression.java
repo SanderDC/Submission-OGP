@@ -7,7 +7,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ReadPositionExpression extends ReadVariable implements IPositionExpression {
 
-	public ReadPositionExpression(String variableName, SourceLocation sourceLocation) {
+	public ReadPositionExpression(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(variableName, sourceLocation);
 	}
 

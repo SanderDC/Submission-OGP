@@ -8,7 +8,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class SelectedPositionExpression extends Expression implements IPositionExpression {
 
-	public SelectedPositionExpression(SourceLocation sourceLocation) {
+	public SelectedPositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

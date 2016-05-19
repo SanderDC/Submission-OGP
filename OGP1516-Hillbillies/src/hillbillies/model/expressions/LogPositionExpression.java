@@ -8,7 +8,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class LogPositionExpression extends Expression implements IPositionExpression {
 
-	public LogPositionExpression(SourceLocation sourceLocation) {
+	public LogPositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

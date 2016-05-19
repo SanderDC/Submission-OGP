@@ -8,10 +8,15 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class IfStatement extends Statement {
 
-	public  IfStatement(IBooleanExpression expression, Statement lStatement, Statement rStatement) {
+	public  IfStatement(IBooleanExpression expression, Statement lStatement, Statement rStatement, SourceLocation sourceLocation)
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (expression == null || lStatement == null)
+			throw new IllegalArgumentException();
 		this.expression=expression;
 		this.trueStatement=lStatement;
 		this.trueStatement.setParentStatement(this);
@@ -43,11 +48,11 @@ public class IfStatement extends Statement {
 
 	public IfStatement clone() {
 		if (falseStatement!=null) {
-			return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone());
+			return new IfStatement(expression.clone(), trueStatement.clone(), falseStatement.clone(), getSourceLocation());
 
 		}
 		else {
-			return new IfStatement(expression.clone(), trueStatement.clone(), null);
+			return new IfStatement(expression.clone(), trueStatement.clone(), null, getSourceLocation());
 
 		}
 		
@@ -106,6 +111,13 @@ public class IfStatement extends Statement {
 					&& this.falseStatement.isWellFormed(variables));
 		else
 			return (this.expression.isWellFormed(variables) && this.trueStatement.isWellFormed(variables));
+	}
+
+	@Override
+	public void reset() {
+		this.trueStatement.reset();
+		if (this.hasElseStatement())
+			this.falseStatement.reset();
 	}
 
 }

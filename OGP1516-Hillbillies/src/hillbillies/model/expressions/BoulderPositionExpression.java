@@ -8,7 +8,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class BoulderPositionExpression extends Expression implements IPositionExpression {
 
-	public BoulderPositionExpression(SourceLocation sourceLocation) {
+	public BoulderPositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

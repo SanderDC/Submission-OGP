@@ -7,10 +7,15 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IUnitExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class AttackStatement extends Statement implements IExecutableStatement {
 
-	public  AttackStatement(IUnitExpression expression) {
+	public  AttackStatement(IUnitExpression expression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (expression == null)
+			throw new IllegalArgumentException();
 		this.expression=expression;
 	}
 
@@ -29,7 +34,7 @@ public class AttackStatement extends Statement implements IExecutableStatement {
 
 	@Override
 	public AttackStatement clone() {
-		return new AttackStatement(expression.clone());
+		return new AttackStatement(expression.clone(), getSourceLocation());
 	}
 
 	@Override

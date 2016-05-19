@@ -17,9 +17,19 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 public abstract class GameObject {
 	
-	protected GameObject(Vector position){
-		this.position = position;
-		this.weight = new Random().nextInt(41) + 10;
+	/**
+	 * Initialize a new GameObject with no World or position, a random weight
+	 * and with the nullvector as its speed
+	 * @post	This GameObject has no World
+	 * @post	This GameObject has no position
+	 * @post	This GameObject has a random weight
+	 * @post	This GameObject has the nullvector as its speed
+	 */
+	protected GameObject(){
+		this.setPosition(null);
+		this.setSpeed(new Vector(0,0,0));
+		this.setWeight(new Random().nextInt());
+		this.world = null;
 	}
 
 	/**
@@ -89,14 +99,16 @@ public abstract class GameObject {
 	 * this GameObject.
 	 * @param  position
 	 *         The position to check.
-	 * @return if the GameObject is currently in a World, true if the given position is inside that World
-	 * 		   and not in solid ground.
+	 * @return if the GameObject is currently in a World, true if the given position is effective,
+	 * 		   inside that World and not in solid ground.
 	 * 		   if the GameObject is not part of a World, true if the given position is the null reference
 	 */
 	public boolean isValidPosition(Vector position) {
 		if (this.getWorld() == null){
 			return position == null;
 		} else {
+			if (position == null)
+				return false;
 			double[] arrayposition=  position.toArray();
 			for(int i=0;i<3;i++){
 				if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i])+1) {
@@ -148,10 +160,10 @@ public abstract class GameObject {
 	 * Check whether the given weight is a valid weight for this GameObject
 	 * @param weight
 	 * 			The weight to check
-	 * @return true if the given weight lies between 10 and 50, inclusive
+	 * @return true if the given weight is positive
 	 */
 	public boolean canHaveAsWeight(int weight){
-		if (weight >= 10 && weight <= 50)
+		if (weight > 0)
 			return true;
 		return false;
 	}

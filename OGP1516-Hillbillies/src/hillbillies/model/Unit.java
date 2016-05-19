@@ -208,7 +208,7 @@ public class Unit extends GameObject {
 	 */
 	public Unit(Vector position, int agility, int strength, int weight, String name, int toughness, boolean defaultbehavior)
 			throws IllegalArgumentException {
-		super(position);
+		//super(position);
 		this.setSpeed(new Vector(0,0,0));
 		this.setNearTarget(null);
 		this.setDistantTarget(null);
@@ -253,7 +253,6 @@ public class Unit extends GameObject {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
-		this.setPath(new ArrayList<Vector>());
 	}
 
 	/**
@@ -475,36 +474,6 @@ public class Unit extends GameObject {
 	private boolean sprinting;
 
 	/**
-	 * Check whether the given position is a valid position for
-	 * any Unit.
-	 *  
-	 * @param  position
-	 *         The position to check.
-	 * @return 
-	 *
-	 *       | result == (position != null)
-	 *       |			 for each component in position.toArray():
-	 *       |				(component >= MIN_COORDINATE) &&
-	 *       |				(component < MAX_COORDINATE)
-	 */
-	public boolean isValidPosition(Vector position) {
-		if (position == null)
-			return false;
-		if (!this.getWorld().isInsideWorld(position))
-			return false;
-		double[] arrayposition =  position.toArray();
-		for(int i=0;i<3;i++){
-			if (arrayposition[i]>=this.getWorld().maxCoordinates()[i]+1) {
-				return false;
-			}
-		}
-		if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
 	 * @param 	position
@@ -721,7 +690,7 @@ public class Unit extends GameObject {
 	 * @return | result == (agility >= MIN_AGILITY) && (agility <=
 	 *         MAX_AGILITY)
 	 */
-	private static boolean isValidAgility(int agility) {
+	public static boolean isValidAgility(int agility) {
 		return (agility >= MIN_AGILITY) && (agility <= MAX_AGILITY);
 	}
 
@@ -890,7 +859,7 @@ public class Unit extends GameObject {
 	 *            The strength to check.
 	 * @return 	| result == (strength >= MIN_STRENGTH) && (strength <= MAX_STRENGTH)
 	 */
-	private static boolean isValidStrength(int strength) {
+	public static boolean isValidStrength(int strength) {
 		return (strength >= MIN_STRENGTH) && (strength <= MAX_STRENGTH);
 	}
 
@@ -1995,13 +1964,13 @@ public class Unit extends GameObject {
 	private void pickUpObject(Vector position){
 		for (GameObject object : this.getWorld().getGameObjectsAt(position)) {
 			if (object instanceof Boulder){
-				setGameObject(object);
+				setGameObject((InanimateObject) object);
 				return;
 			}
 		}
 		for (GameObject object : this.getWorld().getGameObjects()) {
 			if (object instanceof Log){
-				setGameObject(object);
+				setGameObject((InanimateObject) object);
 				return;
 			}
 		}
@@ -3360,7 +3329,7 @@ public class Unit extends GameObject {
 	 * 
 	 */
 	@Raw
-	void setGameObject(GameObject gObject) {
+	void setGameObject(InanimateObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
 			gObject.getWorld().removeGameObject(gObject);
@@ -3373,7 +3342,7 @@ public class Unit extends GameObject {
 	/**
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
-	private GameObject gameObject=null;
+	private InanimateObject gameObject=null;
 
 	/**
 	 * Find a path to a given cube in the gameworld

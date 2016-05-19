@@ -174,10 +174,13 @@ public class World {
 	 * Check whether a given position is inside this gameworld.
 	 * @param position
 	 * 			The position to be checked.
-	 * @return true if all coordinates of the given Vector lie between
+	 * @return 	false if the given position is the null reference
+	 * @return	true if all coordinates of the given Vector lie between
 	 * 			this gameworld's minimum and maximum coordinate in that direction.
 	 */
 	public boolean isInsideWorld(Vector position){
+		if (position == null)
+			return false;
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
 			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i] + 1))
@@ -851,6 +854,7 @@ public class World {
 	 * Check whether a Unit can spawn at the given position
 	 * @param position
 	 * 			The position to check for whether a Unit can spawn there.
+	 * @return false if the given position is the null reference
 	 * @return true if and only if the given position is inside the gameworld,
 	 * 			does not contain solid material and the ground below it is
 	 * 			either the bottom or solid ground.
@@ -859,6 +863,8 @@ public class World {
 	 * 			|			((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()-1)))
 	 */
 	boolean unitCanSpawnAt(Vector position){
+		if (position == null)
+			return false;
 		if (!isInsideWorld(position))
 			return false;
 		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))

@@ -21,7 +21,6 @@ public class Faction {
 	/**
 	 * Initialize this new Faction in a given World as a non-terminated Faction with 
 	 * no Units yet.
-	 * 
 	 * @post   This new Faction has no Units yet.
 	 *       | new.getNbUnits() == 0
 	 * @post	This new Faction has been added to the given World.

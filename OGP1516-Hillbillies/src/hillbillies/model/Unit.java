@@ -2858,22 +2858,6 @@ public class Unit extends GameObject {
 	 */
 	private boolean defaultBehaviorBoolean;
 
-
-
-	/**
-	 * 
-	 * @return returns true if the unit is in a position where one has to fall
-	 * 			| result == (for each position in this.getWorld().getDirectlyAdjacentPositions(this.getPosition()):
-	 * 			|				! isSolidGround(position)) &&
-	 * 			|			this.getPosition().getCubeZ() != 0
-	 */
-	private boolean Fallcheck() {
-
-		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
-			return false;
-		}
-		return true;
-	}
 	/**
 	 * 
 	 * @return the position from where the unit started to fall
@@ -3076,11 +3060,21 @@ public class Unit extends GameObject {
 	 * variable registering the experience points this unit has
 	 */
 	private int exp;
+	
+	/**
+	 * Check whether this Unit can be terminated
+	 * @return true if this Unit's hitpoints have reached zero
+	 * 			| result == (this.getHitpoints() == 0)
+	 */
+	@Override
+	public boolean canBeTerminated(){
+		return (this.getHitpoints() == 0);
+	}
 
 	/**
 	 * Terminate this Unit
-	 * @pre		This Unit's hitpoints have reached zero
-	 * 			| (this.getHitpoints() == 0)
+	 * @pre		This Unit can be terminated
+	 * 			| (this.canBeTerminated())
 	 * @post	This Unit has been terminated
 	 * 			| new.isTerminated() == true
 	 * @post	This Unit is idle
@@ -3107,7 +3101,7 @@ public class Unit extends GameObject {
 	 * 			| then this.dropObjectAt(this.getPosition())
 	 */
 	void terminate(){
-		assert (this.getHitpoints() == 0);
+		assert (this.canBeTerminated());
 		this.setDefaultBehaviorBoolean(false);
 		if (hasGameObject()) {
 			dropObjectAt(this.getPosition());
@@ -3140,7 +3134,7 @@ public class Unit extends GameObject {
 	 * 			and is not terminated
 	 * 			Else, true if the given faction is the null reference
 	 * 			| if (!this.isTerminated())
-	 * 			| then result == (faction != null) && (!faction.isTerminated())
+	 * 			| then result == (faction != null)
 	 * 			| else result == (faction == null)
 	 * 
 	 */
@@ -3148,7 +3142,7 @@ public class Unit extends GameObject {
 		if (this.isTerminated())
 			return (faction == null);
 		else
-			return (faction != null) && (!faction.isTerminated());
+			return (faction != null);
 	}
 
 	/**

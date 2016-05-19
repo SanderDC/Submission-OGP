@@ -24,7 +24,7 @@ public class UnitTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		int[][][] coordinates = new int[60][60][60];
+		int[][][] coordinates = new int[3][3][3];
 		world = new World(coordinates, new DefaultTerrainChangeListener());
 	}
 

@@ -7,7 +7,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
- * @author Sander
+ * @author Sander Declercq 
  *
  * @invar  The position of each GameObject must be a valid position for that
  *         GameObject.
@@ -69,9 +69,8 @@ public abstract class GameObject {
 	 * @return true if the given Status is either falling or idle.
 	 */
 	protected boolean isValidStatus (Status status) {
-		if (status==Status.FALLING||status==Status.IDLE) {
+		if (status==Status.FALLING||status==Status.IDLE)
 			return true;
-		}
 		else
 			return false;
 	}
@@ -207,7 +206,7 @@ public abstract class GameObject {
 	 * @post	This GameObject's world is the given world
 	 * @post	This GameObject has been added to the given World's GameObjects
 	 */
-	void addToWorld(World world){
+	void addToWorld(@Raw World world){
 		assert (world != null && world.hasAsGameObject(this));
 		this.setWorld(world);
 	}
@@ -252,19 +251,27 @@ public abstract class GameObject {
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
+	
+	/**
+	 * A GameObject can be terminated at any time
+	 * @return true
+	 */
+	public boolean canBeTerminated(){
+		return true;
+	}
 
 	/**
-	 * 
 	 * Terminate this GameObject
+	 * @pre		This GameObject can be terminated
 	 * @post	This GameObject has been terminated
 	 * 			| new.isTerminated() == true
 	 * @post	This GameObject has been removed from its World
 	 * 			| (new this).getWorld() == null
 	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
-
 	 */
 
 	void terminate(){
+		assert (this.canBeTerminated());
 		this.isTerminated=true;
 		this.setStatus(Status.IDLE);
 		this.getWorld().removeGameObject(this);

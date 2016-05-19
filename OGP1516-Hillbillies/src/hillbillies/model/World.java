@@ -463,12 +463,7 @@ public class World {
 	 * Return a Set containing all currently active Factions in this game world.
 	 */
 	public Set<Faction> getActiveFactions(){
-		Set<Faction> result = new HashSet<>();
-		for (Faction faction:this.Factions){
-			if (faction.isActive())
-				result.add(faction);
-		}
-		return result;
+		return this.Factions;
 	}
 
 	/**
@@ -490,26 +485,6 @@ public class World {
 		Factions.add(Faction);
 		Faction.addToWorld(this);
 		}
-	}
-
-	/**
-	 * Remove the given Faction from the set of Factions of this World.
-	 * 
-	 * @param  Faction
-	 *         The Faction to be removed.
-	 * @pre    This World has the given Faction as one of
-	 *         its Factions, and the given Faction does not
-	 *         reference any World.
-	 *       | this.hasAsFaction(Faction) &&
-	 *       | (Faction.getWorld() == null)
-	 * @post   This World no longer has the given Faction as
-	 *         one of its Factions.
-	 *       | ! new.hasAsFaction(Faction)
-	 */
-	@Raw
-	void removeFaction(Faction Faction) {
-		assert this.hasAsFaction(Faction) && (Faction.getWorld() == null);
-		Factions.remove(Faction);
 	}
 
 	/**

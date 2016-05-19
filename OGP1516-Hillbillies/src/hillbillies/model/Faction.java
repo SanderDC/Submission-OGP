@@ -26,10 +26,10 @@ public class Faction {
 	 *       | new.getNbUnits() == 0
 	 * @post	This new Faction has been added to the given World.
 	 * 			| (new this).getWorld() == world && (new world).hasAsFaction(this)
+	 * @post	This Faction has an effective Scheduler associated with it
 	 */
 	@Raw
 	public Faction(World world) {
-		this.terminated = false;
 		world.addFaction(this);
 		Scheduler scheduler = new Scheduler();
 		this.setScheduler(scheduler);
@@ -142,8 +142,8 @@ public class Faction {
 	public void removeUnit(Unit Unit) {
 		assert this.hasAsUnit(Unit) && (Unit.getFaction() == null);
 		Units.remove(Unit);
-		if (Units.size() == 0)
-			this.terminate();
+//		if (Units.size() == 0)
+//			this.terminate();
 	}
 	
 	/**
@@ -170,49 +170,15 @@ public class Faction {
 	private final Set<Unit> Units = new HashSet<Unit>();
 	
 	/**
-	 * Return a boolean reflecting whether the faction has been terminated.
-	 */
-	@Basic
-	public boolean isTerminated(){
-		return this.terminated;
-	}
-	
-	/**
-	 * Terminate this Faction.
-	 * @pre		This Faction does not have any Units.
-	 * 			| this.getNbUnits() == 0
-	 * @post	This Faction has been terminated
-	 * 			and removed from the World it existed in.
-	 * 			| (new this).isTerminated() &&
-	 * 			| (new this).getWorld == null && !(new this.getWorld()).hasAsFaction(this)
-	 */
-	private void terminate(){
-		assert (this.getNbUnits() == 0);
-		this.terminated = true;
-		this.removeFromWorld();
-		
-	}
-	
-	/**
-	 * Variable registering whether this faction has been terminated.
-	 */
-	private boolean terminated;
-	
-	/**
 	 * Check whether the given World is a valid game World for this Faction
 	 * @param world
 	 * 			The World to check
-	 * @return	If this Faction has not been terminated, true if the given World
-	 * 			is not the null reference
-	 * 			If this Faction has been terminated, true if the given World
-	 * 			is the null reference
+	 * @return	true if the given World is effective
+	 * 		  | result == (world != null)
 	 */
 	@Raw
 	public boolean canHaveAsWorld(World world) {
-		if (this.isTerminated())
-			return (world == null);
-		else
-			return (world != null);
+		return (world != null);
 	}
 	
 	/**
@@ -239,20 +205,6 @@ public class Faction {
 			throw new IllegalArgumentException("This is not a valid gameworld!");
 		assert (world != null && world.hasAsFaction(this));
 		this.world = world;
-	}
-	
-	/**
-	 * Remove this Faction from its World
-	 * @pre		This faction's World is not the null reference
-	 * 			| this.getWorld() != null
-	 * @post	This Faction has been removed from its game World.
-	 * 			| (new this).getWorld() == null && !(new this.getWorld()).hasAsFaction(this)
-	 */
-	private void removeFromWorld(){
-		assert (this.getWorld() != null);
-		World oldWorld = this.getWorld();
-		this.world = null;
-		oldWorld.removeFaction(this);
 	}
 	
 	/**
@@ -295,10 +247,7 @@ public class Faction {
 	 * 		   Else, true if the given Scheduler is the null reference
 	 */
 	public boolean canHaveAsScheduler(Scheduler scheduler){
-		if (!this.isTerminated())
-			return (scheduler != null) && (!scheduler.isTerminated());
-		else
-			return scheduler == null;
+		return (scheduler != null) && (!scheduler.isTerminated());
 	}
 	
 	/**

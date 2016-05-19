@@ -128,7 +128,7 @@ public class Task implements Comparable<Task>{
 	 * 			|new.getiterator==this.statements.iterator()
 	 */
 	public void assignToUnit(Unit unit){
-		if (this.isBeingExecuted() || unit.getTask() != null)
+		if (this.isBeingExecuted() || unit.getTask() != null || this.isTerminated())
 			throw new IllegalStateException();
 		this.inExecution = true;
 		this.setUnit(unit);

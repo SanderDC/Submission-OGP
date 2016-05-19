@@ -13,6 +13,8 @@ import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
+import hillbillies.model.expressions.HerePositionExpression;
+import hillbillies.model.statements.MoveToStatement;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 public class SchedulerTest {
@@ -46,10 +48,10 @@ public class SchedulerTest {
 	@Before
 	public void setUp() throws Exception {
 		scheduler1 = new Scheduler();
-		task = new Task("test", 0, null);
-		task1 = new Task("test", 0, null);
-		task2 = new Task("test", 0, null);
-		task3 = new Task("test", 0, null);
+		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
+		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
+		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
+		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(null)));
 		unit= new Unit(world, false);
 		
 		
@@ -84,15 +86,16 @@ public class SchedulerTest {
 		assertFalse(scheduler1.hasAsTask(task));
 		assertFalse(task.hasAsScheduler(scheduler1));
 	}
-	@Test
+	
+	@Test(expected = IllegalStateException.class)
 	public void assignTask_Illegal(){
 		task1.terminate();
-		unit.assignTask(task1);
+		task1.assignToUnit(unit);
 		assertFalse(unit.getTask()==task1);
 	}
 	@Test
 	public void assignTask(){
-		unit.assignTask(task1);
+		task1.assignToUnit(unit);
 		assertTrue(unit.getTask()==task1);
 		
 	}

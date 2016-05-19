@@ -1,8 +1,6 @@
 package hillbillies.tests.model;
 
-import static org.junit.Assert.*;
-
-import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,13 +8,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.som.annotate.Model;
 import hillbillies.model.Faction;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-import hillbillies.part2.listener.TerrainChangeListener;
 
 public class WorldTest {
 	private static World world3;

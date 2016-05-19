@@ -45,9 +45,6 @@ import ogp.framework.util.Util;
  * @invar  	The name of each Unit must be a valid name for any
  *         	Unit.
  *        	| isValidName(getName())
- * @invar  	The speed of each Unit must be a valid speed for any
- *         	Unit.
- *       	| isValidSpeed(getSpeed())
  * @invar  	The nearTarget of each Unit must be a valid nearTarget for any
  *         	Unit.
  *       	| isValidNearTarget(getNearTarget())
@@ -98,18 +95,8 @@ public class Unit extends GameObject {
 	 *            The weight of the new unit
 	 * @param name
 	 *            The name of the new unit
-	 * @param hitpoints
-	 *            The hitpoints of the new unit
-	 * @param stamina
-	 *            The stamina of the new unit
 	 * @param toughness
 	 *            The toughness of the new unit
-	 * @param maxHitpoint
-	 *            The maximum amount of hitpoints of the new unit
-	 * @param maxStamina
-	 *            The maximum amount of stamina of the new unit
-	 * @param orientation
-	 *            The orientation of the new unit
 	 * @param defaultbehavior
 	 * 			  Boolean reflecting whether the Unit's default behavior should be enabled
 	 * 
@@ -180,8 +167,6 @@ public class Unit extends GameObject {
 	 * 			| new.getOrientation() == Math.PI
 	 * @post	The new Unit is not sprinting
 	 * 			| new.getSprinting() == false
-	 * @post	This new Unit's default behavior is disabled
-	 * 			| new.getdefaultbehaviorboolean() == false
 	 * @post	The new Unit's progress to recovering a hitpoint or stamina point equals zero
 	 * 			| new.getProgress() == 0
 	 * @post	The new Unit's progress to losing a stamina point equals zero
@@ -194,6 +179,8 @@ public class Unit extends GameObject {
 	 * @effect 	The position of this new Unit is set to
 	 *         	the given position.
 	 *       	| this.setPosition(position)   
+	 * @post	This Unit is not part of a World
+	 * 			| new.getWorld() == null
 	 * @effect 	The name of the new unit is set to the given name 
 	 * 		   	| this.setName(name)
 	 * @post 	The maximum amount of hitpoints for this Unit is set according to its stats. 
@@ -253,7 +240,6 @@ public class Unit extends GameObject {
 		this.setActivityTime(0);
 		this.setFallPosition(0);
 		this.setExp(0);
-		this.setPath(new ArrayList<Vector>());
 	}
 
 	/**
@@ -262,6 +248,17 @@ public class Unit extends GameObject {
 	 * 			The World in which to create this new Unit
 	 * @param enableDefaultBehavior
 	 * 			A boolean reflecting whether this new Unit's default behaviour should be enabled.
+	 * @effect This new Unit is create with random attributes and with a position in the middle
+	 * 		   of the cube at the origin of the world
+	 * 		   | this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
+	 *		   | new Random().nextInt(MAX_INITIAL_AGILITY-MIN_INITIAL_AGILITY + 1) + MIN_INITIAL_AGILITY,
+	 *		   | new Random().nextInt(MAX_INITIAL_STRENGTH-MIN_INITIAL_STRENGTH + 1) + MIN_INITIAL_STRENGTH,
+	 *		   | new Random().nextInt(MAX_INITIAL_WEIGHT-MIN_INITIAL_WEIGHT + 1) + MIN_INITIAL_WEIGHT,
+	 *		   | "John",
+	 *		   | new Random().nextInt(MAX_INITIAL_TOUGHNESS-MIN_INITIAL_TOUGHNESS + 1) + MIN_INITIAL_TOUGHNESS,
+	 *		   | enableDefaultBehavior)
+	 * @effect This Unit is added to the given World
+	 * 		 | world.addGameObject(this)
 	 */
 	public Unit(World world, boolean enableDefaultBehavior){
 		this(new Vector(CUBELENGTH/2, CUBELENGTH/2, CUBELENGTH/2),
@@ -475,41 +472,11 @@ public class Unit extends GameObject {
 	private boolean sprinting;
 
 	/**
-	 * Check whether the given position is a valid position for
-	 * any Unit.
-	 *  
-	 * @param  position
-	 *         The position to check.
-	 * @return 
-	 *
-	 *       | result == (position != null)
-	 *       |			 for each component in position.toArray():
-	 *       |				(component >= MIN_COORDINATE) &&
-	 *       |				(component < MAX_COORDINATE)
-	 */
-	public boolean isValidPosition(Vector position) {
-		if (position == null)
-			return false;
-		if (!this.getWorld().isInsideWorld(position))
-			return false;
-		double[] arrayposition =  position.toArray();
-		for(int i=0;i<3;i++){
-			if (arrayposition[i]>=this.getWorld().maxCoordinates()[i]+1) {
-				return false;
-			}
-		}
-		if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Check whether the given position lies in a cube
 	 * that is equal or adjacent to the cube currently occupied by the Unit.
 	 * @param 	position
 	 * 			The position vector to be checked
-	 * @return	true if the given position is not null and
+	 * @return	true if the given position is effective and
 	 * 			the difference between the respective floored coordinates does not exceed 1.
 	 * 			| if (position != null)
 	 * 			| then result == (Math.abs(this.getPosition().getCubeX() - Math.floor(position.getX())) <= 1) &&
@@ -532,67 +499,6 @@ public class Unit extends GameObject {
 	 * Variable registering the length of a cube.
 	 */
 	public static final double CUBELENGTH = 1;
-
-	//	/**
-	//	 * Variable registering the position of this Unit.
-	//	 */
-	//	private Vector position;
-
-	/**
-	 * Return the speed of this Unit.
-	 */
-	@Basic @Raw
-	public Vector getSpeed() {
-		return this.speed;
-	}
-
-	/**
-	 * Check whether the given speed is a valid speed for
-	 * any Unit.
-	 *  
-	 * @param  	speed
-	 *         	The speed to check.
-	 * @return 	true if no component of the Vector equals positive or negative infinity.
-	 *       	| if (speed != null)
-	 *       	| then result == for each component in speed.toArray():
-	 *       	|				(component != Double.POSITIVE_INFINITY) &&
-	 *       	|				(component != Double.NEGATIVE_INFINITY)	
-	 */
-	private static boolean isValidSpeed(Vector speed) {
-		if (speed == null)
-			return false;
-		for (double component:speed.toArray()){
-			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
-				return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Set the speed of this Unit to the given speed.
-	 * 
-	 * @param  speed
-	 *         The new speed for this Unit.
-	 * @post   The speed of this new Unit is equal to
-	 *         the given speed.
-	 *       | new.getSpeed() == speed
-	 * @throws IllegalArgumentException
-	 *         The given speed is not a valid speed for any
-	 *         Unit.
-	 *       | ! isValidSpeed(getSpeed())
-	 */
-	@Raw
-	private void setSpeed(Vector speed) 
-			throws IllegalArgumentException {
-		if (! isValidSpeed(speed))
-			throw new IllegalArgumentException("This is an invalid speed for this Unit");
-		this.speed = speed;
-	}
-
-	/**
-	 * Variable registering the speed of this Unit.
-	 */
-	private Vector speed;
 
 	/**
 	 * Return the nearTarget of this Unit.
@@ -721,7 +627,7 @@ public class Unit extends GameObject {
 	 * @return | result == (agility >= MIN_AGILITY) && (agility <=
 	 *         MAX_AGILITY)
 	 */
-	private static boolean isValidAgility(int agility) {
+	public static boolean isValidAgility(int agility) {
 		return (agility >= MIN_AGILITY) && (agility <= MAX_AGILITY);
 	}
 
@@ -890,7 +796,7 @@ public class Unit extends GameObject {
 	 *            The strength to check.
 	 * @return 	| result == (strength >= MIN_STRENGTH) && (strength <= MAX_STRENGTH)
 	 */
-	private static boolean isValidStrength(int strength) {
+	public static boolean isValidStrength(int strength) {
 		return (strength >= MIN_STRENGTH) && (strength <= MAX_STRENGTH);
 	}
 
@@ -1995,13 +1901,13 @@ public class Unit extends GameObject {
 	private void pickUpObject(Vector position){
 		for (GameObject object : this.getWorld().getGameObjectsAt(position)) {
 			if (object instanceof Boulder){
-				setGameObject(object);
+				setGameObject((InanimateObject) object);
 				return;
 			}
 		}
 		for (GameObject object : this.getWorld().getGameObjects()) {
 			if (object instanceof Log){
-				setGameObject(object);
+				setGameObject((InanimateObject) object);
 				return;
 			}
 		}
@@ -2307,8 +2213,8 @@ public class Unit extends GameObject {
 				this.setTimeUntilRest(0);
 			else
 				this.setTimeUntilRest(this.getTimeUntilRest()-time);
-			if (this.Fallcheck()&&!isFalling()) {
-				this.UnitFalls();
+			if (this.hasToFall() && !isFalling()) {
+				this.startFall();
 			}
 			this.hasToRest();
 			Status status = this.getStatus();
@@ -2858,22 +2764,6 @@ public class Unit extends GameObject {
 	 */
 	private boolean defaultBehaviorBoolean;
 
-
-
-	/**
-	 * 
-	 * @return returns true if the unit is in a position where one has to fall
-	 * 			| result == (for each position in this.getWorld().getDirectlyAdjacentPositions(this.getPosition()):
-	 * 			|				! isSolidGround(position)) &&
-	 * 			|			this.getPosition().getCubeZ() != 0
-	 */
-	private boolean Fallcheck() {
-
-		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
-			return false;
-		}
-		return true;
-	}
 	/**
 	 * 
 	 * @return the position from where the unit started to fall
@@ -2927,32 +2817,49 @@ public class Unit extends GameObject {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Check whether this Unit has to start falling
+	 * @return returns true if the unit is in a position where one has to fall
+	 * 			| result == (for each position in this.getWorld().getDirectlyAdjacentPositions(this.getPosition()):
+	 * 			|				! isSolidGround(position)) &&
+	 * 			|			this.getPosition().getCubeZ() != 0
+	 */
+	@Override
+	public boolean hasToFall(){
+		if ((this.getPosition().getCubeZ()==0)||this.getWorld().CheckadjacentValidPositions(this.getPosition().getCubeX(),this.getPosition().getCubeY(), this.getPosition().getCubeZ()).size()!=0) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * method to initiate falling
-	 * @post	If the Unit is not yet falling, the Unit's falling
-	 * 			is set to Status.Falling 			
-	 * 			| new.getStatus() == Status.Resting
-	 * @effect	units speed is set to the vector(0,0,-3)
-	 * 			| this.setSpeed(new Vector(0,0,-3))
-	 * @effect	the Unit is standing in the middle of the cube
-	 * 			|this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
-
+	 * @pre		This Unit has to start falling
+	 * 		   	| this.hasToFall() && !this.isFalling()
+	 * @post	This Unit's status is FALLING		
+	 * 			| new.getStatus() == Status.FALLING
+	 * @post	units speed is set to the FALLSPEED
+	 * 			| new.getSpeed() == FALLSPEED
+	 * @post	the Unit is standing in the middle of the cube
+	 * 			|new.getPosition() == new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ());
 	 * @post	Sets the Fallposition the cube it is in			
-	 * 			| then new.getFallposition=this.getPosition().getcubeZ()
+	 * 			| new.getFallposition() == this.getPosition().getcubeZ()
+	 * @effect	If this Unit was executing a Task, that Task is interrupted
+	 * 			| if (this.hasTask())
+	 * 			| then this.getTask().removeFromUnit();
 	 */
-	private void UnitFalls() {
+	void startFall() {
+		assert (this.hasToFall() && !this.isFalling());
 		this.setStatus(Status.FALLING);
-		this.setSpeed(new Vector(0, 0, -3));
+		this.setSpeed(FALLSPEED);
 		this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2,this.getPosition().getCubeY()+CUBELENGTH/2,this.getPosition().getZ()));
 		this.setFallPosition(this.getPosition().getCubeZ());
 		if (hasTask()) {
-			this.task.removeFromUnit();
+			this.getTask().removeFromUnit();
 		}
-
-
 	}
+	
 	/**
 	 * Update the Unit's position as it is falling
 	 * @param time
@@ -2966,7 +2873,7 @@ public class Unit extends GameObject {
 	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
 	 */
 
-	private void fall(double time) {
+	protected void fall(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0)||this.getWorld().isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){
@@ -3059,11 +2966,21 @@ public class Unit extends GameObject {
 	 * variable registering the experience points this unit has
 	 */
 	private int exp;
+	
+	/**
+	 * Check whether this Unit can be terminated
+	 * @return true if this Unit's hitpoints have reached zero
+	 * 			| result == (this.getHitpoints() == 0)
+	 */
+	@Override
+	public boolean canBeTerminated(){
+		return (this.getHitpoints() == 0);
+	}
 
 	/**
 	 * Terminate this Unit
-	 * @pre		This Unit's hitpoints have reached zero
-	 * 			| (this.getHitpoints() == 0)
+	 * @pre		This Unit can be terminated
+	 * 			| (this.canBeTerminated())
 	 * @post	This Unit has been terminated
 	 * 			| new.isTerminated() == true
 	 * @post	This Unit is idle
@@ -3090,7 +3007,7 @@ public class Unit extends GameObject {
 	 * 			| then this.dropObjectAt(this.getPosition())
 	 */
 	void terminate(){
-		assert (this.getHitpoints() == 0);
+		assert (this.canBeTerminated());
 		this.setDefaultBehaviorBoolean(false);
 		if (hasGameObject()) {
 			dropObjectAt(this.getPosition());
@@ -3123,7 +3040,7 @@ public class Unit extends GameObject {
 	 * 			and is not terminated
 	 * 			Else, true if the given faction is the null reference
 	 * 			| if (!this.isTerminated())
-	 * 			| then result == (faction != null) && (!faction.isTerminated())
+	 * 			| then result == (faction != null)
 	 * 			| else result == (faction == null)
 	 * 
 	 */
@@ -3131,7 +3048,7 @@ public class Unit extends GameObject {
 		if (this.isTerminated())
 			return (faction == null);
 		else
-			return (faction != null) && (!faction.isTerminated());
+			return (faction != null);
 	}
 
 	/**
@@ -3349,7 +3266,7 @@ public class Unit extends GameObject {
 	 * 
 	 */
 	@Raw
-	void setGameObject(GameObject gObject) {
+	void setGameObject(InanimateObject gObject) {
 		if (!hasGameObject()) {
 			this.gameObject=gObject;
 			gObject.getWorld().removeGameObject(gObject);
@@ -3362,7 +3279,7 @@ public class Unit extends GameObject {
 	/**
 	 * Variable registering the gameObject this Unit is currently carrying.
 	 */
-	private GameObject gameObject=null;
+	private InanimateObject gameObject=null;
 
 	/**
 	 * Find a path to a given cube in the gameworld

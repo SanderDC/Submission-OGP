@@ -1,13 +1,13 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -298,7 +298,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	public boolean canHaveAsFaction(Faction faction){
 		if (!this.isTerminated())
-			return (faction != null) && (!faction.isTerminated());
+			return (faction != null);
 		else
 			return faction == null;
 	}
@@ -311,18 +311,13 @@ public class Scheduler implements Iterable<Task>{
 	 * Add this Scheduler to the given Faction
 	 * @param faction
 	 * 			The Faction to add this Scheduler to
-	 * @pre		The given Faction already has this Scheduler as its Scheduler
-	 * 			| faction.getScheduler() == this
+	 * @pre		The given Faction is effective and already has this Scheduler as its Scheduler
+	 * 			| (faction != null && faction.getScheduler() == this)
 	 * @post	This Scheduler has the given Faction as its Faction
 	 * 			| (new this).getFaction() == faction
-	 * @throws IllegalArgumentException
-	 * 			The given Faction is not a valid Faction for this Scheduler
-	 * 			| (! this.canHaveAsFaction(faction))
 	 */
-	void addToFaction(Faction faction) throws IllegalArgumentException{
-		if (!this.canHaveAsFaction(faction))
-			throw new IllegalArgumentException();
-		assert (faction.getScheduler() == this);
+	void addToFaction(Faction faction){
+		assert (faction != null && faction.getScheduler() == this);
 		this.faction = faction;
 	}
 
@@ -333,21 +328,6 @@ public class Scheduler implements Iterable<Task>{
 
 	public boolean isTerminated(){
 		return this.terminated;
-	}
-
-	/**
-	 * Terminate this Scheduler
-	 * @pre		This Scheduler's Faction has been terminated
-	 * 			| this.getFaction().isTerminated()
-	 * @post	This Scheduler is terminated
-	 * 			| new.isTerminated()
-	 * @post	This Scheduler has been removed from its Faction
-	 * 			| (new this).getFaction() == null
-	 */
-	void terminate(){
-		assert (this.getFaction().isTerminated());
-		this.terminated = true;
-		this.faction = null;
 	}
 
 	/**

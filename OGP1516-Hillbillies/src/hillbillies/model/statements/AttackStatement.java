@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import hillbillies.model.Task;
-import hillbillies.model.expressions.EnemyUnitExpression;
 import hillbillies.model.expressions.IUnitExpression;
 
 public class AttackStatement extends Statement implements IExecutableStatement {

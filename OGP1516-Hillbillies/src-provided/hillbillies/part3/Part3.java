@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import hillbillies.common.internal.HillbilliesApplication;
 import hillbillies.common.internal.controller.GameController;
-import hillbillies.part3.facade.Facade;
-import hillbillies.part3.facade.IFacade;
 import hillbillies.part2.internal.Part2Options;
 import hillbillies.part2.internal.map.GameMap;
 import hillbillies.part2.internal.map.GameMapReader;
 import hillbillies.part2.internal.ui.IHillbilliesView2;
+import hillbillies.part3.facade.Facade;
+import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.internal.controller.GameControllerPart3;
 import hillbillies.part3.internal.ui.HillbilliesViewPart3;
 import hillbillies.part3.internal.ui.ViewProviders3;

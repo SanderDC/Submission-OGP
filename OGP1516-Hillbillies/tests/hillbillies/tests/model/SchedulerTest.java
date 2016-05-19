@@ -1,15 +1,19 @@
 package hillbillies.tests.model;
 
-import static org.junit.Assert.*;
-
-import hillbillies.model.*;
-import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import hillbillies.model.Scheduler;
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
+import hillbillies.model.World;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 
 public class SchedulerTest {
 	

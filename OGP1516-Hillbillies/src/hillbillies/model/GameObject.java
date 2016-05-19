@@ -2,23 +2,36 @@ package hillbillies.model;
 
 import java.util.Random;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
- * @author Sander
+ * @author Sander Declercq 
  *
- * @invar  The position of each GameObject must be a valid position for that
- *         GameObject.
- * @invar  The status of each GameObject must be a valid status for any GameObject.
- * @invar  The weight of each GameObject must be a valid weight for any GameObject.
- * @invar  The World of each GameObject must be a valid World for that GameObject
+ * @invar  	The position of each GameObject must be a valid position for that
+ *         	GameObject.
+ * @invar  	The status of each GameObject must be a valid status for any GameObject.
+ * @invar  	The weight of each GameObject must be a valid weight for any GameObject.
+ * @invar  	The World of each GameObject must be a valid World for that GameObject
+ * @invar  	The speed of each Unit must be a valid speed for any
+ *         	Unit.
  */
 public abstract class GameObject {
 	
+	/**
+	 * Initialize a new GameObject with no World or position, a random weight
+	 * and with the nullvector as its speed
+	 * @post	This GameObject has no World
+	 * @post	This GameObject has no position
+	 * @post	This GameObject has a random weight
+	 * @post	This GameObject has the nullvector as its speed
+	 */
 	protected GameObject(Vector position){
-		this.position = position;
-		this.weight = new Random().nextInt(41) + 10;
+		this.world = null;
+		this.setPosition(position);
+		this.setSpeed(new Vector(0,0,0));
+		this.setWeight(new Random().nextInt());
 	}
 
 	/**
@@ -68,9 +81,8 @@ public abstract class GameObject {
 	 * @return true if the given Status is either falling or idle.
 	 */
 	protected boolean isValidStatus (Status status) {
-		if (status==Status.FALLING||status==Status.IDLE) {
+		if (status==Status.FALLING||status==Status.IDLE)
 			return true;
-		}
 		else
 			return false;
 	}
@@ -89,14 +101,16 @@ public abstract class GameObject {
 	 * this GameObject.
 	 * @param  position
 	 *         The position to check.
-	 * @return if the GameObject is currently in a World, true if the given position is inside that World
-	 * 		   and not in solid ground.
-	 * 		   if the GameObject is not part of a World, true if the given position is the null reference
+	 * @return if the GameObject is currently in a World, true if the given position is effective,
+	 * 		   inside that World and not in solid ground.
+	 * @return true if this GameObject is not currently part of a World
 	 */
 	public boolean isValidPosition(Vector position) {
 		if (this.getWorld() == null){
-			return position == null;
+			return true;
 		} else {
+			if (position == null)
+				return false;
 			double[] arrayposition=  position.toArray();
 			for(int i=0;i<3;i++){
 				if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i])+1) {
@@ -148,10 +162,10 @@ public abstract class GameObject {
 	 * Check whether the given weight is a valid weight for this GameObject
 	 * @param weight
 	 * 			The weight to check
-	 * @return true if the given weight lies between 10 and 50, inclusive
+	 * @return true if the given weight is positive
 	 */
 	public boolean canHaveAsWeight(int weight){
-		if (weight >= 10 && weight <= 50)
+		if (weight > 0)
 			return true;
 		return false;
 	}
@@ -206,7 +220,7 @@ public abstract class GameObject {
 	 * @post	This GameObject's world is the given world
 	 * @post	This GameObject has been added to the given World's GameObjects
 	 */
-	void addToWorld(World world){
+	void addToWorld(@Raw World world){
 		assert (world != null && world.hasAsGameObject(this));
 		this.setWorld(world);
 	}
@@ -251,19 +265,27 @@ public abstract class GameObject {
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
+	
+	/**
+	 * A GameObject can be terminated at any time
+	 * @return true
+	 */
+	public boolean canBeTerminated(){
+		return true;
+	}
 
 	/**
-	 * 
 	 * Terminate this GameObject
+	 * @pre		This GameObject can be terminated
 	 * @post	This GameObject has been terminated
 	 * 			| new.isTerminated() == true
 	 * @post	This GameObject has been removed from its World
 	 * 			| (new this).getWorld() == null
 	 * 			| (new this.getWorld()).hasAsGameobject(this) == false
-
 	 */
 
 	void terminate(){
+		assert (this.canBeTerminated());
 		this.isTerminated=true;
 		this.setStatus(Status.IDLE);
 		this.getWorld().removeGameObject(this);
@@ -291,8 +313,7 @@ public abstract class GameObject {
 	public void advanceTime(double time){
 
 		if (!this.isTerminated() && this.getWorld() != null) {
-			if (!((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
-					this.position.getCubeY(), this.position.getCubeZ() - 1))) {
+			if (this.hasToFall() && this.getStatus() != Status.FALLING) {
 				setStatus(Status.FALLING);
 				this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
 						this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
@@ -301,6 +322,26 @@ public abstract class GameObject {
 				fall(time);
 			}
 		}
+	}
+	
+	public boolean hasToFall(){
+		return !((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
+				this.position.getCubeY(), this.position.getCubeZ() - 1));
+	}
+	
+	/**
+	 * Make this GameObject start falling
+	 * @pre		This GameObject has to start falling
+	 * @post	This GameObject's speed is the FALLSPEED
+	 * @post	This GameObject's status is FALLING
+	 * @post	This GameObject is in the center of its cube
+	 */
+	void startFall(){
+		assert (this.hasToFall() && this.getStatus() != Status.FALLING);
+		this.setStatus(Status.FALLING);
+		this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
+				this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
+		this.setSpeed(FALLSPEED);
 	}
 	
 	/**
@@ -312,8 +353,8 @@ public abstract class GameObject {
 	 * @post	If the GameObject is arriving at or surpassing a valid position,
 	 * 			its position is set to the valid position, and its status will be set to IDLE
 	 */
-	private void fall(double time){
-		Vector displacement = fallspeed.scalarMultiply(time);
+	protected void fall(double time){
+		Vector displacement = FALLSPEED.scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0) || world.isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)){
 			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
@@ -329,9 +370,65 @@ public abstract class GameObject {
 		}
 
 	}
+	
+	/**
+	 * Return the speed of this Unit.
+	 */
+	@Basic @Raw
+	public Vector getSpeed() {
+		return this.speed;
+	}
 
 	/**
-	 * the speed this GameObject will fall
+	 * Check whether the given speed is a valid speed for
+	 * any Unit.
+	 *  
+	 * @param  	speed
+	 *         	The speed to check.
+	 * @return 	true if no component of the Vector equals positive or negative infinity.
+	 *       	| if (speed != null)
+	 *       	| then result == for each component in speed.toArray():
+	 *       	|				(component != Double.POSITIVE_INFINITY) &&
+	 *       	|				(component != Double.NEGATIVE_INFINITY)	
 	 */
-	private final Vector fallspeed=new Vector(0, 0, -3);
+	public static boolean isValidSpeed(Vector speed) {
+		if (speed == null)
+			return false;
+		for (double component:speed.toArray()){
+			if ((component == Double.POSITIVE_INFINITY) || (component == Double.NEGATIVE_INFINITY))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Set the speed of this Unit to the given speed.
+	 * 
+	 * @param  speed
+	 *         The new speed for this Unit.
+	 * @post   The speed of this new Unit is equal to
+	 *         the given speed.
+	 *       | new.getSpeed() == speed
+	 * @throws IllegalArgumentException
+	 *         The given speed is not a valid speed for any
+	 *         Unit.
+	 *       | ! isValidSpeed(getSpeed())
+	 */
+	@Raw
+	protected void setSpeed(Vector speed) 
+			throws IllegalArgumentException {
+		if (! isValidSpeed(speed))
+			throw new IllegalArgumentException("This is an invalid speed for this Unit");
+		this.speed = speed;
+	}
+
+	/**
+	 * Variable registering the speed of this Unit.
+	 */
+	private Vector speed;
+
+	/**
+	 * the speed GameObjects will fall
+	 */
+	public static final Vector FALLSPEED = new Vector(0, 0, -3);
 }

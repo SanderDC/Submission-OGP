@@ -947,7 +947,6 @@ public class Unit extends GameObject {
 	 * 			| if (this.getStamina() > new.getmaxStamina())
 	 * 			| then new.getStamina() == new.getmaxStamina()
 	 */
-
 	@Override
 	public void setWeight(int newWeight) {
 		if (newWeight < this.getMinWeight()) {
@@ -1291,6 +1290,73 @@ public class Unit extends GameObject {
 	}
 
 	/**
+	 * checks whether the Unit is moving or not
+	 * @return 
+	 *		|result==((this.getStatus()==Status.MOVINGADJACENT)||(this.getStatus() == Status.MOVINGDISTANT))
+	 */
+	public boolean isMoving(){
+		if (this.getStatus()==Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	/**
+	 * checks whether the Unit is IDLE or not
+	 * @return 
+	 *		|result==(this.getStatus()==Status.IDLE)
+	 */
+	public boolean isIdle(){
+		if (this.getStatus()==Status.IDLE){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	/**
+	 * checks whether the unit is resting or not
+	 * @return 
+	 *		|result==(this.getStatus()==Status.RESTING)
+	 */
+	public boolean isResting(){
+		if (this.getStatus()==Status.RESTING){
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+	/**
+	 * checks whether the unit is attacking or not
+	 *@return 
+	 *		|result==(this.getStatus()==Status.ATTACKING)
+	 */
+	public boolean isAttacking() {
+		if (this.getStatus()==Status.ATTACKING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	/**
+	 * checks whether the unit is working or not
+	 * @return true if this Unit's status is Status.WORKING
+	 * 			| result == (this.getStatus()==Status.WORKING)
+	 */
+	public boolean isWorking() {
+		if (this.getStatus()==Status.WORKING){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
 	 * Check whether the given status is a valid status for any Unit.
 	 * 
 	 * @param status
@@ -1469,7 +1535,6 @@ public class Unit extends GameObject {
 	 * 			| (this.getStatus() == Status.MOVINGADJACENT)
 	 */
 	public void startAttack(Unit other) throws IllegalArgumentException,IllegalStateException{
-		//TODO: documentatiecheck verderzetten vanaf hier
 		if (other == this)
 			throw new IllegalArgumentException("A Unit cannot attack itself!");
 		if (!canHaveAsEnemy(other))
@@ -1716,73 +1781,6 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * checks whether the Unit is moving or not
-	 * @return 
-	 *		|result==((this.getStatus()==Status.MOVINGADJACENT)||(this.getStatus() == Status.MOVINGDISTANT))
-	 */
-	public boolean isMoving(){
-		if (this.getStatus()==Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	/**
-	 * checks whether the Unit is IDLE or not
-	 * @return 
-	 *		|result==(this.getStatus()==Status.IDLE)
-	 */
-	public boolean isIdle(){
-		if (this.getStatus()==Status.IDLE){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	/**
-	 * checks whether the unit is resting or not
-	 * @return 
-	 *		|result==(this.getStatus()==Status.RESTING)
-	 */
-	public boolean isResting(){
-		if (this.getStatus()==Status.RESTING){
-			return true;
-		}
-		else {
-			return false;
-		}
-
-	}
-	/**
-	 * checks whether the unit is attacking or not
-	 *@return 
-	 *		|result==(this.getStatus()==Status.ATTACKING)
-	 */
-	public boolean isAttacking() {
-		if (this.getStatus()==Status.ATTACKING){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	/**
-	 * checks whether the unit is working or not
-	 * @return
-	 * 			|result==(this.getStatus()==Status.WORKING)
-	 */
-	public boolean isWorking() {
-		if (this.getStatus()==Status.WORKING){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
 	 * tells the unit to start working
 	 * @effect 
 	 * 		|this.settingInitialResttimeOk()
@@ -1930,22 +1928,10 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * Pick up an object at the given position. The Unit always picks up a Boulder when one is present,
-	 * otherwise it picks up a Log
-	 * @param position
-	 * 			The position from which to pick up a GameObject.
-	 * @effect	The Unit picks up a GameObject at the given position
-	 * 			| this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ())
-	 */
-	//	private void pickUpObject(Vector position){
-	//		this.pickUpObject(position.getCubeX(), position.getCubeY(), position.getCubeZ());
-	//	}
-
-	/**
 	 * Make the Unit drop its object at the given position
 	 * @effect drops the object the unit is carrying in the Units world
 	 * 			| this.setGameObject(null)
-	 * 			| this.oldObject.addToWorld(getWorld())
+	 * 			| this.getGameObject().addToWorld(getWorld())
 	 * 			| oldObject.setPosition(position)
 	 */
 	private void dropObjectAt(Vector position) {
@@ -1955,12 +1941,7 @@ public class Unit extends GameObject {
 		this.getWorld().addGameObject(oldObject);
 		oldObject.setPosition(position);
 	}
-
-	/**
-	 *
-	 * variable for the position where workat will take place
-	 */
-	private Vector workposition;
+	
 	/**
 	 *
 	 * @return  position where workat will take place
@@ -1968,6 +1949,18 @@ public class Unit extends GameObject {
 	@Basic @Raw
 	public Vector getWorkposition() {
 		return this.workposition;
+	}
+	
+	/**
+	 * Check whether the given position is a valid WorkPosition for this Unit
+	 * @param position
+	 * 			The position to check
+	 * @return true if the given position is inside this Unit's game World
+	 * 		 | result == this.getWorld().isInsideWorld(position)
+	 */
+	@Basic @Raw
+	public boolean canHaveAsWorkPosition(Vector position){
+		return this.getWorld().isInsideWorld(position);
 	}
 
 	/**
@@ -1981,11 +1974,22 @@ public class Unit extends GameObject {
 	 * @post The Unit's Workposition is a Vector with the given coordinates
 	 * 		 as its coordinates
 	 * 			| new.getWorkposition() == new Vector(x,y,z)
+	 * @throws	IllegalArgumentException
+	 * 			The given position is not inside this Unit's World
+	 * 			| !this.canHaveAsWorkPosition(new Vector(x,y,z))
 	 */
 	@Raw
-	public void setWorkposition(int x, int y, int z) {
+	private void setWorkposition(int x, int y, int z) throws IllegalArgumentException {
+		if (!this.canHaveAsWorkPosition(new Vector(x,y,z)))
+			throw new IllegalArgumentException();
 		this.workposition = new Vector(x, y, z);
 	}
+
+	/**
+	 *
+	 * variable for the position where workat will take place
+	 */
+	private Vector workposition;
 
 	/**
 	 * Initiate movement to a neighbouring cube.
@@ -2015,7 +2019,7 @@ public class Unit extends GameObject {
 	 * 			| then this.settingInitialResttimeOk()
 	 * @throws IllegalArgumentException
 	 * 			The target position is not a valid nearTarget
-	 * 			| (!this.isValidNearTarget(new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
+	 * 			| (!this.canHaveAsNearTarget(new Vector(this.getPosition().getCubeX() + dx + CUBELENGTH/2,
 	 *			| this.getPosition().getCubeY() + dy + CUBELENGTH/2,
 	 *			| this.getPosition().getCubeZ() + dz + CUBELENGTH/2)))
 	 * @throws IllegalStateException
@@ -2221,7 +2225,6 @@ public class Unit extends GameObject {
 	 */
 	@Override
 	public void advanceTime(double time) throws IllegalArgumentException{
-		//TODO: iets
 		if (!isTerminated()) {
 			if (time<0||time>0.2)
 				throw new IllegalArgumentException();
@@ -2244,29 +2247,9 @@ public class Unit extends GameObject {
 				this.getTask().advanceTask(time);
 				return;
 			}
-
-			//			if (hasTask()&&hasexecutedonce) {
-			//				if (!this.getTask().getstatement().getexecuted()) {
-			//					if (this.getTask().getstatement().check()) {
-			//							this.getTask().terminate();		
-			//							hasexecutedonce=false;
-			//						}
-			//					}
-			//			}
 			if (status == Status.IDLE){
 				if (getdefaultbehaviorboolean()){
 					defaultbehavior();
-					//					if (hasTask()) {
-					//
-					//						try {
-					//							task.getstatement().execute();
-					//							hasexecutedonce=true;
-					//						} catch (PathfindingException| IllegalArgumentException|IllegalStateException e) {
-					//							e.printStackTrace();
-					//							task.unAssignTaskofUnit(this);
-					//							hasexecutedonce=false;
-					//						}
-					//					}
 				}
 
 			}
@@ -2294,6 +2277,9 @@ public class Unit extends GameObject {
 	 * 			its position is set to its target position, its target position is set to null
 	 * 			and its status is set to idle.
 	 * @post	If the Unit is currently sprinting, its stamina points are reduced.
+	 * @post	If the Unit runs out of stamina, its sprinting is disabled
+	 * @post	If this Unit arrives at its target position, was executing a Task
+	 * 			and that Task is finished, its Task is terminated
 	 */
 	private void move(double time) {
 		if (this.getSprinting()){
@@ -2365,8 +2351,6 @@ public class Unit extends GameObject {
 	public void resting() throws IllegalStateException {
 		if (! this.canBeInterruptedBy(Status.RESTING))
 			throw new IllegalStateException("This Unit cannot start resting at this moment");
-		if (this.getStatus() == Status.MOVINGADJACENT)
-			throw new IllegalStateException("Movement to a neighbouring cube cannot be interrupted");
 		if (this.getStatus() == Status.MOVINGDISTANT){
 			this.setPath(new ArrayList<Vector>());
 			this.setSpeed(new Vector(0,0,0));
@@ -2480,7 +2464,7 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * caculating the time it takes to restore 1 point of hitpoints
+	 * calculate the time it takes to restore 1 point of hitpoints
 	 * @return
 	 * 			|result==this.getToughness()*time/40
 	 */
@@ -2489,7 +2473,7 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * caculating the time it takes to restore 1 point of stamina
+	 * calculate the time it takes to restore 1 point of stamina
 	 * @return
 	 * 		|result==this.getToughness()*time/20
 	 */
@@ -2498,8 +2482,9 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * @effect
-	 * 		set the unit to rest if it is not fighting
+	 * Make the Unit rest if it can and has to
+	 * @effect If this Unit's time between two mandatory rests has passed
+	 * 			and this Unit can start resting, it starts resting
 	 * 		|if (this.getTimeUntilRest()<=0)&&(!isAttacking)&&(!isresting)&&(!ismoving)
 	 * 		|then this.resting()
 	 */
@@ -2551,8 +2536,8 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * 
-	 * @return checks whether there is a adjacentUnit that is possible to attack
+	 * Check whether there is a Unit in this Unit's game World that can be attacked by this Unit
+	 * @return true if there is a adjacentUnit that is possible to attack
 	 * 			| result== for some Unit in this.getWorld().getUnits():
 	 * 			| 				(this.canHaveAsEnemy(Unit))
 	 */
@@ -2735,22 +2720,6 @@ public class Unit extends GameObject {
 		}
 	}
 
-
-
-	/**
-	 * Enable the Unit's default behavior
-	 */
-	public void startDefaultBehavior(){
-		setDefaultBehaviorBoolean(true);
-	}
-
-	/**
-	 * Disable the Unit's default behavior
-	 */
-	public void stopDefaultBehavior(){
-		setDefaultBehaviorBoolean(false);
-	}
-
 	/**
 	 * Return the defaultbehaviorboolean of this Unit.
 	 */
@@ -2760,14 +2729,15 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * Set the position of this Unit to the given position.
-	 * 
+	 * Set this Unit's defaultBehaviorBoolean to the given boolean
 	 * @param  defaultBehaviorBoolean
 	 *         The new defaultBehaviorBoolean for this Unit.
 	 * @post   The defaultBehaviorBoolean of this new Unit is equal to
 	 *         the given defaultBehaviorBoolean.
 	 *       | new.getdefaultBehaviorBoolean() == defaultBehaviorBoolean
-	 * 
+	 * @throws IllegalStateException
+	 * 			The Unit is currently not idle and the given boolean is true
+	 * 		  | this.getStatus != Status.IDLE && defaultBehaviorBoolean
 	 */
 	public void setDefaultBehaviorBoolean(boolean defaultBehaviorBoolean) throws IllegalStateException {
 		if (this.getStatus() != Status.IDLE && defaultBehaviorBoolean)
@@ -2815,15 +2785,16 @@ public class Unit extends GameObject {
 		assert (isValidFallPosition(fallPosition));
 		this.fallPosition = fallPosition;
 	}
+	
 	/**
 	 * variable registering the position from where a unit started falling
 	 */
 	private double fallPosition;
 
 	/**
-	 * 
+	 * Check whether this Unit is currently falling
 	 * @return true if the status of this unit is the falling status
-	 * 		| result==(this.getstatus==Status.FALLING)
+	 * 		 | result==(this.getstatus==Status.FALLING)
 	 */
 	public boolean isFalling(){
 		if (this.getStatus()==Status.FALLING){
@@ -2887,7 +2858,8 @@ public class Unit extends GameObject {
 	 * 			its position is set to the valid position, its Fallposition is set to 0
 	 * 			and its status is set to idle.
 	 * @post	If the Unit would lose enough health to die, it will be terminated.
-	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
+	 * @post	If the unit survives, it will lose ten times the difference between
+	 * 			its Fallposition and the z-coordinate of its new cube in hitpoints
 	 */
 	@Override
 	protected void fall(double time) {
@@ -2897,7 +2869,6 @@ public class Unit extends GameObject {
 			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
 			this.setSpeed(new Vector(0,0,0));
 			this.setStatus(Status.IDLE);
-			this.setFallPosition(0);
 			if (this.getHitpoints()-10*((int)this.getFallPosition()-this.getPosition().getCubeZ())>0){
 				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-this.getPosition().getCubeZ()));
 				this.setFallPosition(0);
@@ -2919,6 +2890,7 @@ public class Unit extends GameObject {
 	public int getExp() {
 		return this.exp;
 	}
+	
 	/**
 	 * Set this Unit's amount of exp to the given amount of exp
 	 * @param exp 
@@ -3017,10 +2989,13 @@ public class Unit extends GameObject {
 	 * 			| (new this).getFaction() == null
 	 * 			| (new this.getFaction()).hasAsUnit(this) == false
 	 * @effect	This Unit is removed from its World
-	 * 			| this.removeFromWorld()
+	 * 			| this.getWorld().removeGameObject(this)
 	 * @effect	if this Unit was carrying a gameObject, it will be dropped at this Unit's current position.
 	 * 			| if (this.hasGameObject())
 	 * 			| then this.dropObjectAt(this.getPosition())
+	 * @effect	If this Unit was executing a Task, that Task is removed from this Unit
+	 * 			| if (this.hasTask())
+	 * 			| then this.getTask().removeFromUnit()
 	 */
 	@Override
 	void terminate(){
@@ -3037,7 +3012,7 @@ public class Unit extends GameObject {
 		this.getPath().clear();
 		this.removeFromFaction();
 		if (hasTask()) {
-			this.task.removeFromUnit();
+			this.getTask().removeFromUnit();
 
 		}
 	}
@@ -3193,7 +3168,6 @@ public class Unit extends GameObject {
 				unit.setStatus(Status.IDLE);
 			}
 		}
-		//		oldWorld.removeGameObject(this);
 	}
 
 	/**
@@ -3432,19 +3406,33 @@ public class Unit extends GameObject {
 	 */
 	private List<Vector> path = new ArrayList<>();
 
-	//code deel 3 hier
 	/**
-	 * variable registering the Target of the Unit
+	 * Return this Unit's current Task
 	 */
-	private Task task=null;
-
-	/**
-	 * 
-	 * @return returns the task of this unit
-	 * 		|result==this.Task
-	 */
+	@Basic @Raw
 	public Task getTask() {
 		return this.task;
+	}
+
+	/**
+	 * Check whether this Unit currently has a Task
+	 * @return true if this Unit's task is not null
+	 * 		 | result==this.task!==null
+	 */
+	public boolean hasTask(){
+		return this.task!=null;
+	}
+
+	/**
+	 * Check whether the given Task is a valid Task for this Unit
+	 * @param task
+	 * 			The Task to check
+	 * @return true if the given Task is null or if the given Task is not terminated
+	 * 		 | result == (task == null || !task.isTerminated())
+	 */
+	@Raw
+	public static boolean isValidTask(Task task){
+		return (task == null || !task.isTerminated());
 	}
 
 	/**
@@ -3452,9 +3440,9 @@ public class Unit extends GameObject {
 	 * @param task
 	 * 			The Task to be assigned to this Unit.
 	 * @pre	  The given Task is effective and already references this Unit.
-	 * 		 | (task != null && task.getUnit() == this)
+	 * 		| (task != null && task.getUnit() == this)
 	 * @post  This Unit references the given Task.
-	 * 		 | new.getTask() == task
+	 * 		| new.getTask() == task
 	 */
 	public void assignTask(Task task){
 		assert (task != null && task.getUnit() == this);
@@ -3475,54 +3463,22 @@ public class Unit extends GameObject {
 	}
 
 	/**
-	 * 
+	 * Set this Unit's Task to the given Task
 	 * @param task
-	 * @post	if the argument task was null, the Unit's task will be set to null and it's status
-	 * 			will also be set to IDLE
-	 * 			|if(task==null)
-	 * 			|new.getTask==null
-	 * 			|new.getStatus==status.IDLE
-	 * @effect	otherwise if the Unit didn't already have a task and the given task is valid
-	 * 			it will become this Units task
-	 * 			|if (!hasTask()&&this.IsValidTask(task))
-	 * 			|new.getTask==task
-	 * 		
+	 * @post	This Unit's task equals the given Task
+	 * 		  | new.getTask() == task
+	 * @throws	IllegalArgumentException
+	 * 			The given Task is an invalid Task for any Unit
+	 * 		  | ! isValidTask(task)
 	 */
-	private void setTask(Task task){
-		if (task==null) {
-			this.task=null;
-//			this.setStatus(Status.IDLE);
-		}
-		else {
-			if (!hasTask()&&this.IsValidTask(task)) {
-				this.task=task;
-
-
-			}
-		}
+	private void setTask(Task task) throws IllegalArgumentException {
+		if (! isValidTask(task))
+			throw new IllegalArgumentException();
+		this.task = task;
 	}
 
 	/**
-	 * 
-	 * @return returns whether the unit has a task to execute
-	 * 		|result==ths.task!==null
+	 * variable registering the Task of the Unit
 	 */
-
-	public boolean hasTask(){
-		return this.task!=null;
-	}
-
-	/**
-	 * 
-	 * @param task
-	 * @return returns whether the task to execute is valid
-	 * 
-	 * 		|result==!(result==task.isTerminated()&&task.getUnit()==null)
-	 */
-	private boolean IsValidTask(Task task){
-		return !(task.isTerminated()&&task.getUnit()==null); 
-	}
-
-
-
+	private Task task=null;
 }

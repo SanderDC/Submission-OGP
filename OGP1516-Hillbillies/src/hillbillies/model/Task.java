@@ -102,7 +102,7 @@ public class Task implements Comparable<Task> {
 	 */
 	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) 
 			throws IllegalArgumentException {
-		if (!isValidStatement(activitylist) || selectedPosition == null)
+		if (!isValidStatement(activitylist))
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
@@ -590,6 +590,7 @@ public class Task implements Comparable<Task> {
 	 * 			this Task is terminated
 	 * 		  | if (!this.getIterator().hasNext())
 	 * 		  | then this.terminate()
+	 * @effect	While the Unit is Idle, execute at most time/0.001 tasks
 	 */
 	void advanceTask(double time) throws IllegalArgumentException {
 		if (time < 0 || time > 0.2)
@@ -605,7 +606,6 @@ public class Task implements Comparable<Task> {
 				try {
 					this.getIterator().next().execute();
 				} catch (Exception e){
-					e.printStackTrace();
 					this.removeFromUnit();
 					return;
 				}
@@ -643,7 +643,7 @@ public class Task implements Comparable<Task> {
 	 * 		  | result == (statement != null)
 	 */
 	public static boolean isValidStatement(Statement statement){
-		return statement != null && statement.isWellFormed(new HashSet<String>());
+		return statement != null;
 	}
 
 	/**

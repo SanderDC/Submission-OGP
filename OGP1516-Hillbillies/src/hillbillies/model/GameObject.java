@@ -318,9 +318,7 @@ public abstract class GameObject {
 
 		if (!this.isTerminated() && this.getWorld() != null) {
 			if (this.hasToFall() && this.getStatus() != Status.FALLING) {
-				setStatus(Status.FALLING);
-				this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
-						this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
+				this.startFall();
 			}
 			if (status == Status.FALLING) {
 				fall(time);
@@ -328,9 +326,14 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Check whether this GameObject has to start falling
+	 * @return true if this GameObject is not at the bottom of the world and the material below
+	 * 			this GameObject is not solid
+	 */
 	public boolean hasToFall(){
-		return !((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
-				this.position.getCubeY(), this.position.getCubeZ() - 1));
+		return this.getPosition().getCubeZ() != 0 && 
+				!this.getWorld().isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1);
 	}
 	
 	/**

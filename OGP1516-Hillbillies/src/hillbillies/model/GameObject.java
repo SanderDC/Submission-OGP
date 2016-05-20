@@ -121,6 +121,9 @@ public abstract class GameObject {
 					return false;
 				}
 			}
+
+			
+
 			if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
 				return false;
 			}

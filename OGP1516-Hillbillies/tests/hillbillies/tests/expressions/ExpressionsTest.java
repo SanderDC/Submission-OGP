@@ -39,7 +39,7 @@ public class ExpressionsTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		SourceLocation sourceLocation= new SourceLocation(0, 0);
+		
 		
 	}
 
@@ -49,11 +49,12 @@ public class ExpressionsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		sourcelocation= new SourceLocation(0, 0);
 		int [][][] coordinates= new int [5][1][1];
 		coordinates[4][0][0]=2;
 		
 		world= new World(coordinates, new DefaultTerrainChangeListener());
-		task=new Task("name", 0, new SequenceStatement(new ArrayList<>()) );
+		task=new Task("name", 0, new SequenceStatement(new ArrayList<>(),sourcelocation) );
 		unit1=new Unit(world, false);
 		unit2=new Unit(world, false);
 		unit3=new Unit(world, false);
@@ -135,13 +136,14 @@ public class ExpressionsTest {
 	}
 	@Test
 	public void ReadUnit() {
+		task.assignToUnit(unit1);
 		ThisUnitExpression thisUnitExpression1=new ThisUnitExpression(sourcelocation);
 		thisUnitExpression1.addToTask(task);
-		task.storeVariableExpression("test", thisUnitExpression1);
+		task.storeVariable("test", thisUnitExpression1.evaluate());
 		ReadUnitExpression readUnitExpression =new ReadUnitExpression("test",sourcelocation);
 		readUnitExpression.addToTask(task);
 		
-		task.assignToUnit(unit1);
+		
 		assertTrue(readUnitExpression.evaluate()==unit1);
 	}
 	

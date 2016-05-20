@@ -121,9 +121,7 @@ public abstract class GameObject {
 					return false;
 				}
 			}
-			System.out.println(position.getCubeX());
-			System.out.println(position.getCubeY());
-			System.out.println(position.getCubeZ());
+			
 
 			if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
 				return false;

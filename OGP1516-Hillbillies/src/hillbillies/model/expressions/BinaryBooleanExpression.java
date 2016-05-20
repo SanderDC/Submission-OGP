@@ -7,8 +7,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public abstract class BinaryBooleanExpression extends Expression implements IBooleanExpression {
 
-	public BinaryBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) {
+	public BinaryBooleanExpression(IBooleanExpression leftExpression, IBooleanExpression rightExpression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (leftExpression == null || rightExpression == null)
+			throw new IllegalArgumentException();
 		this.leftExpression = leftExpression;
 		this.rightExpression = rightExpression;
 	}
@@ -17,11 +20,13 @@ public abstract class BinaryBooleanExpression extends Expression implements IBoo
 		return this.leftExpression;
 	}
 	
-	private IBooleanExpression leftExpression;
+	private final IBooleanExpression leftExpression;
 	
 	protected IBooleanExpression getRightExpression(){
 		return this.rightExpression;
 	}
+	
+	private final IBooleanExpression rightExpression;
 	
 	@Override
 	public void addToTask(Task task) {
@@ -29,8 +34,6 @@ public abstract class BinaryBooleanExpression extends Expression implements IBoo
 		this.leftExpression.addToTask(task);
 		this.rightExpression.addToTask(task);
 	}
-	
-	private IBooleanExpression rightExpression;
 	
 	public abstract BinaryBooleanExpression clone();
 	

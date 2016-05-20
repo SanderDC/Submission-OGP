@@ -1,42 +1,53 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import hillbillies.model.Heap;
+import hillbillies.model.Node;
+import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
 import hillbillies.part3.programs.SourceLocation;
 
 public class WorkshopPositionExpression extends Expression implements IPositionExpression {
 
-	public WorkshopPositionExpression(SourceLocation sourceLocation) {
+	public WorkshopPositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 
 	@Override
 	public Vector evaluate() throws NoSuchElementException {
-		Vector position = this.getUnit().getPosition();
-		World world = this.getUnit().getWorld();
-		int[] result = null;
-		double distance = 0;
-		for (int x = 0; x <= world.maxCoordinates()[0]; x++){
-			for (int y = 0; y <= world.maxCoordinates()[1]; y++){
-				for (int z = 0; z <= world.maxCoordinates()[2]; z++){
-					if (world.getCubeType(x, y, z) == 3){
-						if (result == null){
-							result = new int[]{x,y,z};
-							distance = position.getDistanceTo(new Vector(x,y,z));
-						} else if (position.getDistanceTo(new Vector(x,y,z)) < distance){
-							result = new int[]{x,y,z};
-							distance = position.getDistanceTo(new Vector(x,y,z));
-						}
+		Unit unit = this.getUnit();
+		World world = unit.getWorld();
+		Heap<Node> open = new Heap<>();
+		List<Node> closed = new ArrayList<>();
+		Node start = new Node(unit.getPosition());
+		open.add(start);
+		while (open.size() > 0){
+			Node current = open.pop();
+			closed.add(current);
+			if (world.getCubeType(current.getCubeCoordinates().getCubeX(), current.getCubeCoordinates().getCubeY(), current.getCubeCoordinates().getCubeZ()) == 3)
+				return current.getCubeCoordinates();
+			for (Node neighbour:current.getNeighbouringNodes()){
+				if (!unit.getWorld().unitCanStandAt(neighbour.getCubeCoordinates()) ||
+						closed.contains(neighbour))
+					continue;
+				neighbour.setGCost(current.getGCost()+Node.calculateDistance(current, neighbour));
+				neighbour.setHCost(0);
+				if (!open.contains(neighbour)){
+					open.add(neighbour);
+				}
+				else {
+					int index = open.getIndex(neighbour);
+					if (neighbour.compareTo(open.get(index)) < 0){
+						open.replace(index, neighbour);
 					}
 				}
 			}
 		}
-		if (result == null)
-			throw new NoSuchElementException();
-		else
-			return new Vector(result[0],result[1],result[2]);
+		throw new NoSuchElementException();
 	}
 	
 	@Override

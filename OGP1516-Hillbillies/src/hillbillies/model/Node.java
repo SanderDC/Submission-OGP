@@ -1,14 +1,15 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Basic;
 
 /**
  * A Class of Nodes for use with the A* pathfinding algorithm
  * @author Sander Declercq
  * @author Bram Belpaire
- *
+ * @note this class has a natural ordering that is inconsistent with equals
  */
 public class Node implements Comparable<Node> {
 

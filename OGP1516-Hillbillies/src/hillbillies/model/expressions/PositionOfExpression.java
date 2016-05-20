@@ -9,8 +9,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class PositionOfExpression extends Expression implements IPositionExpression {
 	
-	public PositionOfExpression(IUnitExpression target, SourceLocation sourceLocation) {
+	public PositionOfExpression(IUnitExpression target, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (target == null)
+			throw new IllegalArgumentException();
 		this.target = target;
 	}
 

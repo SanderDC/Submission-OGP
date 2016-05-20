@@ -1,6 +1,12 @@
 package hillbillies.model;
 
-public class Log extends GameObject {
+/**
+ * A class of Logs that can exist in a World.
+ * @author Sander Declercq
+ * @author Bram Belpaire
+ *
+ */
+public class Log extends InanimateObject {
 	
 	/**
 	 * Initialize a new Log with given position and random weight.

@@ -1,7 +1,5 @@
 package hillbillies.part2.internal.map;
 
-import hillbillies.part2.internal.map.ByteMap3D;
-
 /**
  * For internal use only.
  * 

@@ -5,7 +5,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class HerePositionExpression extends Expression implements IPositionExpression {
 
-	public HerePositionExpression(SourceLocation sourceLocation) {
+	public HerePositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

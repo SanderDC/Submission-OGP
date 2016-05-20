@@ -9,7 +9,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class AnyUnitExpression extends Expression implements IUnitExpression {
 
-	public AnyUnitExpression(SourceLocation sourceLocation) {
+	public AnyUnitExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

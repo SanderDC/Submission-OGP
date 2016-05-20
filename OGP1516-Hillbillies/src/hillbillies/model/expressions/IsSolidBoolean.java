@@ -4,7 +4,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsSolidBoolean extends PositionBoolean {
 	
-	public IsSolidBoolean(IPositionExpression position, SourceLocation sourceLocation) {
+	public IsSolidBoolean(IPositionExpression position, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(position, sourceLocation);
 	}
 

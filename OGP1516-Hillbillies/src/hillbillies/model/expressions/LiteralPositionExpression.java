@@ -7,7 +7,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class LiteralPositionExpression extends Expression implements IPositionExpression {
 	
-	public LiteralPositionExpression(int x, int y, int z, SourceLocation sourceLocation) {
+	public LiteralPositionExpression(int x, int y, int z, SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 		this.position = new Vector(x, y, z);
 	}

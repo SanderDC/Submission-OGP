@@ -7,29 +7,30 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import hillbillies.model.Task;
+import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.expressions.IUnitExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class FollowStatement extends Statement implements IExecutableStatement {
 
-	@Override
-	public boolean isWellFormed(Set<String> variables) {
-		return this.expression.isWellFormed(variables);
-	}
-
-	public FollowStatement( IUnitExpression expression){
+	public FollowStatement( IUnitExpression expression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (expression == null)
+			throw new IllegalArgumentException();
 		this.expression=expression;
+		this.unit = null;
 	}
 
-	private IUnitExpression expression;
-
-	private Vector getfollowPositition(){
-		Vector position = expression.evaluate().getPosition();
-		return	position;
-	}
+	private final IUnitExpression expression;
+	
+	private Unit unit;
 
 	public void execute(){
-		Vector position = this.getfollowPositition();
+		if (this.unit == null)
+			this.unit = this.expression.evaluate();
+		Vector position = this.unit.getPosition();
 		this.getUnit().moveTo(position.getCubeX(),position.getCubeY(),position.getCubeZ());
 	}
 
@@ -42,7 +43,12 @@ public class FollowStatement extends Statement implements IExecutableStatement {
 
 	@Override
 	public FollowStatement clone() {
-		return new FollowStatement(expression.clone());
+		return new FollowStatement(expression.clone(), getSourceLocation());
+	}
+	
+	@Override
+	public boolean isWellFormed(Set<String> variables) {
+		return this.expression.isWellFormed(variables);
 	}
 
 	@Override
@@ -75,6 +81,11 @@ public class FollowStatement extends Statement implements IExecutableStatement {
 		List<Statement>list=new ArrayList<Statement>();
 		list.add(this);
 		return list;
+	}
+
+	@Override
+	public void reset() {
+		this.unit = null;
 	}
 
 }

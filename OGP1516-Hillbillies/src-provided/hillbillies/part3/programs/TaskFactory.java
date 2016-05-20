@@ -1,14 +1,51 @@
 package hillbillies.part3.programs;
-import hillbillies.model.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import hillbillies.model.Task;
-import hillbillies.model.statements.*;
-import hillbillies.model.expressions.*;
+import hillbillies.model.Vector;
+import hillbillies.model.expressions.AndBooleanExpression;
+import hillbillies.model.expressions.AnyUnitExpression;
+import hillbillies.model.expressions.BoulderPositionExpression;
+import hillbillies.model.expressions.CarriesItemBoolean;
+import hillbillies.model.expressions.EnemyUnitExpression;
+import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.FalseBooleanExpression;
+import hillbillies.model.expressions.FriendUnitExpression;
+import hillbillies.model.expressions.HerePositionExpression;
+import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.model.expressions.IPositionExpression;
+import hillbillies.model.expressions.IUnitExpression;
+import hillbillies.model.expressions.IsAliveBoolean;
+import hillbillies.model.expressions.IsEnemyBoolean;
+import hillbillies.model.expressions.IsFriendBoolean;
+import hillbillies.model.expressions.IsPassableBoolean;
+import hillbillies.model.expressions.IsSolidBoolean;
+import hillbillies.model.expressions.LiteralPositionExpression;
+import hillbillies.model.expressions.LogPositionExpression;
+import hillbillies.model.expressions.NextToPositionExpression;
+import hillbillies.model.expressions.NotBooleanExpression;
+import hillbillies.model.expressions.OrBooleanExpression;
+import hillbillies.model.expressions.PositionOfExpression;
+import hillbillies.model.expressions.ReadBooleanExpression;
+import hillbillies.model.expressions.ReadPositionExpression;
+import hillbillies.model.expressions.ReadUnitExpression;
+import hillbillies.model.expressions.SelectedPositionExpression;
+import hillbillies.model.expressions.ThisUnitExpression;
+import hillbillies.model.expressions.TrueBooleanExpression;
+import hillbillies.model.expressions.WorkshopPositionExpression;
+import hillbillies.model.statements.AssignmentStatement;
+import hillbillies.model.statements.AttackStatement;
+import hillbillies.model.statements.BreakStatement;
+import hillbillies.model.statements.FollowStatement;
+import hillbillies.model.statements.IfStatement;
+import hillbillies.model.statements.MoveToStatement;
+import hillbillies.model.statements.PrintStatement;
+import hillbillies.model.statements.SequenceStatement;
+import hillbillies.model.statements.Statement;
+import hillbillies.model.statements.WhileStatement;
+import hillbillies.model.statements.WorkStatement;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	
@@ -38,53 +75,53 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 			if (value.getClass().getInterfaces()[0] != types.get(variableName).getInterfaces()[0])
 				return null;
 		this.types.put(variableName, value.getClass());
-		return new AssignmentStatement(value, variableName);
+		return new AssignmentStatement(value, variableName, sourceLocation);
 	}
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		return new WhileStatement((IBooleanExpression) condition, body);
+		return new WhileStatement((IBooleanExpression) condition, body, sourceLocation);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		return  new IfStatement((IBooleanExpression) condition, ifBody, elseBody);
+		return  new IfStatement((IBooleanExpression) condition, ifBody, elseBody, sourceLocation);
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		return new BreakStatement();
+		return new BreakStatement(sourceLocation);
 	}
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		return new PrintStatement(value);
+		return new PrintStatement(value, sourceLocation);
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		return new SequenceStatement(statements);
+		return new SequenceStatement(statements, sourceLocation);
 	}
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		return new MoveToStatement( (IPositionExpression) position);
+		return new MoveToStatement( (IPositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return new WorkStatement((IPositionExpression) position);
+		return new WorkStatement((IPositionExpression) position, sourceLocation);
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		return new FollowStatement((IUnitExpression) unit);
+		return new FollowStatement((IUnitExpression) unit, sourceLocation);
 	}
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new AttackStatement((EnemyUnitExpression) unit);
+		return new AttackStatement((IUnitExpression) unit, sourceLocation);
 		
 	}
 

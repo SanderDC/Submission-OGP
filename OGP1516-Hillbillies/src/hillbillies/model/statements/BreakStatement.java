@@ -7,8 +7,13 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import hillbillies.model.Task;
+import hillbillies.part3.programs.SourceLocation;
 
 public class BreakStatement  extends Statement implements IExecutableStatement {
+
+	public BreakStatement(SourceLocation sourceLocation) throws IllegalArgumentException {
+		super(sourceLocation);
+	}
 
 	@Override
 	public void addToTask(Task task) {
@@ -22,7 +27,7 @@ public class BreakStatement  extends Statement implements IExecutableStatement {
 
 	@Override
 	public BreakStatement clone() {
-		return new BreakStatement();
+		return new BreakStatement(getSourceLocation());
 	}
 
 	@Override

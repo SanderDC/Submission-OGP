@@ -1,15 +1,23 @@
 package hillbillies.tests.model;
 
-import static org.junit.Assert.*;
-
-import hillbillies.model.*;
-import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import hillbillies.model.Faction;
+import hillbillies.model.Scheduler;
+import hillbillies.model.Task;
+import hillbillies.model.Unit;
+import hillbillies.model.World;
+import hillbillies.model.expressions.HerePositionExpression;
+import hillbillies.model.statements.MoveToStatement;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbillies.part3.programs.SourceLocation;
 
 public class SchedulerTest {
 	
@@ -41,11 +49,13 @@ public class SchedulerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		scheduler1 = new Scheduler();
-		task = new Task("test", 0, null);
-		task1 = new Task("test", 0, null);
-		task2 = new Task("test", 0, null);
-		task3 = new Task("test", 0, null);
+		Faction faction = new Faction(new World(new int[3][3][3], new DefaultTerrainChangeListener()));
+		scheduler1 = faction.getScheduler();
+		SourceLocation testLocation = new SourceLocation(1, 1);
+		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
 		unit= new Unit(world, false);
 		
 		
@@ -80,15 +90,16 @@ public class SchedulerTest {
 		assertFalse(scheduler1.hasAsTask(task));
 		assertFalse(task.hasAsScheduler(scheduler1));
 	}
-	@Test
+	
+	@Test(expected = IllegalStateException.class)
 	public void assignTask_Illegal(){
 		task1.terminate();
-		unit.assignTask(task1);
+		task1.assignToUnit(unit);
 		assertFalse(unit.getTask()==task1);
 	}
 	@Test
 	public void assignTask(){
-		unit.assignTask(task1);
+		task1.assignToUnit(unit);
 		assertTrue(unit.getTask()==task1);
 		
 	}

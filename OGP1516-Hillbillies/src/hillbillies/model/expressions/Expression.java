@@ -14,7 +14,9 @@ import hillbillies.part3.programs.SourceLocation;
  */
 public abstract class Expression implements IExpression {
 	
-	public Expression(SourceLocation sourceLocation){
+	public Expression(SourceLocation sourceLocation) throws IllegalArgumentException{
+		if (sourceLocation == null)
+			throw new IllegalArgumentException();
 		this.sourceLocation = sourceLocation;
 	}
 	

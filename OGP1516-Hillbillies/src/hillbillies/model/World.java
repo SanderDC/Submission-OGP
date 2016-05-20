@@ -1,8 +1,14 @@
 package hillbillies.model;
 
-import java.util.*;
-import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.Vector;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
@@ -168,10 +174,13 @@ public class World {
 	 * Check whether a given position is inside this gameworld.
 	 * @param position
 	 * 			The position to be checked.
-	 * @return true if all coordinates of the given Vector lie between
+	 * @return 	false if the given position is the null reference
+	 * @return	true if all coordinates of the given Vector lie between
 	 * 			this gameworld's minimum and maximum coordinate in that direction.
 	 */
 	public boolean isInsideWorld(Vector position){
+		if (position == null)
+			return false;
 		double[] positionArray = position.toArray();
 		for (int i = 0; i < positionArray.length; i++){
 			if ((positionArray[i] < 0) || (positionArray[i] >= this.maxCoordinates()[i] + 1))
@@ -457,12 +466,7 @@ public class World {
 	 * Return a Set containing all currently active Factions in this game world.
 	 */
 	public Set<Faction> getActiveFactions(){
-		Set<Faction> result = new HashSet<>();
-		for (Faction faction:this.Factions){
-			if (faction.isActive())
-				result.add(faction);
-		}
-		return result;
+		return this.Factions;
 	}
 
 	/**
@@ -484,26 +488,6 @@ public class World {
 		Factions.add(Faction);
 		Faction.addToWorld(this);
 		}
-	}
-
-	/**
-	 * Remove the given Faction from the set of Factions of this World.
-	 * 
-	 * @param  Faction
-	 *         The Faction to be removed.
-	 * @pre    This World has the given Faction as one of
-	 *         its Factions, and the given Faction does not
-	 *         reference any World.
-	 *       | this.hasAsFaction(Faction) &&
-	 *       | (Faction.getWorld() == null)
-	 * @post   This World no longer has the given Faction as
-	 *         one of its Factions.
-	 *       | ! new.hasAsFaction(Faction)
-	 */
-	@Raw
-	void removeFaction(Faction Faction) {
-		assert this.hasAsFaction(Faction) && (Faction.getWorld() == null);
-		Factions.remove(Faction);
 	}
 
 	/**
@@ -580,13 +564,13 @@ public class World {
 	 * 			The given position is outside of the World
 	 * 			| isInsideWorld(position)
 	 */
-	public Set<GameObject> getGameObjectsAt(Vector position) throws IllegalArgumentException{
+	public Set<GameObject> getInanimateObjectsAt(Vector position) throws IllegalArgumentException{
 		if (!isInsideWorld(position))
 			throw new IllegalArgumentException();
 		position = position.getCubePosition();
 		Set<GameObject> result = new HashSet<>();
 		for (GameObject object: this.getGameObjects()){
-			if (object.getPosition().getCubePosition().equals(position)){
+			if (object instanceof InanimateObject && object.getPosition().getCubePosition().equals(position)){
 				result.add(object);
 			}
 		}
@@ -637,8 +621,8 @@ public class World {
 	 * 			The position whose cube needs to be checked for GameObjects.
 	 * @return true if there is at least one GameObject occupying the cube of the given position.
 	 */
-	boolean containsGameObject(Vector position){
-		return this.getGameObjectsAt(position).size() > 0;
+	boolean containsInanimateObject(Vector position){
+		return this.getInanimateObjectsAt(position).size() > 0;
 	}
 	
 	/**
@@ -652,7 +636,7 @@ public class World {
 	 * @return true if there is at least one GameObject occupying the cube of the given position.
 	 */
 	boolean containsGameObject(int x, int y, int z){
-		return this.containsGameObject(new Vector(x,y,z));
+		return this.containsInanimateObject(new Vector(x,y,z));
 	}
 	
 	/**
@@ -664,7 +648,7 @@ public class World {
 	boolean containsLogAndBoulder(Vector position){
 		boolean boulder = false;
 		boolean log = false;
-		for (GameObject object:getGameObjectsAt(position)){
+		for (GameObject object:getInanimateObjectsAt(position)){
 			if (object instanceof Log)
 				log = true;
 			if (object instanceof Boulder)
@@ -870,6 +854,7 @@ public class World {
 	 * Check whether a Unit can spawn at the given position
 	 * @param position
 	 * 			The position to check for whether a Unit can spawn there.
+	 * @return false if the given position is the null reference
 	 * @return true if and only if the given position is inside the gameworld,
 	 * 			does not contain solid material and the ground below it is
 	 * 			either the bottom or solid ground.
@@ -878,6 +863,8 @@ public class World {
 	 * 			|			((position.getCubeZ() == 0) || (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()-1)))
 	 */
 	boolean unitCanSpawnAt(Vector position){
+		if (position == null)
+			return false;
 		if (!isInsideWorld(position))
 			return false;
 		if (isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ()))

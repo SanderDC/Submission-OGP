@@ -1,13 +1,13 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -18,6 +18,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @author Bram Belpaire
  * @invar   Each Scheduler must have proper Tasks.
  *        | hasProperTasks()
+ * @invar	Each Scheduler must have a valid Faction
+ * 		  | canHaveAsFaction(getFaction())
  */
 public class Scheduler implements Iterable<Task>{
 
@@ -25,12 +27,20 @@ public class Scheduler implements Iterable<Task>{
 	 * Initialize this new Scheduler as a non-terminated Scheduler with 
 	 * no Tasks yet.
 	 * 
-	 * @post   This new Scheduler has no Tasks yet.
-	 *       | new.getNbTasks() == 0
+	 * @post   	This new Scheduler has no Tasks yet.
+	 *        | new.getNbTasks() == 0
+	 * @post	This new Scheduler has the given faction as its faction
+	 * 		  | (new this).getFaction() == faction
+	 * @post	The given faction has this Scheduler as its Scheduler
+	 * 		  | (new faction).getScheduler() == this
+	 * @throws	IllegalArgumentException
+	 * 			The given Faction is the null reference
+	 * 		  | (faction == null)
 	 */
-	@Raw
-	public Scheduler() {
-
+	public Scheduler(Faction faction) throws IllegalArgumentException {
+		if (faction == null)
+			throw new IllegalArgumentException();
+		faction.setScheduler(this);
 	}
 
 	/**
@@ -158,7 +168,7 @@ public class Scheduler implements Iterable<Task>{
 	 *       | 			for some I in 1..getNbTasks():
 	 *       |   		getTaskAt(I) == task
 	 */
-	public boolean hasAsTasks( Collection<Task> tasks) {
+	public boolean hasAsTasks(Collection<Task> tasks) {
 		return this.tasks.containsAll(tasks);
 	}
 	/**
@@ -276,53 +286,85 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	private final List<Task> tasks = new ArrayList<Task>();
 
-	public void AssignTaskToUnit(Unit unit, Task task){
+	/**
+	 * Assign the given Task to the given Unit
+	 * @param unit
+	 * 			The Unit to assign the given Task to
+	 * @param task
+	 * 			The Task to assign to the given Unit
+	 * @effect	The given Task is assigned to the given Unit
+	 * 		  | task.assignToUnit(unit)
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit is not effective
+	 * 		  | (unit == null)
+	 * @throws	IllegalArgumentException
+	 * 			The given Task is not effective
+	 * 		  | (task == null)
+	 * @throws	IllegalArgumentException
+	 * 			This Scheduler does not have the given Task as one of its Tasks
+	 * 		  | !this.hasAsTask(task)
+	 * @throws	IllegalStateException
+	 * 			The given Task is already being executed
+	 * 		  | task.isBeingExecuted()
+	 */
+	public void assignTaskToUnit(Unit unit, Task task) throws IllegalArgumentException, IllegalStateException {
+		if (unit == null || task == null || !this.hasAsTask(task))
+			throw new IllegalArgumentException();
 		if (!task.isBeingExecuted()) {
 			task.assignToUnit(unit);
-//			unit.setTask(task);
 		}
-
 	}
-	public void unAssignTaskOfUnit(Unit unit) {
+	
+	/**
+	 * Remove the Task the given Unit is currently executing from that Unit
+	 * @param unit
+	 * 			The Unit to remove a Task from
+	 * @effect	The given Unit has its Task removed
+	 * 		  | unit.getTask().removeFromUnit()
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit is null
+	 * 		  | (unit == null)
+	 * @throws	IllegalStateException
+	 * 			The given Unit is not executing a Task
+	 * 		  | (!unit.hasTask())
+	 */
+	public void removeTaskFromUnit(Unit unit) throws IllegalArgumentException, IllegalStateException {
+		if (unit == null)
+			throw new IllegalArgumentException();
+		if (!unit.hasTask())
+			throw new IllegalStateException();
 		unit.getTask().removeFromUnit();
 	}
-
-	Faction getFaction(){
+	
+	/**
+	 * Return the Faction of this Scheduler
+	 */
+	public Faction getFaction(){
 		return this.faction;
 	}
 
 	/**
 	 * Check whether this Scheduler can have the given Faction as its Faction
 	 * @param faction
-	 * @return
+	 * 			The Faction for which to check whether it is a valid Faction for this Scheduler
+	 * @return	true if and only if the given Faction is not null
+	 * 		  | result == (faction != null)
 	 */
 	public boolean canHaveAsFaction(Faction faction){
-		if (!this.isTerminated())
-			return (faction != null) && (!faction.isTerminated());
-		else
-			return faction == null;
+		return (faction != null);
 	}
-
-
-
-
 
 	/**
 	 * Add this Scheduler to the given Faction
 	 * @param faction
 	 * 			The Faction to add this Scheduler to
-	 * @pre		The given Faction already has this Scheduler as its Scheduler
-	 * 			| faction.getScheduler() == this
+	 * @pre		The given Faction is effective and already has this Scheduler as its Scheduler
+	 * 			| (faction != null && faction.getScheduler() == this)
 	 * @post	This Scheduler has the given Faction as its Faction
 	 * 			| (new this).getFaction() == faction
-	 * @throws IllegalArgumentException
-	 * 			The given Faction is not a valid Faction for this Scheduler
-	 * 			| (! this.canHaveAsFaction(faction))
 	 */
-	void addToFaction(Faction faction) throws IllegalArgumentException{
-		if (!this.canHaveAsFaction(faction))
-			throw new IllegalArgumentException();
-		assert (faction.getScheduler() == this);
+	void addToFaction(Faction faction){
+		assert (faction != null && faction.getScheduler() == this);
 		this.faction = faction;
 	}
 
@@ -330,30 +372,6 @@ public class Scheduler implements Iterable<Task>{
 	 * Variable registering the Faction of this Scheduler
 	 */
 	private Faction faction;
-
-	public boolean isTerminated(){
-		return this.terminated;
-	}
-
-	/**
-	 * Terminate this Scheduler
-	 * @pre		This Scheduler's Faction has been terminated
-	 * 			| this.getFaction().isTerminated()
-	 * @post	This Scheduler is terminated
-	 * 			| new.isTerminated()
-	 * @post	This Scheduler has been removed from its Faction
-	 * 			| (new this).getFaction() == null
-	 */
-	void terminate(){
-		assert (this.getFaction().isTerminated());
-		this.terminated = true;
-		this.faction = null;
-	}
-
-	/**
-	 * Variable registering whether this Scheduler has been terminated
-	 */
-	private boolean terminated;
 	
 	/**
 	 * Return the Tasks managed by this Scheduler that satisfy a given condition
@@ -373,16 +391,4 @@ public class Scheduler implements Iterable<Task>{
 	public Iterator<Task> iterator(){
 		return this.tasks.stream().sorted((Task t1, Task t2) -> -1*t1.compareTo(t2)).iterator();
 	}
-//	
-//	public  Stream<Task> stream() {
-//		Stream.Builder<Task> builder = Stream.builder();
-//		for (Task element: this.tasks)
-//			builder.accept(element);
-//		return builder.build();    		
-//	}
-//
-//	public Stream<Task> Sort(){
-//		return this.stream().sorted();
-//	}
-
 }

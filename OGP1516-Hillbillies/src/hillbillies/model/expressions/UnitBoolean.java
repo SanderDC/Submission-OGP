@@ -7,8 +7,11 @@ import hillbillies.part3.programs.SourceLocation;
 
 public abstract class UnitBoolean extends Expression implements IBooleanExpression {
 	
-	public UnitBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
+	public UnitBoolean(IUnitExpression unit, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(sourceLocation);
+		if (unit == null)
+			throw new IllegalArgumentException();
 		this.target = unit;
 	}
 	

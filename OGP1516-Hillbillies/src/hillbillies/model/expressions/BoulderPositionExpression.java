@@ -1,7 +1,6 @@
 package hillbillies.model.expressions;
 
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import hillbillies.model.Vector;
 import hillbillies.model.World;
@@ -9,7 +8,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class BoulderPositionExpression extends Expression implements IPositionExpression {
 
-	public BoulderPositionExpression(SourceLocation sourceLocation) {
+	public BoulderPositionExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

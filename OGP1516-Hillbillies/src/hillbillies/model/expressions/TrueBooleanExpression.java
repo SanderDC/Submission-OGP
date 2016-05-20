@@ -4,7 +4,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class TrueBooleanExpression extends Expression implements IBooleanExpression {
 
-	public TrueBooleanExpression(SourceLocation sourceLocation) {
+	public TrueBooleanExpression(SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(sourceLocation);
 	}
 

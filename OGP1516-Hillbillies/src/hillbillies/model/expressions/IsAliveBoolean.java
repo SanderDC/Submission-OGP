@@ -4,7 +4,8 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsAliveBoolean extends UnitBoolean {
 
-	public IsAliveBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
+	public IsAliveBoolean(IUnitExpression unit, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(unit, sourceLocation);
 	}
 

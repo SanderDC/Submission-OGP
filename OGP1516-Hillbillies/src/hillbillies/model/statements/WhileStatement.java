@@ -8,19 +8,24 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class WhileStatement extends Statement {
 
-	public WhileStatement(IBooleanExpression condition, Statement body){
+	public WhileStatement(IBooleanExpression condition, Statement body, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (condition == null || body == null)
+			throw new IllegalArgumentException();
 		this.expression=condition;
 		this.body=body;
 		this.body.setParentStatement(this);
 		this.broken = false;
 	}
 
-	private IBooleanExpression expression;
+	private final IBooleanExpression expression;
 
-	private Statement body;
+	private final Statement body;
 
 	//	@Override
 	//	public void execute() {
@@ -49,7 +54,7 @@ public class WhileStatement extends Statement {
 
 	@Override
 	public WhileStatement clone() {
-		return new WhileStatement(expression.clone(), body.clone());
+		return new WhileStatement(expression.clone(), body.clone(), getSourceLocation());
 	}
 
 	@Override
@@ -91,5 +96,11 @@ public class WhileStatement extends Statement {
 	@Override
 	public boolean isWellFormed(Set<String> variables) {
 		return this.expression.isWellFormed(variables) && this.body.isWellFormed(variables);
+	}
+
+	@Override
+	public void reset() {
+		this.broken = false;
+		this.body.reset();
 	}
 }

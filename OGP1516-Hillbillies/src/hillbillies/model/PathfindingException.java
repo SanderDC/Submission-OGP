@@ -1,6 +1,7 @@
 package hillbillies.model;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class for signaling a path to a certain position could not be found.

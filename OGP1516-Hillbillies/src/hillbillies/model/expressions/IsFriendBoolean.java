@@ -4,7 +4,7 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class IsFriendBoolean extends UnitBoolean {
 
-	public IsFriendBoolean(IUnitExpression unit, SourceLocation sourceLocation) {
+	public IsFriendBoolean(IUnitExpression unit, SourceLocation sourceLocation) throws IllegalArgumentException {
 		super(unit, sourceLocation);
 	}
 

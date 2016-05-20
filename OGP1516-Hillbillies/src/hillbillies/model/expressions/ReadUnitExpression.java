@@ -7,13 +7,15 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ReadUnitExpression extends ReadVariable implements IUnitExpression {
 
-	public ReadUnitExpression(String variableName, SourceLocation sourceLocation) {
+	public ReadUnitExpression(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(variableName, sourceLocation);
 	}
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {
-		return ((IUnitExpression) this.getExpression()).evaluate();
+		assert this.getVariableValue() instanceof Unit;
+		return (Unit) this.getVariableValue();
 	}
 	
 	@Override

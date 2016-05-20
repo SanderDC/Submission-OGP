@@ -7,13 +7,15 @@ import hillbillies.part3.programs.SourceLocation;
 
 public class ReadPositionExpression extends ReadVariable implements IPositionExpression {
 
-	public ReadPositionExpression(String variableName, SourceLocation sourceLocation) {
+	public ReadPositionExpression(String variableName, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
 		super(variableName, sourceLocation);
 	}
 
 	@Override
 	public Vector evaluate() throws NoSuchElementException {
-		return ((IPositionExpression) this.getExpression()).evaluate();
+		assert this.getVariableValue() instanceof Vector;
+		return (Vector) this.getVariableValue();
 	}
 	
 	@Override

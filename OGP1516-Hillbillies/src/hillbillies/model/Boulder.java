@@ -1,6 +1,12 @@
 package hillbillies.model;
 
-public class Boulder extends GameObject {
+/**
+ * A class of Boulders that can exist in a World
+ * @author Sander Declercq
+ * @author Bram Belpaire
+ *
+ */
+public class Boulder extends InanimateObject {
 	
 	/**
 	 * Initialize a new Boulder with a given position and random weight

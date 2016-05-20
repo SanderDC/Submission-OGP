@@ -7,10 +7,16 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import hillbillies.model.Task;
+import hillbillies.part3.programs.SourceLocation;
 
 public class SequenceStatement extends Statement {
 	
-	public SequenceStatement(List<Statement> sequence) {
+	public SequenceStatement(List<Statement> sequence, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		for (Statement statement : sequence)
+			if (statement == null)
+				throw new IllegalArgumentException();
 		this.statements = sequence;
 		for (Statement statement:this.statements){
 			statement.setParentStatement(this);
@@ -36,7 +42,7 @@ public class SequenceStatement extends Statement {
 		for (Statement statement:this.statements){
 			cloned.add(statement.clone());
 		}
-		return new SequenceStatement(cloned);
+		return new SequenceStatement(cloned, getSourceLocation());
 	}
 
 	@Override
@@ -102,8 +108,11 @@ public class SequenceStatement extends Statement {
 				return false;
 		return true;
 	}
-		
-	
-	
-	
+
+	@Override
+	public void reset() {
+		for (Statement statement : this.statements){
+			statement.reset();
+		}			
+	}
 }

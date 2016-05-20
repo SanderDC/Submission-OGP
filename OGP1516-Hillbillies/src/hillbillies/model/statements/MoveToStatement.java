@@ -8,14 +8,19 @@ import java.util.Set;
 
 import hillbillies.model.Task;
 import hillbillies.model.expressions.IPositionExpression;
+import hillbillies.part3.programs.SourceLocation;
 
 public class MoveToStatement extends Statement implements IExecutableStatement {
 	
-	public MoveToStatement(IPositionExpression expression) {
+	public MoveToStatement(IPositionExpression expression, SourceLocation sourceLocation) 
+			throws IllegalArgumentException {
+		super(sourceLocation);
+		if (expression == null)
+			throw new IllegalArgumentException();
 		this.expression=expression;
 	}
 	
-	private IPositionExpression expression;
+	private final IPositionExpression expression;
 	
 	@Override
 	public void addToTask(Task task) {
@@ -31,7 +36,7 @@ public class MoveToStatement extends Statement implements IExecutableStatement {
 
 	@Override
 	public MoveToStatement clone() {
-		return new MoveToStatement(expression.clone());
+		return new MoveToStatement(expression.clone(), getSourceLocation());
 	}
 
 	@Override

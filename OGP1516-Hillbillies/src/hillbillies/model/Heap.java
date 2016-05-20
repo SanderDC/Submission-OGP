@@ -1,8 +1,10 @@
 package hillbillies.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A Heap class to store objects used for optimization of the A-Star algorithm.

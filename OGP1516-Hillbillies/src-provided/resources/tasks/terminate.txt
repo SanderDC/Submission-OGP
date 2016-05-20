@@ -1,0 +1,1 @@
+name: "terminate"	priority : 1000	activities : en := enemy;	while is_alive en do follow en;	attack en; done

@@ -17,9 +17,7 @@ public class FriendUnitExpression extends Expression implements IUnitExpression 
 	public Unit evaluate() throws NoSuchElementException {
 		Set<Unit> units = this.getUnit().getWorld().getUnits();
 		units.remove(getUnit());
-		for (Unit unit : units)
-			if (unit.getFaction() != this.getUnit().getFaction())
-				units.remove(unit);
+		units.removeIf(u -> u.getFaction() != this.getUnit().getFaction());
 		if (units.size() == 0)
 			throw new NoSuchElementException();
 		return World.getNearestObject(units, getUnit());

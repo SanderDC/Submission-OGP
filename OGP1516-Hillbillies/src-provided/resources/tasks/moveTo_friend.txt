@@ -1,0 +1,1 @@
+name: "move to friend"	priority : 1000	activities : moveTo position_of friend;

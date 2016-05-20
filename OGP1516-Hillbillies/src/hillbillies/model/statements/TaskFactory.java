@@ -1,4 +1,4 @@
-package hillbillies.part3.programs;
+package hillbillies.model.statements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,17 +35,8 @@ import hillbillies.model.expressions.SelectedPositionExpression;
 import hillbillies.model.expressions.ThisUnitExpression;
 import hillbillies.model.expressions.TrueBooleanExpression;
 import hillbillies.model.expressions.WorkshopPositionExpression;
-import hillbillies.model.statements.AssignmentStatement;
-import hillbillies.model.statements.AttackStatement;
-import hillbillies.model.statements.BreakStatement;
-import hillbillies.model.statements.FollowStatement;
-import hillbillies.model.statements.IfStatement;
-import hillbillies.model.statements.MoveToStatement;
-import hillbillies.model.statements.PrintStatement;
-import hillbillies.model.statements.SequenceStatement;
-import hillbillies.model.statements.Statement;
-import hillbillies.model.statements.WhileStatement;
-import hillbillies.model.statements.WorkStatement;
+import hillbillies.part3.programs.ITaskFactory;
+import hillbillies.part3.programs.SourceLocation;
 
 public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	
@@ -75,54 +66,93 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 			if (value.getClass().getInterfaces()[0] != types.get(variableName).getInterfaces()[0])
 				return null;
 		this.types.put(variableName, value.getClass());
-		return new AssignmentStatement(value, variableName, sourceLocation);
+		try {
+			return new AssignmentStatement(value, variableName, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		return new WhileStatement((IBooleanExpression) condition, body, sourceLocation);
+		try {
+			return new WhileStatement((IBooleanExpression) condition, body, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		return  new IfStatement((IBooleanExpression) condition, ifBody, elseBody, sourceLocation);
+		try {
+			return  new IfStatement((IBooleanExpression) condition, ifBody, elseBody, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		return new BreakStatement(sourceLocation);
+		try {
+			return new BreakStatement(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		return new PrintStatement(value, sourceLocation);
+		try {
+			return new PrintStatement(value, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		return new SequenceStatement(statements, sourceLocation);
+		try {
+			return new SequenceStatement(statements, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		return new MoveToStatement( (IPositionExpression) position, sourceLocation);
+		try {
+			return new MoveToStatement( (IPositionExpression) position, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return new WorkStatement((IPositionExpression) position, sourceLocation);
+		try {
+			return new WorkStatement((IPositionExpression) position, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createFollow(Expression unit, SourceLocation sourceLocation) {
-		return new FollowStatement((IUnitExpression) unit, sourceLocation);
+		try {
+			return new FollowStatement((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new AttackStatement((IUnitExpression) unit, sourceLocation);
-		
+		try {
+			return new AttackStatement((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -141,117 +171,209 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		return new IsSolidBoolean((IPositionExpression) position, sourceLocation);
+		try {
+			return new IsSolidBoolean((IPositionExpression) position, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		return new IsPassableBoolean((IPositionExpression) position, sourceLocation);
+		try {
+			return new IsPassableBoolean((IPositionExpression) position, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		return new IsFriendBoolean((IUnitExpression) unit, sourceLocation);
+		try {
+			return new IsFriendBoolean((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		return new IsEnemyBoolean((IUnitExpression) unit, sourceLocation);
+		try {
+			return new IsEnemyBoolean((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		return new IsAliveBoolean((IUnitExpression) unit, sourceLocation);
+		try {
+			return new IsAliveBoolean((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		return new CarriesItemBoolean((IUnitExpression) unit, sourceLocation);
+		try {
+			return new CarriesItemBoolean((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		return new NotBooleanExpression((IBooleanExpression) expression, sourceLocation);
+		try {
+			return new NotBooleanExpression((IBooleanExpression) expression, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new AndBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
+		try {
+			return new AndBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		return new OrBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
+		try {
+			return new OrBooleanExpression((IBooleanExpression) left, (IBooleanExpression) right, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createHerePosition(SourceLocation sourceLocation) {
-		return new HerePositionExpression(sourceLocation);
+		try {
+			return new HerePositionExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createLogPosition(SourceLocation sourceLocation) {
-		return new LogPositionExpression(sourceLocation);
+		try {
+			return new LogPositionExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		return new BoulderPositionExpression(sourceLocation);
+		try {
+			return new BoulderPositionExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
-		return new WorkshopPositionExpression(sourceLocation);
+		try {
+			return new WorkshopPositionExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createSelectedPosition(SourceLocation sourceLocation) {
-		return new SelectedPositionExpression(sourceLocation);
+		try {
+			return new SelectedPositionExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		return new NextToPositionExpression((IPositionExpression) position, sourceLocation);
+		try {
+			return new NextToPositionExpression((IPositionExpression) position, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		return new LiteralPositionExpression(x, y, z, sourceLocation);
+		try {
+			return new LiteralPositionExpression(x, y, z, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createThis(SourceLocation sourceLocation) {
-		return new ThisUnitExpression(sourceLocation);
+		try {
+			return new ThisUnitExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createFriend(SourceLocation sourceLocation) {
-		return new FriendUnitExpression(sourceLocation);
+		try {
+			return new FriendUnitExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createEnemy(SourceLocation sourceLocation) {
-		return new EnemyUnitExpression(sourceLocation);
+		try {
+			return new EnemyUnitExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createAny(SourceLocation sourceLocation) {
-		return new AnyUnitExpression(sourceLocation);
+		try {
+			return new AnyUnitExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createTrue(SourceLocation sourceLocation) {
-		return new TrueBooleanExpression(sourceLocation);
+		try {
+			return new TrueBooleanExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createFalse(SourceLocation sourceLocation) {
-		return new FalseBooleanExpression(sourceLocation);
+		try {
+			return new FalseBooleanExpression(sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		return new PositionOfExpression((IUnitExpression) unit, sourceLocation);
+		try {
+			return new PositionOfExpression((IUnitExpression) unit, sourceLocation);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 }

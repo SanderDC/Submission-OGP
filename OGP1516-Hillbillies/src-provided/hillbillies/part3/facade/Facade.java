@@ -13,9 +13,9 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
+import hillbillies.model.statements.TaskFactory;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.part3.programs.ITaskFactory;
-import hillbillies.part3.programs.TaskFactory;
 import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade {

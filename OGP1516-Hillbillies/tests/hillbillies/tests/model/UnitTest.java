@@ -359,10 +359,15 @@ public class UnitTest {
 		
 		movingDistantUnit.setDefaultBehaviorBoolean(true);
 		}
-	@Test
-	public void defaultbehavior_works(){
-		movingDistantUnit.setDefaultBehaviorBoolean(true);
-		movingDistantUnit.advanceTime(0.1);
-		assertFalse(movingDistantUnit.isIdle());
-	}
+	
+		@Test
+		public void defaultbehavior_works(){
+			int[][][] coordinates = new int[2][1][1];
+			coordinates[1][0][0]=2;
+			world = new World(coordinates, new DefaultTerrainChangeListener());
+			movingDistantUnit= new Unit(world,true);
+			movingDistantUnit.advanceTime(0.1);
+			assertFalse(movingDistantUnit.isIdle());
+		}
+		
 }

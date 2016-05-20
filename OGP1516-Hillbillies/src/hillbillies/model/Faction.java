@@ -241,12 +241,10 @@ public class Faction {
 	 * Check whether the given Scheduler is a valid Scheduler for this Faction
 	 * @param scheduler
 	 * 			The Scheduler to be checked
-	 * @return if this Faction is not terminated, true if the given Scheduler is not the null reference
-	 * 			and has not been terminated.
-	 * 		   Else, true if the given Scheduler is the null reference
+	 * @return true if and only if the given Scheduler is not the null reference
 	 */
 	public boolean canHaveAsScheduler(Scheduler scheduler){
-		return (scheduler != null) && (!scheduler.isTerminated());
+		return (scheduler != null);
 	}
 	
 	/**

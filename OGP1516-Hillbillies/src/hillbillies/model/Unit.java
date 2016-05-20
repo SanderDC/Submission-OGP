@@ -875,6 +875,7 @@ public class Unit extends GameObject {
 	 * 			the maximum weight for any Unit.
 	 * 			| result == (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT)
 	 */
+	@Override
 	public boolean canHaveAsWeight(int weight) {
 		return (weight >= this.getMinWeight()) && (weight <= MAX_WEIGHT);
 	}
@@ -947,6 +948,7 @@ public class Unit extends GameObject {
 	 * 			| then new.getStamina() == new.getmaxStamina()
 	 */
 
+	@Override
 	public void setWeight(int newWeight) {
 		if (newWeight < this.getMinWeight()) {
 			newWeight = this.getMinWeight();
@@ -1297,6 +1299,7 @@ public class Unit extends GameObject {
 	 *         | Status.RESTING) || (status == Status.MOVINGADJACENT) ||
 	 *         | (status == Status.IDLE) || (status == Status.MOVINGDISTANT)
 	 */
+	@Override
 	protected boolean isValidStatus(Status status) {
 		return (status == Status.WORKING) || (status == Status.RESTING) || (status == Status.MOVINGADJACENT)
 				|| (status == Status.MOVINGDISTANT) || (status == Status.IDLE)||(status==Status.ATTACKING)||(status==Status.FALLING);
@@ -1871,7 +1874,7 @@ public class Unit extends GameObject {
 				this.setToughness(this.getToughness() + 1);
 				boolean foundBoulder = false;
 				boolean foundLog = false;
-				Set<GameObject> objects = this.getWorld().getGameObjectsAt(this.getWorkposition());
+				Set<GameObject> objects = this.getWorld().getInanimateObjectsAt(this.getWorkposition());
 				for (GameObject object:objects){
 					if (object instanceof Boulder && !foundBoulder){
 						object.terminate();
@@ -1886,7 +1889,7 @@ public class Unit extends GameObject {
 					}
 				}
 			}
-			if (this.getWorld().containsGameObject(this.getWorkposition())){
+			if (this.getWorld().containsInanimateObject(this.getWorkposition())){
 				this.pickUpObject(this.getWorkposition());
 				this.setExp(this.getExp()+10);
 				return;
@@ -1912,7 +1915,7 @@ public class Unit extends GameObject {
 	 * 		|	SetGameObject(LogObject)
 	 */
 	private void pickUpObject(Vector position){
-		for (GameObject object : this.getWorld().getGameObjectsAt(position)) {
+		for (GameObject object : this.getWorld().getInanimateObjectsAt(position)) {
 			if (object instanceof Boulder){
 				setGameObject((InanimateObject) object);
 				return;
@@ -2529,7 +2532,7 @@ public class Unit extends GameObject {
 		if(this.getStatus()==Status.IDLE){
 			if (!this.hasTask()) {
 				try{
-					this.getFaction().getScheduler().AssignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
+					this.getFaction().getScheduler().assignTaskToUnit(this, this.getFaction().getScheduler().getTopPriorityTask());
 				}
 				catch (NoSuchElementException e) {
 					if (!possibleattack()) {
@@ -2602,7 +2605,7 @@ public class Unit extends GameObject {
 				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
 			}
 			else {
-				if (this.getWorld().containsGameObject(this.getPosition())) {	
+				if (this.getWorld().containsInanimateObject(this.getPosition())) {	
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
@@ -2682,7 +2685,7 @@ public class Unit extends GameObject {
 				WorkAt(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ());
 			}
 			else {
-				if (this.getWorld().containsGameObject(this.getPosition())) {	
+				if (this.getWorld().containsInanimateObject(this.getPosition())) {	
 					int randomnumber1=randomgenerator.nextInt(2);
 					if (randomnumber1==1) {
 						List<Vector> newlist=new ArrayList<>();
@@ -2862,6 +2865,7 @@ public class Unit extends GameObject {
 	 * 			| if (this.hasTask())
 	 * 			| then this.getTask().removeFromUnit();
 	 */
+	@Override
 	void startFall() {
 		assert (this.hasToFall() && !this.isFalling());
 		this.setStatus(Status.FALLING);
@@ -2885,22 +2889,21 @@ public class Unit extends GameObject {
 	 * @post	If the Unit would lose enough health to die, it will be terminated.
 	 * @post	If the unit survives, it will lose 10*(fallposition-theEndPosition)
 	 */
-
+	@Override
 	protected void fall(double time) {
 		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0)||this.getWorld().isSolidGround( this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1) ){
-
-			if (this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ())>0){
-				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-(int)this.getPosition().getCubeZ()));
-				this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
-				this.setSpeed(new Vector(0,0,0));
-				this.setStatus(Status.IDLE);
+			this.setPosition(new Vector(this.getPosition().getCubeX()+CUBELENGTH/2, this.getPosition().getCubeY()+CUBELENGTH/2, this.getPosition().getCubeZ()+CUBELENGTH/2));
+			this.setSpeed(new Vector(0,0,0));
+			this.setStatus(Status.IDLE);
+			this.setFallPosition(0);
+			if (this.getHitpoints()-10*((int)this.getFallPosition()-this.getPosition().getCubeZ())>0){
+				this.setHitpoints(this.getHitpoints()-10*((int)this.getFallPosition()-this.getPosition().getCubeZ()));
 				this.setFallPosition(0);
-
 			}
-			else{
-				setHitpoints(0);			
+			else {
+				setHitpoints(0);
 			}
 		}
 
@@ -3019,6 +3022,7 @@ public class Unit extends GameObject {
 	 * 			| if (this.hasGameObject())
 	 * 			| then this.dropObjectAt(this.getPosition())
 	 */
+	@Override
 	void terminate(){
 		assert (this.canBeTerminated());
 		this.setDefaultBehaviorBoolean(false);
@@ -3504,7 +3508,7 @@ public class Unit extends GameObject {
 	 * 		|result==ths.task!==null
 	 */
 
-	private	boolean hasTask(){
+	public boolean hasTask(){
 		return this.task!=null;
 	}
 

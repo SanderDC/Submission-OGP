@@ -30,7 +30,7 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	@Raw
 	public Scheduler() {
-
+		
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class Scheduler implements Iterable<Task>{
 	 *       | 			for some I in 1..getNbTasks():
 	 *       |   		getTaskAt(I) == task
 	 */
-	public boolean hasAsTasks( Collection<Task> tasks) {
+	public boolean hasAsTasks(Collection<Task> tasks) {
 		return this.tasks.containsAll(tasks);
 	}
 	/**
@@ -276,17 +276,59 @@ public class Scheduler implements Iterable<Task>{
 	 */
 	private final List<Task> tasks = new ArrayList<Task>();
 
-	public void AssignTaskToUnit(Unit unit, Task task){
+	/**
+	 * Assign the given Task to the given Unit
+	 * @param unit
+	 * 			The Unit to assign the given Task to
+	 * @param task
+	 * 			The Task to assign to the given Unit
+	 * @effect	The given Task is assigned to the given Unit
+	 * 		  | task.assignToUnit(unit)
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit is not effective
+	 * 		  | (unit == null)
+	 * @throws	IllegalArgumentException
+	 * 			The given Task is not effective
+	 * 		  | (task == null)
+	 * @throws	IllegalArgumentException
+	 * 			This Scheduler does not have the given Task as one of its Tasks
+	 * 		  | !this.hasAsTask(task)
+	 * @throws	IllegalStateException
+	 * 			The given Task is already being executed
+	 * 		  | task.isBeingExecuted()
+	 */
+	public void assignTaskToUnit(Unit unit, Task task) throws IllegalArgumentException, IllegalStateException {
+		if (unit == null || task == null || !this.hasAsTask(task))
+			throw new IllegalArgumentException();
 		if (!task.isBeingExecuted()) {
 			task.assignToUnit(unit);
-//			unit.setTask(task);
 		}
-
 	}
-	public void unAssignTaskOfUnit(Unit unit) {
+	
+	/**
+	 * Remove the Task the given Unit is currently executing from that Unit
+	 * @param unit
+	 * 			The Unit to remove a Task from
+	 * @effect	The given Unit has its Task removed
+	 * 		  | unit.getTask().removeFromUnit()
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit is null
+	 * 		  | (unit == null)
+	 * @throws	IllegalStateException
+	 * 			The given Unit is not executing a Task
+	 * 		  | (!unit.hasTask())
+	 */
+	public void removeTaskFromUnit(Unit unit) throws IllegalArgumentException, IllegalStateException {
+		if (unit == null)
+			throw new IllegalArgumentException();
+		if (!unit.hasTask())
+			throw new IllegalStateException();
 		unit.getTask().removeFromUnit();
 	}
-
+	
+	/**
+	 * Return the Faction of this Scheduler
+	 */
 	Faction getFaction(){
 		return this.faction;
 	}
@@ -294,18 +336,13 @@ public class Scheduler implements Iterable<Task>{
 	/**
 	 * Check whether this Scheduler can have the given Faction as its Faction
 	 * @param faction
-	 * @return
+	 * 			The Faction for which to check whether it is a valid Faction for this Scheduler
+	 * @return	true if and only if the given Faction is not null
+	 * 		  | result == (faction != null)
 	 */
 	public boolean canHaveAsFaction(Faction faction){
-		if (!this.isTerminated())
-			return (faction != null);
-		else
-			return faction == null;
+		return (faction != null);
 	}
-
-
-
-
 
 	/**
 	 * Add this Scheduler to the given Faction
@@ -325,15 +362,6 @@ public class Scheduler implements Iterable<Task>{
 	 * Variable registering the Faction of this Scheduler
 	 */
 	private Faction faction;
-
-	public boolean isTerminated(){
-		return this.terminated;
-	}
-
-	/**
-	 * Variable registering whether this Scheduler has been terminated
-	 */
-	private boolean terminated;
 	
 	/**
 	 * Return the Tasks managed by this Scheduler that satisfy a given condition
@@ -353,16 +381,4 @@ public class Scheduler implements Iterable<Task>{
 	public Iterator<Task> iterator(){
 		return this.tasks.stream().sorted((Task t1, Task t2) -> -1*t1.compareTo(t2)).iterator();
 	}
-//	
-//	public  Stream<Task> stream() {
-//		Stream.Builder<Task> builder = Stream.builder();
-//		for (Task element: this.tasks)
-//			builder.accept(element);
-//		return builder.build();    		
-//	}
-//
-//	public Stream<Task> Sort(){
-//		return this.stream().sorted();
-//	}
-
 }

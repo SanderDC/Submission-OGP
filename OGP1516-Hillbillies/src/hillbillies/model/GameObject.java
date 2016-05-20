@@ -355,12 +355,13 @@ public abstract class GameObject {
 	 * 			its position is set to the valid position, and its status will be set to IDLE
 	 */
 	protected void fall(double time){
-		Vector displacement = FALLSPEED.scalarMultiply(time);
+		Vector displacement = this.getSpeed().scalarMultiply(time);
 		Vector new_pos = this.getPosition().add(displacement);
 		if ((this.getPosition().getCubeZ()==0) || world.isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1)){
 			this.setPosition(new Vector(this.getPosition().getCubeX()+World.CUBELENGTH/2,
 					this.getPosition().getCubeY()+World.CUBELENGTH/2,
 					this.getPosition().getCubeZ()+World.CUBELENGTH/2));
+			this.setSpeed(new Vector(0,0,0));
 			this.setStatus(Status.IDLE);
 
 

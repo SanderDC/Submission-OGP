@@ -564,13 +564,13 @@ public class World {
 	 * 			The given position is outside of the World
 	 * 			| isInsideWorld(position)
 	 */
-	public Set<GameObject> getGameObjectsAt(Vector position) throws IllegalArgumentException{
+	public Set<GameObject> getInanimateObjectsAt(Vector position) throws IllegalArgumentException{
 		if (!isInsideWorld(position))
 			throw new IllegalArgumentException();
 		position = position.getCubePosition();
 		Set<GameObject> result = new HashSet<>();
 		for (GameObject object: this.getGameObjects()){
-			if (object.getPosition().getCubePosition().equals(position)){
+			if (object instanceof InanimateObject && object.getPosition().getCubePosition().equals(position)){
 				result.add(object);
 			}
 		}
@@ -621,8 +621,8 @@ public class World {
 	 * 			The position whose cube needs to be checked for GameObjects.
 	 * @return true if there is at least one GameObject occupying the cube of the given position.
 	 */
-	boolean containsGameObject(Vector position){
-		return this.getGameObjectsAt(position).size() > 0;
+	boolean containsInanimateObject(Vector position){
+		return this.getInanimateObjectsAt(position).size() > 0;
 	}
 	
 	/**
@@ -636,7 +636,7 @@ public class World {
 	 * @return true if there is at least one GameObject occupying the cube of the given position.
 	 */
 	boolean containsGameObject(int x, int y, int z){
-		return this.containsGameObject(new Vector(x,y,z));
+		return this.containsInanimateObject(new Vector(x,y,z));
 	}
 	
 	/**
@@ -648,7 +648,7 @@ public class World {
 	boolean containsLogAndBoulder(Vector position){
 		boolean boulder = false;
 		boolean log = false;
-		for (GameObject object:getGameObjectsAt(position)){
+		for (GameObject object:getInanimateObjectsAt(position)){
 			if (object instanceof Log)
 				log = true;
 			if (object instanceof Boulder)

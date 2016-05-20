@@ -353,14 +353,11 @@ public class Task implements Comparable<Task> {
 	 * @param  scheduler
 	 *         The Scheduler to check.
 	 * @return True if and only if the given Scheduler is effective
-	 *         and that Scheduler is a valid Scheduler for a Task.
-	 *       | result ==
-	 *       |   (scheduler != null) &&
-	 *       |   !scheduler.isTerminated()
+	 *       | result == (scheduler != null)
 	 */
 	@Raw
 	public boolean canHaveAsScheduler(Scheduler scheduler) {
-		return (scheduler != null) && (!scheduler.isTerminated());
+		return (scheduler != null);
 	}
 
 	/**

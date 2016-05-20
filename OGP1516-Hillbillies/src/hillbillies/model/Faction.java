@@ -30,8 +30,7 @@ public class Faction {
 	@Raw
 	public Faction(World world) {
 		world.addFaction(this);
-		Scheduler scheduler = new Scheduler();
-		this.setScheduler(scheduler);
+		new Scheduler(this);
 	}
 
 	/**
@@ -229,10 +228,14 @@ public class Faction {
 	 * @post  The given Scheduler has this Faction as its Faction
 	 * @throws IllegalArgumentException
 	 * 			The given Scheduler is not a valid Scheduler for this Faction
+	 * @throws IllegalStateException
+	 * 			This Faction already has a Scheduler associated with it
 	 */
-	private void setScheduler(Scheduler scheduler) throws IllegalArgumentException{
+	public void setScheduler(Scheduler scheduler) throws IllegalArgumentException, IllegalStateException {
 		if (!this.canHaveAsScheduler(scheduler))
 			throw new IllegalArgumentException();
+		if (this.getScheduler() != null)
+			throw new IllegalStateException();
 		this.scheduler = scheduler;
 		scheduler.addToFaction(this);
 	}

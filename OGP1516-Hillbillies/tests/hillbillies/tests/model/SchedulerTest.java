@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -48,7 +49,8 @@ public class SchedulerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		scheduler1 = new Scheduler();
+		Faction faction = new Faction(new World(new int[3][3][3], new DefaultTerrainChangeListener()));
+		scheduler1 = faction.getScheduler();
 		SourceLocation testLocation = new SourceLocation(1, 1);
 		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
 		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));

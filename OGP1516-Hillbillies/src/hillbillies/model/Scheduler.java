@@ -18,6 +18,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @author Bram Belpaire
  * @invar   Each Scheduler must have proper Tasks.
  *        | hasProperTasks()
+ * @invar	Each Scheduler must have a valid Faction
+ * 		  | canHaveAsFaction(getFaction())
  */
 public class Scheduler implements Iterable<Task>{
 
@@ -25,12 +27,20 @@ public class Scheduler implements Iterable<Task>{
 	 * Initialize this new Scheduler as a non-terminated Scheduler with 
 	 * no Tasks yet.
 	 * 
-	 * @post   This new Scheduler has no Tasks yet.
-	 *       | new.getNbTasks() == 0
+	 * @post   	This new Scheduler has no Tasks yet.
+	 *        | new.getNbTasks() == 0
+	 * @post	This new Scheduler has the given faction as its faction
+	 * 		  | (new this).getFaction() == faction
+	 * @post	The given faction has this Scheduler as its Scheduler
+	 * 		  | (new faction).getScheduler() == this
+	 * @throws	IllegalArgumentException
+	 * 			The given Faction is the null reference
+	 * 		  | (faction == null)
 	 */
-	@Raw
-	public Scheduler() {
-		
+	public Scheduler(Faction faction) throws IllegalArgumentException {
+		if (faction == null)
+			throw new IllegalArgumentException();
+		faction.setScheduler(this);
 	}
 
 	/**
@@ -329,7 +339,7 @@ public class Scheduler implements Iterable<Task>{
 	/**
 	 * Return the Faction of this Scheduler
 	 */
-	Faction getFaction(){
+	public Faction getFaction(){
 		return this.faction;
 	}
 

@@ -16,6 +16,7 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.model.expressions.HerePositionExpression;
 import hillbillies.model.statements.MoveToStatement;
+import hillbillies.model.statements.Statement;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.programs.SourceLocation;
 
@@ -25,6 +26,7 @@ public class SchedulerTest {
 	private static Task task,task1,task2,task3;
 	private static Unit unit;
 	private static World world;
+	private static Statement testStatement;
 	
 
 	@BeforeClass
@@ -52,13 +54,12 @@ public class SchedulerTest {
 		Faction faction = new Faction(new World(new int[3][3][3], new DefaultTerrainChangeListener()));
 		scheduler1 = faction.getScheduler();
 		SourceLocation testLocation = new SourceLocation(1, 1);
-		task = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
-		task1 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
-		task2 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
-		task3 = new Task("test", 0, new MoveToStatement(new HerePositionExpression(testLocation), testLocation));
+		testStatement = new MoveToStatement(new HerePositionExpression(testLocation), testLocation);
+		task = new Task("test", -10, testStatement);
+		task1 = new Task("test", 0, testStatement);
+		task2 = new Task("test", 10, testStatement);
+		task3 = new Task("test", 20 , testStatement);
 		unit= new Unit(world, false);
-		
-		
 	}
 
 	@After
@@ -66,7 +67,7 @@ public class SchedulerTest {
 	}
 
 	@Test
-	public void addOneTask() {
+	public void addOneTask_legalCase() {
 		scheduler1.addTasks(task);
 		assertTrue(scheduler1.hasAsTask(task));
 		assertTrue(task.hasAsScheduler(scheduler1));
@@ -92,17 +93,51 @@ public class SchedulerTest {
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void assignTask_Illegal(){
+	public void assignTask_terminated(){
 		task1.terminate();
 		task1.assignToUnit(unit);
 		assertFalse(unit.getTask()==task1);
 	}
-	@Test
-	public void assignTask(){
-		task1.assignToUnit(unit);
-		assertTrue(unit.getTask()==task1);
-		
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void assignTask_wrongUnit(){
+		Unit wrongUnit = new Unit(world, false);
+		scheduler1.assignTaskToUnit(wrongUnit, task);
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void assignTask_null(){
+		scheduler1.assignTaskToUnit(unit, null);
+	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void assignTask_notInThisScheduler(){
+		Task task = new Task("test",100,testStatement);
+		scheduler1.assignTaskToUnit(unit, task);
+	}
+	
+	@Test
+	public void assignTask_legalCase(){
+		task1.assignToUnit(unit);
+		assertTrue(unit.getTask()==task1);
+	}
+	
+	@Test
+	public void getTopPriorityTask(){
+		scheduler1.addTasks(task,task1,task2,task3);
+		assertTrue(scheduler1.getTopPriorityTask() == task3);
+	}
+	
+	@Test
+	public void replaceTask_legalCase(){
+		scheduler1.addTasks(task,task1,task2);
+		scheduler1.replaceTask(task2, task3);
+		assertTrue(scheduler1.hasAsTask(task3));
+		assertFalse(scheduler1.hasAsTask(task2));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void replaceTask_IllegalCase(){
+		scheduler1.replaceTask(task1, task2);
+	}
 }

@@ -47,10 +47,10 @@ import ogp.framework.util.Util;
  *        	| isValidName(getName())
  * @invar  	The nearTarget of each Unit must be a valid nearTarget for any
  *         	Unit.
- *       	| isValidNearTarget(getNearTarget())
+ *       	| canHaveAsNearTarget(getNearTarget())
  * @invar  	The distantTarget of each Unit must be a valid distantTarget for any
  *         	Unit.
- *       	| isValidDistantTarget(getDistantTarget())
+ *       	| canHaveAsDistantTarget(getDistantTarget())
  * @invar  	The TimeUntilRest of each Unit must be a valid TimeUntilRest for any
  *         	Unit.
  *       	| isValidTimeUntilRest(getTimeUntilRest())
@@ -63,8 +63,10 @@ import ogp.framework.util.Util;
  * @invar  	The progress of each Unit must be a valid progress for any
  *         	Unit.     
  *         	| isValidProgress(getProgress())
+ * @invar	The ProgressStamina of each Unit must be a valid ProgressStamina for any Unit
+ * 			| isValidProgressStamina(getProgressStamina())
  * @invar	A Unit can only be sprinting when it is moving
- * 			| if (getSprinting()) then (ismoving())
+ * 			| (!getSprinting() || isMoving())
  * @invar	The Exp of each Unit must be a valid Exp for any Unit.
  * 			| isValidExp(getExp())
  * @invar	The FallPosition of each Unit must be a valid FallPosition for any Unit
@@ -76,6 +78,10 @@ import ogp.framework.util.Util;
  * @invar  	The path of a Unit must be a valid path for that
  *         	Unit.
  *       	| canHaveAsPath(getPath())
+ * @invar	The Faction of each Unit must be a valid Faction for that Unit
+ * 			| canHaveAsFaction(getFaction())
+ * @invar	The Task of each Unit must always be a valid Task for any Unit
+ * 			| isValidTask(getTask())
  * @author Sander Declercq
  * @author Bram Belpaire
  *
@@ -277,6 +283,17 @@ public class Unit extends GameObject {
 	private double getProgressstamina() {
 		return this.progressstamina;
 	}
+	
+	/**
+	 * Check whether the given ProgressStamina is a valid ProgressStamina for any Unit
+	 * @param progressStamina
+	 * 			the ProgressStamina to check
+	 * @return true if the given ProgressStamina is larger than zero
+	 * 		 | result == progressStamina > 0
+	 */
+	public static boolean isValidProgressStamina(double progressStamina){
+		return progressStamina > 0;
+	}
 
 	/**
 	 * Set the progressstamina of this Unit to the given progressstamina.
@@ -322,7 +339,7 @@ public class Unit extends GameObject {
 	 * 			returns true if the progress is a non-negative number
 	 *       	| result == (progress >= 0)		
 	 */
-	private  boolean isValidProgress(double progress) {
+	public boolean isValidProgress(double progress) {
 		if (progress>=0){
 			return true;
 		}
@@ -522,7 +539,7 @@ public class Unit extends GameObject {
 	 *       	|				(this.getWorld.unitCanStandAt(target)) &&
 	 *       	|				(this.isAdjacentPosition(target))
 	 */
-	private boolean canHaveAsNearTarget(Vector target) {
+	public boolean canHaveAsNearTarget(Vector target) {
 		if (target == null)
 			return true;
 		if (target.equals(this.getPosition()))
@@ -578,7 +595,7 @@ public class Unit extends GameObject {
 	 *       	|				((this.getWorld().unitCanStandAt(target)) &&
 	 *       	|				(!this.getPosition().equals(target)))
 	 */
-	private boolean canHaveAsDistantTarget(Vector target) {
+	public boolean canHaveAsDistantTarget(Vector target) {
 		if (target == null)
 			return true;
 		return (this.getWorld().unitCanStandAt(target) && !this.getPosition().equals(target));
@@ -1250,7 +1267,7 @@ public class Unit extends GameObject {
 	 * 			| if (this.getStatus() == Status.MOVINGADJACENT || this.getStatus() == Status.MOVINGDISTANT)
 	 * 			| then result == (status == Status.FALLING || status == Status.ATTACKING)
 	 */
-	private boolean canBeInterruptedBy(Status status) {
+	public boolean canBeInterruptedBy(Status status) {
 		Status oldStatus = this.getStatus();
 		if (oldStatus==Status.FALLING) {
 			return false;
@@ -1342,6 +1359,7 @@ public class Unit extends GameObject {
 			return false;
 		}
 	}
+	
 	/**
 	 * checks whether the unit is working or not
 	 * @return true if this Unit's status is Status.WORKING
@@ -1570,6 +1588,10 @@ public class Unit extends GameObject {
 	 * 			|thenother.defend(this)
 	 *			|this.setStatus(Status.IDLE)
 	 *			|this.setEnemy(null)
+	 * @effect	If the attack is executed and the Unit was executing a Task and that Task is finished,
+	 * 			that Task is terminated
+	 * 		  |	if (this.getActivityTime()>=1 && this.hasTask() && this.getTask().isFinished())
+	 * 		  | then this.getTask().terminate()
 	 */
 	private void attack(Unit other, double time) {
 
@@ -1644,7 +1666,6 @@ public class Unit extends GameObject {
 				/ (attacker.getStrength() + attacker.getAgility())) {
 			this.setExp(this.getExp()+20);
 		} else {
-			// unit krijgt damage
 			if (attacker.getStrength()/10==0) {
 				this.setHitpoints(this.getHitpoints()-1);
 			}
@@ -1695,6 +1716,7 @@ public class Unit extends GameObject {
 			}
 		}
 	}
+	
 	/**
 	 * @param int i
 	 * 
@@ -1752,11 +1774,6 @@ public class Unit extends GameObject {
 		else {
 			throw new IllegalArgumentException("cannot use this integer");
 		}
-
-
-
-
-
 	}
 
 	/**
@@ -1786,10 +1803,12 @@ public class Unit extends GameObject {
 	 * 		|this.settingInitialResttimeOk()
 	 * 		|this.setStatus(Status.WORKING)
 	 * 		|this.setActivityTime(calculatingWorkTime())
-	 * @throw IllegalStateException
+	 * @throws IllegalStateException
 	 * 		The Unit is currently conducting an activity that cannot be interrupted by a work order.
 	 * 		| ! this.canBeInterruptedBy(Status.WORKING)
-	 * 
+	 * @throws IllegalArgumentException
+	 * 			The given position is not an adjacent position to this Unit
+	 * 		  | !isAdjacentPosition(new Vector(x, y, z))
 	 */
 	public void WorkAt(int x, int y, int z)throws IllegalStateException, IllegalArgumentException {
 		if (! this.canBeInterruptedBy(Status.WORKING))
@@ -1808,13 +1827,25 @@ public class Unit extends GameObject {
 		}
 
 	}
-
+	
+	/**
+	 * Initiate a work order
+	 * @post	This Unit is working
+	 * 		  | new.isWorking()
+	 * @effect	This Unit's ActivityTime is set to the time it needs to complete a work order
+	 * 		  | this.setActivityTime(calculatingWorkTime()
+	 * @effect	If this Unit's WorkPosition is not equal to this Unit's position,
+	 * 			its orientation is updated accordingly
+	 * 		  | if (!this.getPosition().getCubePosition().equals(this.getWorkposition().getCubePosition()))
+	 * 		  |	then this.setOrientation(Math.atan2(this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getX()))
+	 */
 	public void setToWork(){
 		this.setStatus(Status.WORKING);
 		this.setActivityTime(calculatingWorkTime());
 		if (!this.getPosition().getCubePosition().equals(this.getWorkposition().getCubePosition()))
-			this.orientation=Math.atan2(this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getX());
+			this.setOrientation(Math.atan2(this.getWorkposition().getY()+World.CUBELENGTH/2-this.getPosition().getY(),this.getWorkposition().getX()+World.CUBELENGTH/2-this.getPosition().getX()));
 	}
+	
 	/**
 	 * updates the time the unit has to spend working
 	 * @post
@@ -1854,6 +1885,10 @@ public class Unit extends GameObject {
 	 *			| then this.setActivityTime(0) && this.setStatus(Status.IDLE) &&
 	 *			|		this.getWorld().caveIn(this.getWorkposition().getCubeX(), this.getWorkposition().getCubeY(), this.getWorkposition().getCubeZ())
 	 *			|		&& this.setExp(this.getExp() + 10)
+	 * @effect	If this Unit's work is complete and this Unit was executing a Task and that Task is finished,
+	 * 			this Unit's task is terminated
+	 * 			| if (this.getActivityTime() - time <= 0 && this.hasTask() && this.getTask().isFinished())
+	 * 			| then this.getTask().terminate()
 	 */
 	private void advanceWork(double time){
 		if (this.getActivityTime() - time <= 0){
@@ -2939,9 +2974,9 @@ public class Unit extends GameObject {
 	 * @param exp
 	 * 			The amount of exp to be checked
 	 * @return returns true if the exp is non-negative
-	 * 			| result == (exp>0)
+	 * 			| result == (exp>=0)
 	 */
-	private static boolean isValidExp(int exp) {
+	public static boolean isValidExp(int exp) {
 		if (exp<0) {
 			return false;
 		}
@@ -3357,7 +3392,7 @@ public class Unit extends GameObject {
 	 *       |				((for each vector in path: this.getWorld.unitCanStandAt(vector)) && 
 	 *       |				path.get(path.size()-1).equals(this.getDistantTarget()))
 	 */
-	private boolean isValidPath(List<Vector> path) {
+	public boolean isValidPath(List<Vector> path) {
 		if (path == null)
 			return false;
 		if (path.size() == 0)

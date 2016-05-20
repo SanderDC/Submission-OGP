@@ -201,7 +201,6 @@ public class World {
 	 */
 	public int getCubeType(int x,int y, int z) {
 		return getCoordinates()[x][y][z];
-
 	}
 	
 	/**

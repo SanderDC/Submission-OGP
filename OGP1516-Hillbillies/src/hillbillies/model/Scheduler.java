@@ -303,16 +303,19 @@ public class Scheduler implements Iterable<Task>{
 	 * @throws	IllegalArgumentException
 	 * 			This Scheduler does not have the given Task as one of its Tasks
 	 * 		  | !this.hasAsTask(task)
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit does not belong to this Scheduler's Faction
+	 * 		  | unit.getFaction() != this.getFaction()
 	 * @throws	IllegalStateException
 	 * 			The given Task is already being executed
 	 * 		  | task.isBeingExecuted()
 	 */
 	public void assignTaskToUnit(Unit unit, Task task) throws IllegalArgumentException, IllegalStateException {
-		if (unit == null || task == null || !this.hasAsTask(task))
+		if (unit == null || unit.getFaction() != this.getFaction() || task == null || !this.hasAsTask(task))
 			throw new IllegalArgumentException();
-		if (!task.isBeingExecuted()) {
-			task.assignToUnit(unit);
-		}
+		if (task.isBeingExecuted()) 
+			throw new IllegalStateException();
+		task.assignToUnit(unit);
 	}
 	
 	/**

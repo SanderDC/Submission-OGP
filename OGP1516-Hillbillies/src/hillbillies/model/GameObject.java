@@ -41,6 +41,8 @@ public abstract class GameObject {
 	 * @post	The GameObject's weight equals a random value between 10 and 50, inclusive.
 	 * @effect 	The position of this new GameObject is set to
 	 *         	the given position.
+	 * @post	This new GameObject is Idle
+	 * @post	This new GameObject's speed is the zero vector
 	 */
 	public GameObject(Vector position, World world) throws IllegalArgumentException{
 		world.addGameObject(this);
@@ -48,6 +50,7 @@ public abstract class GameObject {
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;
 		this.status=Status.IDLE;
+		this.setSpeed(new Vector(0,0,0));
 	}
 	/**
 	 * Variable registering this Unit's current status.
@@ -320,9 +323,7 @@ public abstract class GameObject {
 
 		if (!this.isTerminated() && this.getWorld() != null) {
 			if (this.hasToFall() && this.getStatus() != Status.FALLING) {
-				setStatus(Status.FALLING);
-				this.setPosition(new Vector(this.getPosition().getCubeX() + World.CUBELENGTH / 2,
-						this.getPosition().getCubeY() + World.CUBELENGTH / 2, this.getPosition().getZ()));
+				this.startFall();
 			}
 			if (status == Status.FALLING) {
 				fall(time);
@@ -330,9 +331,14 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Check whether this GameObject has to start falling
+	 * @return true if this GameObject is not at the bottom of the world and the material below
+	 * 			this GameObject is not solid
+	 */
 	public boolean hasToFall(){
-		return !((this.getPosition().getCubeZ() == 0) || world.isSolidGround(this.position.getCubeX(),
-				this.position.getCubeY(), this.position.getCubeZ() - 1));
+		return this.getPosition().getCubeZ() != 0 && 
+				!this.getWorld().isSolidGround(this.getPosition().getCubeX(), this.getPosition().getCubeY(), this.getPosition().getCubeZ()-1);
 	}
 	
 	/**

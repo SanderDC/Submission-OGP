@@ -1612,7 +1612,7 @@ public class Unit extends GameObject {
 	 * 			|if(isValidPosition(selectDodgePosition(new.position))
 	 * 			|then setPosition(selectDodgePosition(new.position))
 	 */
-	private void dodge() {
+	public void dodge() {
 		List<Integer> dataList = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++) {
 			dataList.add(i);

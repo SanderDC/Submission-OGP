@@ -116,10 +116,15 @@ public abstract class GameObject {
 				return false;
 			double[] arrayposition=  position.toArray();
 			for(int i=0;i<3;i++){
-				if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i])+1) {
+				if (arrayposition[i]>=(this.getWorld().maxCoordinates()[i]+1)||arrayposition[i]<0) {
+					
 					return false;
 				}
 			}
+			System.out.println(position.getCubeX());
+			System.out.println(position.getCubeY());
+			System.out.println(position.getCubeZ());
+
 			if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
 				return false;
 			}

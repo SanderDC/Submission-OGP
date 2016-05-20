@@ -3,7 +3,7 @@ import be.kuleuven.cs.som.annotate.Value;
 
 /**
  * An enumeration providing different possible statuses to express
- * what a Unit is doing at a certain moment.
+ * what a GameObject is doing at a certain moment.
  * 
  * @author Sander Declercq
  * @author Bram Belpaire

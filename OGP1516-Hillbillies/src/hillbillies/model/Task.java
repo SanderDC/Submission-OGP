@@ -30,6 +30,7 @@ import hillbillies.model.statements.Statement;
  * @invar  The selectedPosition of each Task must be a valid selectedPosition for any
  *         Task.
  *       | isValidSelectedPosition(getSelectedPosition())
+ * @note   This class has a natural ordering that is inconsistent with equals
  */
 public class Task implements Comparable<Task> {
 
@@ -50,6 +51,9 @@ public class Task implements Comparable<Task> {
 	 *       | this.setName(name)
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
+	 * @throws IllegalArgumentException
+	 * 		   The given Statement is not effective
+	 * 		 | (activitylist == null)
 	 */
 	public Task(String name, int priority,	Statement activitylist)
 			throws IllegalArgumentException {
@@ -89,10 +93,16 @@ public class Task implements Comparable<Task> {
 	 *       |   then new.getSelectedPosition() == selectedPosition
 	 *       |   else for each component in new.getSelectedPosition():
 	 *       |									(component >= 0)
+	 * @throws IllegalArgumentException
+	 * 		   The given Statement is not effective
+	 * 		 | (activitylist == null)
+	 * @throws IllegalArgumentException
+	 * 		   The given Vector is not effective
+	 * 		 | (selectedPosition == null)
 	 */
 	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) 
 			throws IllegalArgumentException {
-		if (activitylist == null)
+		if (activitylist == null || selectedPosition == null)
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
@@ -113,20 +123,27 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Check whether this Task is currently being executed
 	 */
-	public boolean isBeingExecuted(){
+	public boolean isBeingExecuted() {
 		return inExecution;
 	}
 	/**
 	 * 
 	 * @param unit
+	 * @post	This Task is in execution
+	 * 		  | new.isBeingExecuted()
+	 * @effect	This 
 	 * @effect	if the Unit does not currently have an assigned unit, it will set this task's unit to 
-	 * 			the given Unit and the Given Unit will have it's task set to this task
-	 * 			|new.getunit==unit
-	 * 			|unit.setTask(this)
-	 * 			|isBeingexecuted==true
-	 * 			|new.getiterator==this.statements.iterator()
+	 * 			the given Unit and the Given Unit will have its task set to this task,
+	 * 			and this Task's iterator is reinitialized
+	 * 			| this.setUnit(unit)
+	 * 			| unit.assignTask(this)
+	 * 			| this.iterator==this.statements.iterator()
+	 * @throws	IllegalStateException
+	 * 			This Task is already in execution, or the given Unit is already executing a Task,
+	 * 			or this Task has already been terminated
+	 * 			| (this.isBeingExecuted() || unit.getTask() != null || this.isTerminated())
 	 */
-	public void assignToUnit(Unit unit){
+	public void assignToUnit(Unit unit) throws IllegalStateException {
 		if (this.isBeingExecuted() || unit.getTask() != null || this.isTerminated())
 			throw new IllegalStateException();
 		this.inExecution = true;
@@ -134,20 +151,27 @@ public class Task implements Comparable<Task> {
 		unit.assignTask(this);
 		this.iterator = this.statements.iterator();
 	}
+	
 	/**
-	 * 
-	 * @effect	the Unit's task will be set null and this Task's Unit will also be set to null
+	 * Stop the execution of this Task
+	 * @post	the Unit's task will be set null and this Task's Unit will also be set to null
 	 * 			it will no longer be flagged as being executed and its priority will be reduced by 1
-	 * 			|unit.setTask(null)
-	 * 			|new.getUnit()==null
-	 * 			|this.inexecution==false
-	 * 			|new.getPriority()==oldpriority-1
-	 * 		
+	 * 			| new.getUnit() == null
+	 * 			| (new this.getUnit()).getTask() == null
+	 * 			| new.getPriority()==this.getPriority()-1
+	 * @post	The variables of this Task have been cleared
+	 * 		  | There is no string for which getVariable(String) does not throw
+	 * 		  | an IllegalArgumentException
+	 * @post	This Task is not in execution
+	 * 		  | !this.isBeingExecuted()
+	 * @throws 	IllegalStateException
+	 * 			This Task is not being executed
+	 * 		  | !this.isBeingExecuted()
+	 * 	
 	 */
 	public void removeFromUnit()throws IllegalStateException{
-		if (!this.isBeingExecuted()) {
+		if (!this.isBeingExecuted())
 			throw new IllegalStateException();
-		}
 		this.inExecution = false;
 		this.variables.clear();
 		this.statements.reset();
@@ -156,8 +180,6 @@ public class Task implements Comparable<Task> {
 		oldUnit.removeTask();
 		this.setPriority(this.getPriority()-1);
 	}
-
-
 
 	/**
 	 * Variable registering whether this Task is currently being executed
@@ -278,11 +300,11 @@ public class Task implements Comparable<Task> {
 	 *  
 	 * @param  name
 	 *         The name to check.
-	 * @return true
-	 *       | result == true
+	 * @return true if the given name is effective and not empty
+	 *       | result == (name != null && name.length() > 0)
 	 */
 	public static boolean isValidName(String name) {
-		return true;
+		return (name != null && name.length() > 0);
 	}
 
 	/**
@@ -439,6 +461,8 @@ public class Task implements Comparable<Task> {
 	 * 		   	| (new this.getUnit()).getTask() == null
 	 * @post	This Task's executing Unit is the null reference
 	 * 			| (new this).getUnit() == null
+	 * @post	This Task is not being executed
+	 * 		  	| !new.isBeingExecuted()
 	 * @effect This Task is removed from all of its Schedulers
 	 * 		   | for each scheduler in schedulers:
 	 * 		   | 			scheduler.removeTasks(this)
@@ -519,6 +543,8 @@ public class Task implements Comparable<Task> {
 
 	/**
 	 * HashMap registering the variables that have been assigned during this Task
+	 * @invar	The variables are effective
+	 * 			| variable != null
 	 * @invar	The variables in this HashMap must be valid variables for a Task
 	 * 			| for each Object in variables.values:
 	 * 			|					isValidVariable(Object)
@@ -554,9 +580,20 @@ public class Task implements Comparable<Task> {
 	 * Variable registering the selectedPosition of this Task.
 	 */
 	private Vector selectedPosition;
-
-	void advanceTask(double time){
-		if (!this.iterator.hasNext()){
+	
+	/**
+	 * Advance this Task by a given amount of time
+	 * @param time
+	 * 			The time to advance this Task by
+	 * @effect	If this Task's iterator has no statements anymore,
+	 * 			this Task is terminated
+	 * 		  | if (!this.getIterator().hasNext())
+	 * 		  | then this.terminate()
+	 */
+	void advanceTask(double time) throws IllegalArgumentException {
+		if (time < 0 || time > 0.2)
+			throw new IllegalArgumentException();
+		if (!this.getIterator().hasNext()){
 			this.removeFromUnit();
 			this.terminate();
 			return;
@@ -565,21 +602,32 @@ public class Task implements Comparable<Task> {
 		for (int i = 0; i < nbStatements; i++){
 			if (this.getUnit().getStatus() == Status.IDLE)
 				try {
-					this.iterator.next().execute();
+					this.getIterator().next().execute();
 				} catch (Exception e){
-					e.printStackTrace();
 					this.removeFromUnit();
 					return;
 				}
-			if (!this.iterator.hasNext())
+			if (!this.getIterator().hasNext())
 				break;
 		}
 	}
+	
+	/**
+	 * Return this Task's iterator
+	 */
+	private Iterator<IExecutableStatement> getIterator(){
+		return this.iterator;
+	}
+
+	/**
+	 * Variable registering the iterator this task is using
+	 */
+	private Iterator<IExecutableStatement> iterator;
 
 	/**
 	 * Check whether the current Task has been completed.
 	 * @return true if and only if this Task's iterator has no next Statement
-	 * 		  | result == !(this.iterator.hasNext())
+	 * 		  | result == !(this.getIterator().hasNext())
 	 */
 	public boolean isFinished(){
 		return !this.iterator.hasNext();
@@ -589,11 +637,6 @@ public class Task implements Comparable<Task> {
 	 * Variable registering the Statement of this Task.
 	 */
 	private final Statement statements;
-
-	/**
-	 * variable registering the iterator this task is using
-	 */
-	private Iterator<IExecutableStatement> iterator;
 
 	/**
 	 * Check whether this Task is well formed

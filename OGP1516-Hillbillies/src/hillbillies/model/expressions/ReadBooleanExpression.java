@@ -11,7 +11,8 @@ public class ReadBooleanExpression extends ReadVariable implements IBooleanExpre
 
 	@Override
 	public Boolean evaluate() {
-		return ((IBooleanExpression) this.getExpression()).evaluate();
+		assert this.getVariableValue() instanceof Boolean;
+		return (Boolean) this.getVariableValue();
 	}
 	
 	@Override

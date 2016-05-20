@@ -14,7 +14,8 @@ public class ReadUnitExpression extends ReadVariable implements IUnitExpression 
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {
-		return ((IUnitExpression) this.getExpression()).evaluate();
+		assert this.getVariableValue() instanceof Unit;
+		return (Unit) this.getVariableValue();
 	}
 	
 	@Override

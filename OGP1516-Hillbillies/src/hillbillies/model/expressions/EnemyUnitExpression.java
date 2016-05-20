@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -15,7 +16,9 @@ public class EnemyUnitExpression extends Expression implements IUnitExpression {
 
 	@Override
 	public Unit evaluate() throws NoSuchElementException {
-		Set<Unit> units = this.getUnit().getWorld().getUnits();
+		Set<Unit> units = new HashSet<>();
+		units.addAll(this.getUnit().getWorld().getUnits());
+		units.remove(getUnit());
 		for (Unit unit : units)
 			if (unit.getFaction() == this.getUnit().getFaction())
 				units.remove(unit);

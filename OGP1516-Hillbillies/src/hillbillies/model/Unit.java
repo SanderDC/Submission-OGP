@@ -1509,6 +1509,8 @@ public class Unit extends GameObject {
 			setActivityTime(0);
 			setEnemy(null);
 			setStatus(Status.IDLE);
+			if (this.hasTask() && this.getTask().isFinished())
+				this.getTask().terminate();
 			return;
 		}
 

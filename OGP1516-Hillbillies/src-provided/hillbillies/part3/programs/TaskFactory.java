@@ -121,7 +121,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 
 	@Override
 	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		return new AttackStatement((EnemyUnitExpression) unit, sourceLocation);
+		return new AttackStatement((IUnitExpression) unit, sourceLocation);
 		
 	}
 

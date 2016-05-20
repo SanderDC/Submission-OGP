@@ -522,15 +522,15 @@ public class Task implements Comparable<Task>{
 	//		};
 	//	}
 	
-	public IExpression getVariableExpression(String name){
+	public Object getVariable(String name){
 		return this.variables.get(name);
 	}
 
-	public void storeVariableExpression(String name, IExpression expression){
-		this.variables.put(name, expression);
+	public void storeVariable(String name, Object value){
+		this.variables.put(name, value);
 	}
 
-	private HashMap<String,IExpression> variables = new HashMap<>();
+	private HashMap<String,Object> variables = new HashMap<>();
 
 	/**
 	 * @invar  Each Task can have its selectedPosition as selectedPosition .
@@ -579,7 +579,7 @@ public class Task implements Comparable<Task>{
 				try {
 					this.iterator.next().execute();
 				} catch (Exception e){
-//					e.printStackTrace();
+					e.printStackTrace();
 					this.removeFromUnit();
 					return;
 				}

@@ -14,7 +14,8 @@ public class ReadPositionExpression extends ReadVariable implements IPositionExp
 
 	@Override
 	public Vector evaluate() throws NoSuchElementException {
-		return ((IPositionExpression) this.getExpression()).evaluate();
+		assert this.getVariableValue() instanceof Vector;
+		return (Vector) this.getVariableValue();
 	}
 	
 	@Override

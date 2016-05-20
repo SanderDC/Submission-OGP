@@ -28,6 +28,7 @@ public class AssignmentStatement extends Statement implements IExecutableStateme
 	private final String variableName;
 	
 	private final IExpression expression;
+	
 
 	@Override
 	public void addToTask(Task task) {
@@ -37,7 +38,7 @@ public class AssignmentStatement extends Statement implements IExecutableStateme
 
 	@Override
 	public void execute() {
-		this.getTask().storeVariableExpression(variableName, expression);
+		this.getTask().storeVariable(variableName, expression.evaluate());
 	}
 
 	@Override

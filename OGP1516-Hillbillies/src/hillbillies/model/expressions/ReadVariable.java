@@ -14,8 +14,8 @@ public abstract class ReadVariable extends Expression {
 		this.variableName=variableName;
 	}
 	
-	protected IExpression getExpression(){
-		return this.getTask().getVariableExpression(this.variableName);
+	protected Object getVariableValue(){
+		return this.getTask().getVariable(this.variableName);
 	}
 	
 	protected String getVariableName(){

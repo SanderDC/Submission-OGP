@@ -362,7 +362,7 @@ public class UnitTest {
 	
 		@Test
 		public void defaultbehavior_works(){
-			int[][][] coordinates = new int[2][1][1];
+			int[][][] coordinates = new int[2][2][1];
 			coordinates[1][0][0]=2;
 			world = new World(coordinates, new DefaultTerrainChangeListener());
 			movingDistantUnit= new Unit(world,true);

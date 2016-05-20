@@ -16,7 +16,7 @@ import hillbillies.part2.listener.DefaultTerrainChangeListener;
  * @note	The commented tests no longer work because of the new structure of the game World
  */
 public class UnitTest {
-	
+
 	private static Unit movingDistantUnit, movingAdjacentUnit,distantUnit, idleUnit, adjacentUnit;
 	private static World world;
 
@@ -41,22 +41,22 @@ public class UnitTest {
 		adjacentUnit = new Unit(world, false);
 		movingDistantUnit= new Unit(world, false);
 		movingAdjacentUnit= new Unit(world, false);
-		
-		
-		
-		
-		
+
+
+
+
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
-	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void Constructor_IllegalPosition(){
-//		new Unit(new Vector(-1.5,0.5,0.5), 50, 50, 50,"Illegal", 50, false);
-//	}
-	
+
+	//	@Test(expected = IllegalArgumentException.class)
+	//	public void Constructor_IllegalPosition(){
+	//		new Unit(new Vector(-1.5,0.5,0.5), 50, 50, 50,"Illegal", 50, false);
+	//	}
+
 	@Test
 	public void Constructor_attributesTooSmall(){
 		Unit test = new Unit(new Vector(1.5,1.5,1.5), 20, -2, 0,"Johnny", 10, false);
@@ -75,7 +75,7 @@ public class UnitTest {
 		assertTrue(test.getName().equals("Johnny"));
 		assertFalse(test.getdefaultbehaviorboolean());
 	}
-	
+
 	@Test
 	public void Constructor_attributesTooLarge(){
 		Unit test = new Unit(new Vector(1.5,1.5,1.5), 150, Integer.MAX_VALUE, 50,"Johnny", 900, false);
@@ -94,7 +94,7 @@ public class UnitTest {
 		assertTrue(test.getName().equals("Johnny"));
 		assertFalse(test.getdefaultbehaviorboolean());
 	}
-	
+
 	@Test
 	public void setAgility_legalCase(){
 		idleUnit.setAgility(100);
@@ -103,7 +103,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),75);
 		assertEquals(idleUnit.getmaxStamina(),75);
 	}
-	
+
 	@Test
 	public void setAgility_tooLarge(){
 		idleUnit.setAgility(500);
@@ -112,7 +112,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),125);
 		assertEquals(idleUnit.getmaxStamina(),125);
 	}
-	
+
 	@Test
 	public void setAgility_tooSmall(){
 		idleUnit.setAgility(-200);
@@ -121,7 +121,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),50);
 		assertEquals(idleUnit.getmaxStamina(),50);
 	}
-	
+
 	@Test
 	public void setStrength_legalCase(){
 		idleUnit.setStrength(100);
@@ -130,7 +130,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),75);
 		assertEquals(idleUnit.getmaxStamina(),75);
 	}
-	
+
 	@Test
 	public void setStrength_tooLarge(){
 		idleUnit.setStrength(500);
@@ -139,7 +139,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),125);
 		assertEquals(idleUnit.getmaxStamina(),125);
 	}
-	
+
 	@Test
 	public void setStrength_tooSmall(){
 		idleUnit.setStrength(-200);
@@ -148,7 +148,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),50);
 		assertEquals(idleUnit.getmaxStamina(),50);
 	}
-	
+
 	@Test
 	public void setToughness_legalCase(){
 		idleUnit.setToughness(100);
@@ -156,7 +156,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),100);
 		assertEquals(idleUnit.getmaxStamina(), 100);
 	}
-	
+
 	@Test
 	public void setToughness_tooLarge(){
 		idleUnit.setToughness(1000);
@@ -164,7 +164,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(), 200);
 		assertEquals(idleUnit.getmaxStamina(), 200);
 	}
-	
+
 	@Test
 	public void setToughness_tooSmall(){
 		idleUnit.setToughness(-200);
@@ -174,7 +174,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxStamina(), 1);
 		assertEquals(idleUnit.getStamina(),1);
 	}
-	
+
 	@Test
 	public void setWeight_legalCase(){
 		idleUnit.setWeight(100);
@@ -182,7 +182,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(),100);
 		assertEquals(idleUnit.getmaxStamina(), 100);
 	}
-	
+
 	@Test
 	public void setWeight_tooLarge(){
 		idleUnit.setWeight(1000);
@@ -190,7 +190,7 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(), 200);
 		assertEquals(idleUnit.getmaxStamina(), 200);
 	}
-	
+
 	@Test
 	public void setWeight_tooSmall(){
 		idleUnit.setWeight(-200);
@@ -198,61 +198,61 @@ public class UnitTest {
 		assertEquals(idleUnit.getmaxHitpoints(), 50);
 		assertEquals(idleUnit.getmaxStamina(), 50);
 	}
-	
+
 	@Test(expected=IllegalArgumentException.class)
 	public void setName_tooShort(){
 		idleUnit.setName("A");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void setName_noCapital(){
 		idleUnit.setName("johnny");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void setName_illegalToken(){
 		idleUnit.setName("J4m3s");
 	}
-	
+
 	@Test
 	public void setName_legalCase(){
 		idleUnit.setName("James O'Hara");
 		assertEquals(idleUnit.getName(),"James O'Hara");
 	}
-	
+
 	@Test
 	public void isValidStamina_legalCase(){
 		assertTrue(Unit.isValidStamina(0, idleUnit.getmaxStamina()));
 	}
-	
+
 	@Test
 	public void isValidStamina_negative(){
 		assertFalse(Unit.isValidStamina(-1, idleUnit.getmaxStamina()));
 	}
-	
+
 	@Test
 	public void isValidStamina_tooLarge(){
 		assertFalse(Unit.isValidStamina(idleUnit.getmaxStamina() + 1, idleUnit.getmaxStamina()));
 	}
-	
+
 	@Test
 	public void isValidHitpoints_legalCase(){
 		assertTrue(Unit.isValidHitpoints(0, idleUnit.getmaxHitpoints()));
 	}
-	
+
 	@Test
 	public void isValidHitpoints_negative(){
 		assertFalse(Unit.isValidHitpoints(-1, idleUnit.getmaxHitpoints()));
 	}
-	
+
 	@Test
 	public void isValidHitpoints_tooLarge(){
 		assertFalse(Unit.isValidHitpoints(idleUnit.getmaxHitpoints() + 1, idleUnit.getmaxHitpoints()));
 	}
-	
-	
-	
-	
+
+
+
+
 	@Test(expected = IllegalStateException.class)
 	public void resting_whileMovingAdjacent(){
 		for(int j = -1; j <= 1; j++){
@@ -260,36 +260,37 @@ public class UnitTest {
 				if (!(i==0&&j==0)) {
 					if (world.unitCanStandAt((new Vector(movingAdjacentUnit.getPosition().getX()+j, movingAdjacentUnit.getPosition().getY()+i, movingAdjacentUnit.getPosition().getZ())))) {
 						movingAdjacentUnit.moveToAdjacent(j, i, 0);
+					}
+
 				}
-					
-				}
-			}}
+			}
+		}
 		movingAdjacentUnit.resting();
 	}
-	
-	
-	
+
+
+
 	@Test(expected = IllegalArgumentException.class)
 	public void startAttack_attackItself(){
 		idleUnit.startAttack(idleUnit);
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	@Test
 	public void moveAdjacent_legalcase(){
 		for(int j = -1; j <= 1; j++){
 			for (int i = -1; i <= 1; i++) {
 				if (!(i==0&&j==0)) {
-					if (world.unitCanStandAt((new Vector(idleUnit.getPosition().getX()+j, idleUnit.getPosition().getY()+i, idleUnit.getPosition().getZ())))) {
+					if (world.unitCanStandAt((new Vector(idleUnit.getPosition().getX()+j, idleUnit.getPosition().getY()+i, idleUnit.getPosition().getZ()))) && !idleUnit.isMoving()) {
 						idleUnit.moveToAdjacent(j, i, 0);
+					}
 				}
-					
-				}
-			}}
+			}
+		}
 		assertTrue(idleUnit.isMoving());
 	}
 	@Test
@@ -297,8 +298,8 @@ public class UnitTest {
 		movingDistantUnit.moveTo(0,5, 0);
 		assertTrue(movingDistantUnit.isMoving());
 	}
-	
-		@Test(expected = IllegalStateException.class)
+
+	@Test(expected = IllegalStateException.class)
 	public void movingAdjacent_whilenotrestingenough(){
 		idleUnit.resting();
 		idleUnit.moveToAdjacent(0, 0, 1);
@@ -307,17 +308,17 @@ public class UnitTest {
 	public void movingAdjacent_whilenotvalidargument(){
 		movingAdjacentUnit.moveToAdjacent(0, 0, -1);
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void moveTo_whilenotrestingenough(){
 		idleUnit.resting();
 		idleUnit.moveTo(0,5, 0);
-		}
+	}
 	@Test(expected = IllegalArgumentException.class)
 	public void moveTo_whilenotvalidargument(){
 		movingDistantUnit.moveTo(0,100, 0);
-		}
-	
+	}
+
 	@Test
 	public void resting_legalcase(){
 		idleUnit.resting();
@@ -331,10 +332,10 @@ public class UnitTest {
 		for(int j = -1; j <= 1; j++){
 			for (int i = -1; i <= 1; i++) {
 				if (!(i==0&&j==0)) {
-					if (world.unitCanStandAt((new Vector(movingDistantUnit.getPosition().getX()+j, movingDistantUnit.getPosition().getY()+i, movingDistantUnit.getPosition().getZ())))) {
+					if (world.unitCanStandAt((new Vector(movingDistantUnit.getPosition().getX()+j, movingDistantUnit.getPosition().getY()+i, movingDistantUnit.getPosition().getZ()))) && !movingDistantUnit.isMoving()) {
 						movingDistantUnit.moveTo(movingDistantUnit.getPosition().getCubeX()+j,movingDistantUnit.getPosition().getCubeY()+i, movingDistantUnit.getPosition().getCubeZ());
-				}
-					
+					}
+
 				}
 			}}
 		movingDistantUnit.setSprinting(true);
@@ -352,13 +353,13 @@ public class UnitTest {
 				if (!(i==0&&j==0)) {
 					if (world.unitCanStandAt((new Vector(movingDistantUnit.getPosition().getX()+j, movingDistantUnit.getPosition().getY()+i, movingDistantUnit.getPosition().getZ())))) {
 						movingDistantUnit.moveTo(movingDistantUnit.getPosition().getCubeX()+j,movingDistantUnit.getPosition().getCubeY()+i, movingDistantUnit.getPosition().getCubeZ());
-				}
-					
+					}
+
 				}
 			}}
-		
+
 		movingDistantUnit.setDefaultBehaviorBoolean(true);
-		}
+	}
 	@Test
 	public void defaultbehavior_works(){
 		movingDistantUnit.setDefaultBehaviorBoolean(true);

@@ -1295,13 +1295,15 @@ public class Unit extends GameObject {
 		if (oldStatus==Status.MOVINGADJACENT) {
 			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
-			}
+			} else
+				return false;
 		}
 
 		if (oldStatus==Status.MOVINGDISTANT) {
 			if (status==Status.FALLING || status == Status.ATTACKING) {
 				return true;
-			}
+			} else
+				return false;
 		}
 		return true;
 	}

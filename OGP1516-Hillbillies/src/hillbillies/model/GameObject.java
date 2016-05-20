@@ -41,6 +41,8 @@ public abstract class GameObject {
 	 * @post	The GameObject's weight equals a random value between 10 and 50, inclusive.
 	 * @effect 	The position of this new GameObject is set to
 	 *         	the given position.
+	 * @post	This new GameObject is Idle
+	 * @post	This new GameObject's speed is the zero vector
 	 */
 	public GameObject(Vector position, World world) throws IllegalArgumentException{
 		world.addGameObject(this);
@@ -48,6 +50,7 @@ public abstract class GameObject {
 		Random random = new Random();
 		this.weight= random.nextInt(41)+10;
 		this.status=Status.IDLE;
+		this.setSpeed(new Vector(0,0,0));
 	}
 	/**
 	 * Variable registering this Unit's current status.

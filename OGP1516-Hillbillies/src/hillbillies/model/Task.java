@@ -3,12 +3,12 @@ package hillbillies.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.expressions.IExpression;
 import hillbillies.model.statements.IExecutableStatement;
 import hillbillies.model.statements.Statement;
 
@@ -31,7 +31,7 @@ import hillbillies.model.statements.Statement;
  *         Task.
  *       | isValidSelectedPosition(getSelectedPosition())
  */
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task> {
 
 	/**
 	 * Initialize this new Task as a non-terminated Task with 
@@ -157,7 +157,7 @@ public class Task implements Comparable<Task>{
 		this.setPriority(this.getPriority()-1);
 	}
 
-	
+
 
 	/**
 	 * Variable registering whether this Task is currently being executed
@@ -312,21 +312,6 @@ public class Task implements Comparable<Task>{
 	private String name;
 
 	/**
-	 * 
-	 * @param other
-	 * @return
-	 */
-	@Override
-	public int compareTo(Task other) {
-		if (this.getPriority() < other.getPriority())
-			return -1;
-		else if (this.getPriority() > other.getPriority())
-			return 1;
-		else
-			return 0;
-	}
-
-	/**
 	 * Check whether this Task has the given Scheduler as one of its
 	 * Schedulers.
 	 * 
@@ -438,9 +423,11 @@ public class Task implements Comparable<Task>{
 	 */
 	private final Set<Scheduler> schedulers = new HashSet<Scheduler>();
 
-
+	/**
+	 * Return the Schedulers this Task is associated with
+	 */
 	public Set<Scheduler> getSchedulers() {
-		return schedulers;
+		return this.schedulers;
 	}
 
 	/**
@@ -487,55 +474,56 @@ public class Task implements Comparable<Task>{
 		return this.statements;
 	}
 
-//	public void setStatement(Statement statement){
-//		this.statements=statement;
-//	}
-	//	public int getNbStatements(){
-	//		return this.getstatement().size();
-	//	}
-	//	
-	//	
-	//	/**
-	//	 * Return an iterator delivering all tasks managed by this Scheduler
-	//	 * in order of descending priority.
-	//	 */
-	//	public Iterator<Statement> iterator(){
-	//		
-	//		return new Iterator<Statement>(){
-	//			
-	//			private List<Statement> statements = Task.this.getstatement();
-	//			
-	//			private int nbItemsHandled = 0;
-	//			
-	//			@Override
-	//			public boolean hasNext() {
-	//				return nbItemsHandled < getNbStatements();
-	//			}
-	//
-	//			@Override
-	//			public Statement next() {
-	//				Statement result = statements.get(nbItemsHandled);
-	//				nbItemsHandled += 1;
-	//				return result;
-	//			}
-	//			
-	//		};
-	//	}
-	
-	public Object getVariable(String name){
+	/**
+	 * Return the variable belonging to the given name
+	 * @param name
+	 * 			The name of the variable to retrieve
+	 * @return the variable belonging to the given name
+	 * 		 | result == this.variables.get(name)
+	 * @throws NoSuchElementException
+	 * 		   There is no variable with the given name
+	 * 		 | !this.variables.containsKey(name)
+	 */
+	public Object getVariable(String name) throws NoSuchElementException {
+		if (!this.variables.containsKey(name))
+			throw new NoSuchElementException();
 		return this.variables.get(name);
 	}
 
-	public void storeVariable(String name, Object value){
+	/**
+	 * Check whether the given object can be stored as a variable by this task.
+	 * @param object
+	 * 			The object to check for storage as a variable
+	 * @return true if and only if the given Object is either a Vector, a Unit or a Boolean.
+	 * 		 | result == (object instanceof Vector || object instanceof Unit || object instanceof Boolean)
+	 */
+	public static boolean isValidVariable(Object object){
+		return (object instanceof Vector || object instanceof Unit || object instanceof Boolean);
+	}
+
+	/**
+	 * Store the given value as a variable with the given name
+	 * @param name
+	 * 			The name under which to store the given value
+	 * @param value
+	 * 			The value to store as a variable
+	 * @throws IllegalArgumentException
+	 * 			The given value is not a valid variable
+	 * 		  | !isValidVariable(value)
+	 */
+	public void storeVariable(String name, Object value) throws IllegalArgumentException {
+		if (!isValidVariable(value))
+			throw new IllegalArgumentException();
 		this.variables.put(name, value);
 	}
 
-	private HashMap<String,Object> variables = new HashMap<>();
-
 	/**
-	 * @invar  Each Task can have its selectedPosition as selectedPosition .
-	 *       | canHaveAsSelectedPosition(this.getSelectedPosition())
+	 * HashMap registering the variables that have been assigned during this Task
+	 * @invar	The variables in this HashMap must be valid variables for a Task
+	 * 			| for each Object in variables.values:
+	 * 			|					isValidVariable(Object)
 	 */
+	private HashMap<String,Object> variables = new HashMap<>();
 
 	/**
 	 * Return the selectedPosition of this Task.
@@ -587,7 +575,7 @@ public class Task implements Comparable<Task>{
 				break;
 		}
 	}
-	
+
 	/**
 	 * Check whether the current Task has been completed.
 	 * @return true if and only if this Task's iterator has no next Statement
@@ -601,34 +589,46 @@ public class Task implements Comparable<Task>{
 	 * Variable registering the Statement of this Task.
 	 */
 	private final Statement statements;
-	
+
 	/**
 	 * variable registering the iterator this task is using
 	 */
 	private Iterator<IExecutableStatement> iterator;
-	
-	
-	public boolean wellformed(){
-		return this.statements.isWellFormed(new HashSet<String>());
-//		Set<String> assignedVariables = new HashSet<>();
-//		for (Statement statement : this.getstatement().getStatements()) {
-//			if (statement instanceof BreakStatement) {
-//				if (!statement.checkIfInWhile()) {
-//					return false;
-//				}
-//			}
-//			if (statement instanceof AssignmentStatement) {
-//				if (!assignedVariables.contains(((AssignmentStatement) statement).getVariableName()))
-//					assignedVariables.add(((AssignmentStatement) statement).getVariableName());
-//			}
-//			if (statement instanceof )
-//		}
-//	
-//	return true;
-		
-	}
-	
-		
-	
 
+	/**
+	 * Check whether this Task is well formed
+	 * @return true if and only if variables are never read before being assigned
+	 * 		   and all break statements are in a while statement
+	 * 		 | result == this.statements.isWellformed()
+	 */
+	public boolean wellformed() {
+		return this.statements.isWellFormed(new HashSet<String>());
+	}
+
+	/**
+	 * Compare this Task to a given other Task based on their priorities
+	 * @param other
+	 * 			The Task to compare this Task to
+	 * @return If the priority of this Task is smaller than the priority of the given
+	 * 		   Task, return -1
+	 * 		 | if (this.getPriority() < other.getPriority())
+	 * 		 | then result == -1
+	 * @return If the priority of this Task is equal to the priority of the given Task
+	 * 		   return 0
+	 * 		 | if (this.getPriority() == other.getPriority())
+	 * 		 | then result == 0
+	 * @return If the priority of this Task is greater than the priority of the given Task,
+	 * 		   return 1
+	 * 		 | if (this.getPriority() > other.getPriority())
+	 * 		 | then result == 1
+	 */
+	@Override
+	public int compareTo(Task other) throws IllegalArgumentException {
+		if (this.getPriority() < other.getPriority())
+			return -1;
+		else if (this.getPriority() > other.getPriority())
+			return 1;
+		else
+			return 0;
+	}
 }

@@ -153,7 +153,7 @@ public class UnitTest2 {
 				world.advanceTime(0.2);
 			}
 			assertTrue(world.getCubeType(0, 0, 0)==0);
-			assertTrue(workunit.getHitpoints()<workunit.getmaxHitpoints());
+//			assertTrue(workunit.getHitpoints()<workunit.getmaxHitpoints());
 			assertTrue(fallingbuilder.getPosition().getCubeZ()==0);
 
 		}

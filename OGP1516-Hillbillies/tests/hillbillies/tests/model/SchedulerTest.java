@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
@@ -51,8 +50,8 @@ public class SchedulerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Faction faction = new Faction(new World(new int[3][3][3], new DefaultTerrainChangeListener()));
-		scheduler1 = faction.getScheduler();
+//		Faction faction = new Faction(new World(new int[3][3][3], new DefaultTerrainChangeListener()));
+//		scheduler1 = faction.getScheduler();
 		SourceLocation testLocation = new SourceLocation(1, 1);
 		testStatement = new MoveToStatement(new HerePositionExpression(testLocation), testLocation);
 		task = new Task("test", -10, testStatement);
@@ -60,6 +59,7 @@ public class SchedulerTest {
 		task2 = new Task("test", 10, testStatement);
 		task3 = new Task("test", 20 , testStatement);
 		unit= new Unit(world, false);
+		scheduler1 = unit.getFaction().getScheduler();
 	}
 
 	@After
@@ -116,10 +116,19 @@ public class SchedulerTest {
 		scheduler1.assignTaskToUnit(unit, task);
 	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void assignTask_alreadyInExecution(){
+		scheduler1.addTasks(task);
+		scheduler1.assignTaskToUnit(unit, task);
+		scheduler1.assignTaskToUnit(unit, task);
+	}
+	
 	@Test
 	public void assignTask_legalCase(){
-		task1.assignToUnit(unit);
-		assertTrue(unit.getTask()==task1);
+		scheduler1.addTasks(task);
+		scheduler1.assignTaskToUnit(unit, task);
+		assertTrue(unit.getTask()==task);
+		assertTrue(task.getUnit() == unit);
 	}
 	
 	@Test
@@ -139,5 +148,27 @@ public class SchedulerTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void replaceTask_IllegalCase(){
 		scheduler1.replaceTask(task1, task2);
+	}
+	
+	@Test
+	public void removeTaskFromUnit_legalCase(){
+		scheduler1.addTasks(task);
+		scheduler1.assignTaskToUnit(unit, task);
+		assertTrue(unit.getTask()==task);
+		assertTrue(task.getUnit() == unit);
+		scheduler1.removeTaskFromUnit(unit);
+		assertTrue(unit.getTask() == null);
+		assertTrue(task.getUnit() == null);
+		assertFalse(task.isBeingExecuted());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void removeTask_null(){
+		scheduler1.removeTaskFromUnit(null);
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void removeTask_noTask(){
+		scheduler1.removeTaskFromUnit(unit);
 	}
 }

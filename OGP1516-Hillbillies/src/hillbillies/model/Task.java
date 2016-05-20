@@ -52,17 +52,17 @@ public class Task implements Comparable<Task> {
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 * @throws IllegalArgumentException
-	 * 		   The given Statement is not effective
-	 * 		 | (activitylist == null)
+	 * 		   The given Statement is not effective or not well formed
+	 * 		 | (activitylist == null || !activitylist.isWellFormed(new HashSet<String>())
 	 */
 	public Task(String name, int priority,	Statement activitylist)
 			throws IllegalArgumentException {
-		if (activitylist == null)
+		if (activitylist == null || !activitylist.isWellFormed(new HashSet<String>()))
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
-		this.statements=activitylist;
-		this.statements.addToTask(this);
+		this.statement=activitylist;
+		this.statement.addToTask(this);
 		this.selectedPosition = null;
 	}
 
@@ -106,8 +106,8 @@ public class Task implements Comparable<Task> {
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
-		this.statements=activitylist;
-		this.statements.addToTask(this);
+		this.statement=activitylist;
+		this.statement.addToTask(this);
 		if (canHaveAsSelectedPosition(selectedPosition))
 			this.selectedPosition = selectedPosition;
 		else {
@@ -131,7 +131,6 @@ public class Task implements Comparable<Task> {
 	 * @param unit
 	 * @post	This Task is in execution
 	 * 		  | new.isBeingExecuted()
-	 * @effect	This 
 	 * @effect	if the Unit does not currently have an assigned unit, it will set this task's unit to 
 	 * 			the given Unit and the Given Unit will have its task set to this task,
 	 * 			and this Task's iterator is reinitialized
@@ -142,14 +141,19 @@ public class Task implements Comparable<Task> {
 	 * 			This Task is already in execution, or the given Unit is already executing a Task,
 	 * 			or this Task has already been terminated
 	 * 			| (this.isBeingExecuted() || unit.getTask() != null || this.isTerminated())
+	 * @throws	IllegalArgumentException
+	 * 			The given Unit is not effective
+	 * 			| unit == null
 	 */
-	public void assignToUnit(Unit unit) throws IllegalStateException {
+	public void assignToUnit(Unit unit) throws IllegalStateException, IllegalArgumentException {
+		if (unit == null)
+			throw new IllegalArgumentException();
 		if (this.isBeingExecuted() || unit.getTask() != null || this.isTerminated())
 			throw new IllegalStateException();
 		this.inExecution = true;
 		this.setUnit(unit);
 		unit.assignTask(this);
-		this.iterator = this.statements.iterator();
+		this.iterator = this.statement.iterator();
 	}
 	
 	/**
@@ -174,7 +178,7 @@ public class Task implements Comparable<Task> {
 			throw new IllegalStateException();
 		this.inExecution = false;
 		this.variables.clear();
-		this.statements.reset();
+		this.statement.reset();
 		Unit oldUnit = this.getUnit();
 		this.setUnit(null);
 		oldUnit.removeTask();
@@ -403,7 +407,7 @@ public class Task implements Comparable<Task> {
 	 * @post   This Task has the given Scheduler as one of its Schedulers.
 	 *       | new.hasAsScheduler(scheduler)
 	 */
-	public void addScheduler(@Raw Scheduler scheduler) {
+	void addScheduler(@Raw Scheduler scheduler) {
 		assert (scheduler != null) && (scheduler.hasAsTask(this));
 		schedulers.add(scheduler);
 	}
@@ -423,7 +427,7 @@ public class Task implements Comparable<Task> {
 	 *       | ! new.hasAsScheduler(scheduler)
 	 */
 	@Raw
-	public void removeScheduler(Scheduler scheduler) {
+	void removeScheduler(Scheduler scheduler) {
 		assert this.hasAsScheduler(scheduler) && (!scheduler.hasAsTask(this));
 		schedulers.remove(scheduler);
 	}
@@ -491,8 +495,8 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Return the Statement of the Task
 	 */
-	public Statement getstatement(){
-		return this.statements;
+	public Statement getStatement(){
+		return this.statement;
 	}
 
 	/**
@@ -601,6 +605,7 @@ public class Task implements Comparable<Task> {
 				try {
 					this.getIterator().next().execute();
 				} catch (Exception e){
+					e.printStackTrace();
 					this.removeFromUnit();
 					return;
 				}
@@ -633,7 +638,7 @@ public class Task implements Comparable<Task> {
 	/**
 	 * Variable registering the Statement of this Task.
 	 */
-	private final Statement statements;
+	private final Statement statement;
 
 	/**
 	 * Check whether this Task is well formed
@@ -642,7 +647,7 @@ public class Task implements Comparable<Task> {
 	 * 		 | result == this.statements.isWellformed()
 	 */
 	public boolean wellformed() {
-		return this.statements.isWellFormed(new HashSet<String>());
+		return this.statement.isWellFormed(new HashSet<String>());
 	}
 
 	/**

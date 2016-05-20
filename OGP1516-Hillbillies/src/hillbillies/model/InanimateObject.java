@@ -32,5 +32,16 @@ public abstract class InanimateObject extends GameObject {
 	public boolean canHaveAsWeight(int weight) {
 		return (weight >= 10 && weight <= 50);
 	}
+	
+	/**
+	 * Check whether the given Status is a valid Status for this InanimateObject
+	 * @return true if the given Status is either Status.IDLE or Status.FALLING
+	 */
+	@Override
+	protected boolean isValidStatus(Status status) {
+		return status == Status.FALLING || status == Status.IDLE;
+	}
+	
+	
 
 }

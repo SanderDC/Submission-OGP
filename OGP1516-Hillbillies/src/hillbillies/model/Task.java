@@ -52,12 +52,12 @@ public class Task implements Comparable<Task> {
 	 * @post   This new Task has no Schedulers yet.
 	 *       | new.getNbSchedulers() == 0
 	 * @throws IllegalArgumentException
-	 * 		   The given Statement is not effective or not well formed
-	 * 		 | (activitylist == null || !activitylist.isWellFormed(new HashSet<String>())
+	 * 		   The given Statement is not a valid Statement for any Task
+	 * 		 | ! isValidStatement(activitylist)
 	 */
 	public Task(String name, int priority,	Statement activitylist)
 			throws IllegalArgumentException {
-		if (activitylist == null || !activitylist.isWellFormed(new HashSet<String>()))
+		if (!isValidStatement(activitylist))
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
@@ -94,15 +94,15 @@ public class Task implements Comparable<Task> {
 	 *       |   else for each component in new.getSelectedPosition():
 	 *       |									(component >= 0)
 	 * @throws IllegalArgumentException
-	 * 		   The given Statement is not effective
-	 * 		 | (activitylist == null)
+	 * 		   The given Statement is not a valid Statement for any Task
+	 * 		 | !isValidStatement(activitylist)
 	 * @throws IllegalArgumentException
 	 * 		   The given Vector is not effective
 	 * 		 | (selectedPosition == null)
 	 */
 	public Task(String name, int priority,Statement activitylist, Vector selectedPosition) 
 			throws IllegalArgumentException {
-		if (activitylist == null || selectedPosition == null)
+		if (!isValidStatement(activitylist) || selectedPosition == null)
 			throw new IllegalArgumentException();
 		this.setPriority(priority);
 		this.setName(name);
@@ -633,6 +633,17 @@ public class Task implements Comparable<Task> {
 	 */
 	public boolean isFinished(){
 		return !this.iterator.hasNext();
+	}
+	
+	/**
+	 * Check whether the given Statement is a valid Statement for any Task
+	 * @param statement
+	 * 			The Statement to check
+	 * @return	true if the given Statement is effective
+	 * 		  | result == (statement != null)
+	 */
+	public static boolean isValidStatement(Statement statement){
+		return statement != null && statement.isWellFormed(new HashSet<String>());
 	}
 
 	/**

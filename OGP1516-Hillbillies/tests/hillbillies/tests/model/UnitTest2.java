@@ -153,7 +153,6 @@ public class UnitTest2 {
 				world.advanceTime(0.2);
 			}
 			assertTrue(world.getCubeType(0, 0, 0)==0);
-//			assertTrue(workunit.getHitpoints()<workunit.getmaxHitpoints());
 			assertTrue(fallingbuilder.getPosition().getCubeZ()==0);
 
 		}
@@ -164,7 +163,8 @@ public class UnitTest2 {
 			int weightbefore=upgradeUnit.getWeight();
 			for (int i = 0; i < 101; i++) {
 				world4.advanceTime(0.2);
-			}			assertTrue(upgradeUnit.getToughness()>Toughnessbefore||upgradeUnit.getWeight()>weightbefore);
+			}
+			assertTrue(upgradeUnit.getToughness()>Toughnessbefore&&upgradeUnit.getWeight()>weightbefore);
 			
 		}
 		

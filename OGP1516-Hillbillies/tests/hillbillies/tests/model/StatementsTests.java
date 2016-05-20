@@ -1,8 +1,11 @@
 package hillbillies.tests.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,12 +19,21 @@ import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.Vector;
 import hillbillies.model.World;
-import hillbillies.model.expressions.*;
+import hillbillies.model.expressions.AnyUnitExpression;
+import hillbillies.model.expressions.BoulderPositionExpression;
+import hillbillies.model.expressions.EnemyUnitExpression;
+import hillbillies.model.expressions.HerePositionExpression;
+import hillbillies.model.expressions.LiteralPositionExpression;
+import hillbillies.model.expressions.ReadPositionExpression;
+import hillbillies.model.expressions.TrueBooleanExpression;
 import hillbillies.model.statements.AttackStatement;
+import hillbillies.model.statements.BreakStatement;
 import hillbillies.model.statements.FollowStatement;
+import hillbillies.model.statements.IfStatement;
 import hillbillies.model.statements.MoveToStatement;
 import hillbillies.model.statements.SequenceStatement;
 import hillbillies.model.statements.Statement;
+import hillbillies.model.statements.WhileStatement;
 import hillbillies.model.statements.WorkStatement;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.programs.SourceLocation;
@@ -155,5 +167,28 @@ public class StatementsTests {
 		assertTrue(unit1.isCarryingBoulder());
 	}
 	
-
+	@Test
+	public void wellFormed_illegalBreak(){
+		SourceLocation sourceLocation = new SourceLocation(1, 1);
+		Statement ifstmt = new IfStatement(new TrueBooleanExpression(sourceLocation), new BreakStatement(sourceLocation), null, sourceLocation);
+		assertFalse(ifstmt.isWellFormed(new HashSet<String>()));
+	}
+	
+	@Test
+	public void wellFormed_legalBreak(){
+		SourceLocation sourceLocation = new SourceLocation(1, 1);
+		Statement whilestmt = new WhileStatement(new TrueBooleanExpression(sourceLocation), new BreakStatement(sourceLocation), sourceLocation);
+		assertTrue(whilestmt.isWellFormed(new HashSet<String>()));
+	}
+	
+	@Test
+	public void wellFormed_readBeforeAssignment(){
+		SourceLocation sourceLocation = new SourceLocation(1, 1);
+		Statement whilestmt = new WhileStatement(new TrueBooleanExpression(sourceLocation), new BreakStatement(sourceLocation), sourceLocation);
+		List<Statement> list = new ArrayList<>();
+		list.add(whilestmt);
+		list.add(new MoveToStatement(new ReadPositionExpression("test", sourceLocation), sourceLocation));
+		Statement seq = new SequenceStatement(list, sourceLocation);
+		assertFalse(seq.isWellFormed(new HashSet<String>()));
+	}
 }

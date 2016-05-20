@@ -14,8 +14,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @invar  	The status of each GameObject must be a valid status for any GameObject.
  * @invar  	The weight of each GameObject must be a valid weight for any GameObject.
  * @invar  	The World of each GameObject must be a valid World for that GameObject
- * @invar  	The speed of each Unit must be a valid speed for any
- *         	Unit.
+ * @invar  	The speed of each GameObject must be a valid speed for any
+ *         	GameObject.
  */
 public abstract class GameObject {
 	
@@ -81,10 +81,10 @@ public abstract class GameObject {
 	
 	/**
 	 * Check whether the given Status is a valid Status for any GameObject
-	 * @return true if the given Status is either falling or idle.
+	 * @return true if the given Status is not null
 	 */
 	protected boolean isValidStatus (Status status) {
-		if (status==Status.FALLING||status==Status.IDLE)
+		if (status!= null)
 			return true;
 		else
 			return false;
@@ -121,10 +121,6 @@ public abstract class GameObject {
 					return false;
 				}
 			}
-			System.out.println(position.getCubeX());
-			System.out.println(position.getCubeY());
-			System.out.println(position.getCubeZ());
-
 			if (this.getWorld().isSolidGround(position.getCubeX(), position.getCubeY(), position.getCubeZ())){
 				return false;
 			}
@@ -374,14 +370,10 @@ public abstract class GameObject {
 					this.getPosition().getCubeZ()+World.CUBELENGTH/2));
 			this.setSpeed(new Vector(0,0,0));
 			this.setStatus(Status.IDLE);
-
-
 		}
-
 		else{
 			this.setPosition(new_pos);
 		}
-
 	}
 	
 	/**

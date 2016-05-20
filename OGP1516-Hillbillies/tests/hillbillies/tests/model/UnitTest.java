@@ -52,11 +52,6 @@ public class UnitTest {
 	public void tearDown() throws Exception {
 	}
 
-	//	@Test(expected = IllegalArgumentException.class)
-	//	public void Constructor_IllegalPosition(){
-	//		new Unit(new Vector(-1.5,0.5,0.5), 50, 50, 50,"Illegal", 50, false);
-	//	}
-
 	@Test
 	public void Constructor_attributesTooSmall(){
 		Unit test = new Unit(new Vector(1.5,1.5,1.5), 20, -2, 0,"Johnny", 10, false);
@@ -360,10 +355,15 @@ public class UnitTest {
 
 		movingDistantUnit.setDefaultBehaviorBoolean(true);
 	}
-	@Test
-	public void defaultbehavior_works(){
-		movingDistantUnit.setDefaultBehaviorBoolean(true);
-		movingDistantUnit.advanceTime(0.1);
-		assertFalse(movingDistantUnit.isIdle());
-	}
+	
+		@Test
+		public void defaultbehavior_works(){
+			int[][][] coordinates = new int[2][2][1];
+			coordinates[1][0][0]=2;
+			world = new World(coordinates, new DefaultTerrainChangeListener());
+			movingDistantUnit= new Unit(world,true);
+			movingDistantUnit.advanceTime(0.1);
+			assertFalse(movingDistantUnit.isIdle());
+		}
+		
 }
